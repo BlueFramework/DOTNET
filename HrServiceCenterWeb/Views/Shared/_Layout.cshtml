@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title - 人力资源服务系统</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Content/themes/base/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Library/easyui/themes/metro/easyui.css" rel="stylesheet" />
+    <link href="~/Library/easyui/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Library/searchMeme/css/searchMeme.css" type="text/css" />
+    @Styles.Render(string.Format("~/Content/themes/{0}/site.css", "base"))
+    <!-- Custom styles for this template -->
+    <link href="~/Content/themes/base/dashboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/ie10-viewport-bug-workaround.css" rel="stylesheet" type="text/css" />
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    @Scripts.Render("~/JS/ie-emulation-modes-warning.js")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- common js -->
+    @Scripts.Render("~/bundles/jquery")
+
+    @Scripts.Render("~/JS/bootstrap.min.js")
+    @Scripts.Render("~/Library/easyui/jquery.easyui.min.js")
+    @Scripts.Render("~/Library/easyui/locale/easyui-lang-zh_CN.js")
+    <!-- ua js -->
+    @Scripts.Render("~/JS/json2.js")
+    @Scripts.Render("~/JS/share.js")
+    @Scripts.Render("~/JS/holder.min.js")
+    @Scripts.Render("~/JS/ie10-viewport-bug-workaround.js")
+    @RenderSection("scripts", required: false)
+</head>
+<body>
+    <!-- 部分视图，指向菜单列表 -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="navbar">
+        <div class="container-fluid holderbar">
+            <div class="navbar-header holderbar-left">
+                <a class="navbar-brand holderbar-logo" href="#" id="logimg">
+                    <img src="@Url.Content("~/images/hr_title.png")" />
+                </a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#example-navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                <ul class="nav navbar-nav navbar-left" style="background-color: rgb(41,60,85);">
+                    <li>
+                        <a href="#" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-home"></span><span>首页</span></a>
+                    </li>
+                    <li>
+                        <a href="#" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user"></span><span>信息档案</span></a>
+                        <ul class="dropdown-menu submenu" aria-labelledby="">
+                            <li><a href="#">公司信息</a></li>
+                            <li><a href="#">员工信息</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-calendar"></span><span>缴存发放</span></a>
+                        <ul class="dropdown-menu submenu" aria-labelledby="">
+                            <li><a href="#">缴存发放项目管理</a></li>
+                            <li><a href="#">单位模板</a></li>
+                            <li><a href="#">社保导入</a></li>
+                            <li><a href="#">缴存发放</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-office"></span><span>统计报表</span></a>
+                        <ul class="dropdown-menu submenu" aria-labelledby="">
+                            <li><a href="#">单位用人统计</a></li>
+                            <li><a href="#">单位缴存发放统计</a></li>
+                            <li><a href="#">个人缴存发放统计</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user"></span><span>系统管理</span></a>
+                        <ul class="dropdown-menu submenu" aria-labelledby="">
+                            <li><a href="#">账号管理</a></li>
+                            <li><a href="#">角色管理</a></li>
+                            <li><a href="#">权限管理</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="navbar-collapse collapse holderbar-right ">
+                    <ul class="nav navbar-nav navbar-right" id="right_menu">
+                        <li id="">
+                            <a class="title">admin ，系统当前在线 0 人</a>
+                        </li>
+                        <li><a href="@Url.Action("userpage", "Account")" title="个人中心"><span class="icon icon-user">&nbsp;</span></a></li>
+                        <li><a href="@Url.Content("~/Discuss/index")" title="消息互动"><span class="icon icon-comment">&nbsp;</span></a></li>
+                        <li><a href="@Url.Action("LogOff", "Account")" title="安全退出"><span class="icon icon-signoff">&nbsp;</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- content -->
+    @RenderBody()
+    <script>
+        $(document).ready(function () {
+            // windowsResize();
+            // 下拉菜单
+            $('.dropdown-toggle').dropdown();
+            // 高度自适应
+            var div = $('.container-layout');
+            if (div.length > 0) {
+                var top = div.position().top;
+                if (top == 0)
+                    top = 50;
+                else
+                    top = top + 10;
+                var height = $(window).height() - top;
+                div.height(height);
+            }
+            if (typeof (init) == 'undefined') {
+            }
+            else {
+                init(document);
+            }
+        });
+    </script>
+</body>
+</html>
