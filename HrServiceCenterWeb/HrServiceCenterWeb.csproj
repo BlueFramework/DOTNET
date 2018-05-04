@@ -234,7 +234,6 @@
     <Content Include="Global.asax" />
     <Content Include="images\HR_LOGO.png" />
     <Content Include="images\HR_TITLE.png" />
-    <Content Include="images\logo.png" />
     <Content Include="JS\bootstrap.min.js" />
     <Content Include="JS\holder.min.js" />
     <Content Include="JS\ie-emulation-modes-warning.js" />
