@@ -19,13 +19,55 @@ namespace BlueFramework.Blood.DataAccess.Tests
             Command command = new Command();
             EntityConfig config = new EntityConfig();
             config.Id = "test.findUserById";
-            config.Sql = "SELECT * FROM [USER] WHERE id=#{value}";
+            config.Sql = "SELECT ID USERID,USERNAME,BIRTHDAY FROM [USER] WHERE id=#{value}";
             UserInfo ui = command.Select<UserInfo>(config, 1);
             Assert.IsNotNull(ui);
         }
 
         [Test()]
         public void LoadEntityTest()
+        {
+            Assert.Pass();
+        }
+
+        [Test()]
+        public void LoadEntitiesTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void CommandTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void LoadEntityTest1()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void LoadEntitiesTest1()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void SelectTest1()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void SelectTest2()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void InsertTest()
         {
             Assert.Fail();
         }
