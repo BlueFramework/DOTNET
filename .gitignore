@@ -3,3 +3,16 @@
 ################################################################################
 
 /.vs
+/BlueFramework.Blood/bin/Debug
+/BlueFramework.Blood/obj/Debug
+/BlueFramework.Common/bin/Debug
+/BlueFramework.Common/obj/Debug
+/BlueFramework.Data/bin/Debug
+/BlueFramework.Data/obj/Debug
+/BlueFramework.User/bin/Debug
+/BlueFramework.User/obj/Debug
+/HrServiceCenterWeb/bin
+/HrServiceCenterWeb/obj/Debug
+/NUnit.TestFramework/bin/Debug
+/NUnit.TestFramework/obj/Debug
+/packages
