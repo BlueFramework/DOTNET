@@ -44,6 +44,7 @@
     <Compile Include="Config\UrlConfigManage.cs" />
     <Compile Include="Config\UrlConfig.cs" />
     <Compile Include="DataAccess\UserAccess.cs" />
+    <Compile Include="DataAccess\UserLogAccess.cs" />
     <Compile Include="Models\Guest.cs" />
     <Compile Include="Models\IUser.cs" />
     <Compile Include="Models\LogInfo.cs" />

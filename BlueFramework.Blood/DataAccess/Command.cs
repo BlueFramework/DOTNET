@@ -116,6 +116,14 @@ namespace BlueFramework.Blood.DataAccess
             db.AddInParameter(dbCommand, "value", DbType.String, objectId);
             return dbCommand;
         }
+
+        private DbCommand BuildCommand(EntityConfig config,params CommandParameter[] parameters)
+        {
+            string sql = FormatSql(config);
+            DbCommand dbCommand = db.GetSqlStringCommand(sql);
+      
+            return dbCommand;
+        }
         #endregion
     }
 }
