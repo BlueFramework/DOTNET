@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlueFramework.User.Config
 {
-    class UrlConfigManage
+    public class UrlConfigManage
     {
     }
 }
