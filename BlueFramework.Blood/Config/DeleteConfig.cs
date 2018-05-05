@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace BlueFramework.Blood.Config
 {
-    class DeleteConfig
+    public class DeleteConfig:EntityConfig
     {
+        public DeleteConfig()
+        {
+            this.ConfigType = ConfigType.Delete;
+
+        }
     }
 }

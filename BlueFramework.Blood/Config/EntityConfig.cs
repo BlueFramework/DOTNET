@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace BlueFramework.Blood.Config
 {
+    
+    /// <summary>
+    /// command type
+    /// </summary>
+    public enum ConfigType
+    {
+        Select = 1,
+        Insert = 2,
+        Update = 3,
+        Delete = 4
+    }
+
     /// <summary>
     /// entity xml config
     /// </summary>
@@ -25,5 +37,7 @@ namespace BlueFramework.Blood.Config
         /// the type of input parameter
         /// </summary>
         public string InputParameterType { get; set; }
+
+        public ConfigType ConfigType { get; set; }
     }
 }

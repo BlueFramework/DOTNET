@@ -11,6 +11,10 @@ namespace BlueFramework.Blood.Config
     /// </summary>
     public class SelectConfig : EntityConfig
     {
+        public SelectConfig()
+        {
+            this.ConfigType = ConfigType.Select;
+        }
         /// <summary>
         /// the type of output parameter
         /// </summary>

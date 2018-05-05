@@ -79,8 +79,10 @@ namespace BlueFramework.Blood.Config
             {
                 SelectConfig selectCfg = new SelectConfig();
                 selectCfg.Id = node.Attributes["id"].Value;
-                selectCfg.InputParameterType = node.Attributes["parameterType"].Value;
-                selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
+                if(node.Attributes["parameterType"]!=null)
+                    selectCfg.InputParameterType = node.Attributes["parameterType"].Value;
+                if(node.Attributes["resultType"]!=null)
+                    selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
                 selectCfg.Sql = node.InnerText;
                 configs.Add(selectCfg);
             }
@@ -93,7 +95,29 @@ namespace BlueFramework.Blood.Config
             {
                 InsertConfig insertCfg = new InsertConfig();
                 insertCfg.Id = node.Attributes["id"].Value;
-                insertCfg.InputParameterType = node.Attributes["parameterType"].Value;
+                if(node.Attributes["parameterType"]!=null)
+                    insertCfg.InputParameterType = node.Attributes["parameterType"].Value;
+                XmlNode keyNode = node.SelectSingleNode("selectKey");
+                if (keyNode != null)
+                {
+                    insertCfg.KeyProperty = keyNode.Attributes["keyProperty"].Value;
+                    insertCfg.KeyPropertySql = keyNode.InnerText;
+                    switch (keyNode.Attributes["order"].Value.ToUpper())
+                    {
+                        case "BEFOR":
+                            insertCfg.KeyMadeOrder = IdentityMadeOrder.Befor;
+                            break;
+                        case "INSERTING":
+                            insertCfg.KeyMadeOrder = IdentityMadeOrder.Inserting;
+                            break;
+                        case "AFTER":
+                            insertCfg.KeyMadeOrder = IdentityMadeOrder.After;
+                            break;
+                        default:
+                            insertCfg.KeyMadeOrder = IdentityMadeOrder.Undefine;
+                            break;
+                    }
+                }
                 //selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
                 insertCfg.Sql = node.InnerText;
                 configs.Add(insertCfg);
@@ -107,7 +131,8 @@ namespace BlueFramework.Blood.Config
             {
                 UpdateConfig updateCfg = new UpdateConfig();
                 updateCfg.Id = node.Attributes["id"].Value;
-                updateCfg.InputParameterType = node.Attributes["parameterType"].Value;
+                if(node.Attributes["parameterType"]!=null)
+                    updateCfg.InputParameterType = node.Attributes["parameterType"].Value;
                 //selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
                 updateCfg.Sql = node.InnerText;
                 configs.Add(updateCfg);

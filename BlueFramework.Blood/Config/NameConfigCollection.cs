@@ -46,9 +46,9 @@ namespace BlueFramework.Blood.Config
                 EntityConfig ec;
                 bool find = configs.TryGetValue(name, out ec);
                 if (find)
-                    return null;
-                else
                     return ec;
+                else
+                    return null;
             }
 
         }

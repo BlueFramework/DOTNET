@@ -10,10 +10,12 @@ using BlueFramework.Data;
 
 namespace BlueFramework.Blood.DataAccess
 {
-    public class Command
+    public class Command:IDisposable
     {
         DatabaseProviderFactory factory;
         Database db;
+        DbTransaction dbTransaction = null;
+        DbConnection dbConnection = null;
         public Command()
         {
             factory = new DatabaseProviderFactory();
@@ -55,7 +57,12 @@ namespace BlueFramework.Blood.DataAccess
             // remove property where it is not exist
             for(int i = 0; i < properties.Count; i++)
             {
-
+                bool isExist = dt.Columns.IndexOf(properties[i].Name) !=-1 ? true : false;
+                if (!isExist)
+                {
+                    properties.RemoveAt(i);
+                    i--;
+                }
             }
             // freach properties
             List<T> objects = new List<T>();
@@ -71,6 +78,13 @@ namespace BlueFramework.Blood.DataAccess
             return objects;
         }
 
+        /// <summary>
+        /// get config's object by  object value
+        /// </summary>
+        /// <typeparam name="T">entity template</typeparam>
+        /// <param name="config">config</param>
+        /// <param name="objectId">query value or entity id</param>
+        /// <returns></returns>
         public T Select<T>(EntityConfig config, object objectId)
         {
             DbCommand dbCommand = BuildCommand(config, objectId);
@@ -88,42 +102,276 @@ namespace BlueFramework.Blood.DataAccess
             {
                 return default(T);
             }
-
         }
 
-        public object Select<T>(EntityConfig config, CommandParameter[] parameters)
+        /// <summary>
+        /// Get config's objects by input parameters
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public List<T> Select<T>(EntityConfig config, CommandParameter[] parameters)
         {
-            return null;
+            DbCommand dbCommand = BuildCommand(config, parameters);
+            try
+            {
+                List<T> list = new List<T>();
+                using (DataSet ds = db.ExecuteDataSet(dbCommand))
+                {
+                    DataTable dt = ds.Tables[0];
+                    list = LoadEntities<T>(dt);
+                }
+                return list;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public bool Insert(EntityConfig config)
+        private CommandParameter[] BuildCommandParameters(object o, PropertyInfo[] properties)
         {
-            return false;
+            CommandParameter[] parameters = new CommandParameter[properties.Length];
+            for (int i = 0; i < properties.Length; i++)
+            {
+                PropertyInfo property = properties[i];
+                CommandParameter parameter = new CommandParameter(property.Name, property.GetValue(o), property.PropertyType);
+                parameters[i] = parameter;
+            }
+            return parameters;
         }
 
-        #region sql format
-        private string FormatSql(EntityConfig config)
+        public T Insert<T>(InsertConfig config,T insertObject)
         {
-            string parameterName = db.BuildParameterName("value");
-            string sql = config.Sql.Replace("#{value}", parameterName);
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            CommandParameter[] parameters = BuildCommandParameters(insertObject, properties);
+            DbCommand dbCommand = BuildInsertCommand(config, parameters);
+            int insertCount = 0;
+            if (dbTransaction == null)
+            {
+                try
+                {
+
+                    insertCount = db.ExecuteNonQuery(dbCommand);
+                }
+                catch
+                {
+                    insertCount = 0;
+                }
+            }
+            else
+            {
+                insertCount = db.ExecuteNonQuery(dbCommand, dbTransaction);
+            }
+            if (insertCount>0 && !string.IsNullOrEmpty(config.KeyProperty))
+            {
+                PropertyInfo propertyInfo = properties.FirstOrDefault(o => o.Name == config.KeyProperty);
+                propertyInfo.SetValue(insertObject, dbCommand.Parameters[0].Value);
+            }
+            return insertCount > 0 ? insertObject : default(T);
+        }
+
+        public bool Update<T>(UpdateConfig config,T updateObject)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            CommandParameter[] parameters = BuildCommandParameters(updateObject, properties);
+            DbCommand dbCommand = BuildCommand(config, parameters);
+            bool pass = true;
+            if (dbTransaction == null)
+            {
+                try
+                {
+
+                    db.ExecuteNonQuery(dbCommand);
+                }
+                catch
+                {
+                    pass = false;
+                }
+            }
+            else
+            {
+                db.ExecuteNonQuery(dbCommand, dbTransaction);
+            }
+            return pass;
+        }
+
+        public bool Delete(DeleteConfig config,object objectId)
+        {
+            DbCommand dbCommand = BuildCommand(config, objectId);
+            bool pass = true;
+            if (dbTransaction == null)
+            {
+                try
+                {
+                    db.ExecuteNonQuery(dbCommand);
+                }
+                catch
+                {
+                    pass = false;
+                }
+            }
+            else
+            {
+                db.ExecuteNonQuery(dbCommand,dbTransaction);
+            }
+            return pass;
+        }
+
+
+
+        public void BeginTransaction()
+        {
+            dbConnection = db.CreateConnection();
+            dbConnection.Open();
+            dbTransaction = dbConnection.BeginTransaction();
+           
+        }
+
+        public void RollbackTransaction()
+        {
+            dbTransaction.Rollback();
+            
+        }
+
+        public void CommitTransaction()
+        {
+            dbTransaction.Commit();
+        }
+
+        #region build command 
+        private string FormatSql(EntityConfig config,object objectId)
+        {
+            CommandParameter[] parameters = { new CommandParameter() { ParameterName="value",ParameterValue=objectId } };
+            return FormatSql(config, parameters);
+        }
+
+        private string FormatSql(EntityConfig config, CommandParameter[] parameters)
+        {
+            string sql = config.Sql;
+            if(parameters!=null)
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                CommandParameter parameter = parameters[i];
+                string parameterName = db.BuildParameterName(parameter.ParameterName);
+                sql = sql.Replace("#{"+parameter.ParameterName+"}", parameterName);
+                string parameterValue = string.Empty;
+                if (parameter.ParameterValue != null)
+                {
+                    parameterValue = parameter.ParameterValue.ToString();
+                }
+                sql = sql.Replace("${"+parameter.ParameterName+"}", parameterValue);
+            }
             return sql;
         }
 
         private DbCommand BuildCommand(EntityConfig config, object objectId)
         {
-            string sql = FormatSql(config);
+            string sql = FormatSql(config,objectId);
             DbCommand dbCommand = db.GetSqlStringCommand(sql);
             db.AddInParameter(dbCommand, "value", DbType.String, objectId);
             return dbCommand;
         }
 
-        private DbCommand BuildCommand(EntityConfig config,params CommandParameter[] parameters)
+        private DbCommand BuildCommand(EntityConfig config, params CommandParameter[] parameters)
         {
-            string sql = FormatSql(config);
+            string sql = FormatSql(config, parameters);
             DbCommand dbCommand = db.GetSqlStringCommand(sql);
-      
+            foreach (CommandParameter parameter in parameters)
+            {
+                db.AddInParameter(
+                    dbCommand,
+                    parameter.ParameterName, 
+                    GetDbType(parameter.ParameterType),
+                    parameter.ParameterValue);
+            }
             return dbCommand;
         }
+
+        private DbCommand BuildInsertCommand(InsertConfig config, params CommandParameter[] parameters)
+        {
+            string sql = FormatSql(config, parameters);
+            if(config.KeyMadeOrder== IdentityMadeOrder.Inserting)
+            {
+                sql = sql + " " + config.KeyPropertySql;
+            }
+            DbCommand dbCommand = db.GetSqlStringCommand(sql);
+            if (config.KeyMadeOrder == IdentityMadeOrder.Inserting)
+            {
+                foreach (CommandParameter parameter in parameters)
+                {
+                    if (parameter.ParameterName == config.KeyProperty)
+                    {
+                        db.AddOutParameter(
+                            dbCommand,
+                            parameter.ParameterName,
+                            GetDbType(parameter.ParameterType),
+                            32
+                        );
+                        break;
+                    }
+                }
+
+            }
+            foreach (CommandParameter parameter in parameters)
+            {
+                if (parameter.ParameterName != config.KeyProperty)
+                {
+                    db.AddInParameter(
+                        dbCommand,
+                        parameter.ParameterName,
+                        GetDbType(parameter.ParameterType),
+                        parameter.ParameterValue
+                    );
+                }
+            }
+            return dbCommand;
+        }
+
+        private DbType GetDbType(Type type)
+        {
+            DbType dbType = DbType.String;
+            switch (type.ToString())
+            {
+                case  "System.Int32":
+                    dbType = DbType.Int32;
+                    break;
+                case "System.Double":
+                    dbType = DbType.Double;
+                    break;
+                case "System.DateTime":
+                    dbType = DbType.DateTime;
+                    break;
+            }
+            return dbType;
+        }
+
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (dbConnection != null)
+                {
+                    dbConnection.Dispose();
+                    dbConnection = null;
+                }
+                if (dbTransaction != null)
+                {
+                    dbTransaction.Dispose();
+                    dbTransaction = null;
+                }
+                GC.SuppressFinalize(this);
+            }
+        }
     }
 }

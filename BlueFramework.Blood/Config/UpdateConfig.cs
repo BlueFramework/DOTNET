@@ -8,5 +8,10 @@ namespace BlueFramework.Blood.Config
 {
     public class UpdateConfig:EntityConfig
     {
+        public UpdateConfig()
+        {
+            this.ConfigType = ConfigType.Update;
+
+        }
     }
 }

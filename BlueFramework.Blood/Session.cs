@@ -34,15 +34,16 @@ namespace BlueFramework.Blood
             Config.ConfigManagent.Init();
         }
 
-        public static object GetObject<T>(string selectId,object objectId)
+        /// <summary>
+        /// create db context
+        /// </summary>
+        /// <returns></returns>
+        public static EntityContext CreateContext()
         {
-            EntityConfig config = ConfigManagent.Configs[selectId];
-            Command command = new Command();
-            object o = command.Select<T>(config, objectId);
-            if (o == null)
-                return null;
-            else
-                return (T)o;
+            EntityContext context = new EntityContext();
+            return context;
         }
+
+        
     }
 }
