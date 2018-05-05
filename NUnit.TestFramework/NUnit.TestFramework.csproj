@@ -44,6 +44,7 @@
     <Compile Include="Config\ConfigManagentTests.cs" />
     <Compile Include="DataAccess\CommandTests.cs" />
     <Compile Include="DatabaseTests.cs" />
+    <Compile Include="EntityContextTests.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
