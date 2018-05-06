@@ -23,11 +23,15 @@ namespace BlueFramework.Blood.Tests
         public void SaveTest()
         {
             bool pass = true;
+            // init是系统加载时初始化加载，这里不用写，只需要加载一次
             Session.Init();
+            // 过程如下
+            // 1 创建上下文context
             using (EntityContext context = Session.CreateContext())
             {
                 try
                 {
+                    // 如果是事务，BeginTransaction
                     context.BeginTransaction();
                     for(int i = 1; i <= 5; i++)
                     {
@@ -37,12 +41,13 @@ namespace BlueFramework.Blood.Tests
                         };
                         context.Save<UserInfo>("test.insertUser", ui);
                     }
-
+                    // 如果是事务，结束Commit
                     context.Commit();
 
                 }
                 catch(Exception ex)
                 {
+                    // 如果是事务，异常Rollback
                     context.Rollback();
                     pass = false;
                 }
