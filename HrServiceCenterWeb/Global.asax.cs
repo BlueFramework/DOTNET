@@ -17,7 +17,10 @@ namespace HrServiceCenterWeb
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            // refresh online users on 30s
             BlueFramework.User.Session.Initialize(1000 * 30);
+            // init orm
+            BlueFramework.Blood.Session.Init();
         }
     }
 }

@@ -272,7 +272,8 @@ namespace BlueFramework.Blood.DataAccess
         {
             string sql = FormatSql(config,objectId);
             DbCommand dbCommand = db.GetSqlStringCommand(sql);
-            db.AddInParameter(dbCommand, "value", DbType.String, objectId);
+            DbType dbType = GetDbType(objectId.GetType());
+            db.AddInParameter(dbCommand, "value", dbType, objectId);
             return dbCommand;
         }
 

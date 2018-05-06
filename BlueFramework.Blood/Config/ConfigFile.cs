@@ -64,6 +64,7 @@ namespace BlueFramework.Blood.Config
             loadSelectConfigs(root, configs);
             loadInsertConfigs(root, configs);
             loadUpdateConfigs(root, configs);
+            loadDeleteConfigs(root, configs);
             // update full id
             foreach (EntityConfig config in configs)
             {
@@ -136,6 +137,21 @@ namespace BlueFramework.Blood.Config
                 //selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
                 updateCfg.Sql = node.InnerText;
                 configs.Add(updateCfg);
+            }
+        }
+
+        private void loadDeleteConfigs(XmlNode root, List<EntityConfig> configs)
+        {
+            XmlNodeList nodes = root.SelectNodes("delete");
+            foreach (XmlNode node in nodes)
+            {
+                DeleteConfig deleteCfg = new DeleteConfig();
+                deleteCfg.Id = node.Attributes["id"].Value;
+                if (node.Attributes["parameterType"] != null)
+                    deleteCfg.InputParameterType = node.Attributes["parameterType"].Value;
+                //selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
+                deleteCfg.Sql = node.InnerText;
+                configs.Add(deleteCfg);
             }
         }
     }

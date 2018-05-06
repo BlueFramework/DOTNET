@@ -19,6 +19,79 @@ namespace BlueFramework.Blood.Tests
             //Assert.Fail();
         }
 
+        
+        [Test()]
+        public void InsertTest()
+        {
+            // init是系统加载时初始化加载，这里不用写，只需要加载一次
+            Session.Init();
+            // 下面是非事务插入单个数据对象
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    UserInfo ui = new UserInfo()
+                    {
+                        UserName = "single user object",
+                        Birthday = DateTime.Now,
+                        Sex="UNKNOW"
+                    };
+                    context.Save<UserInfo>("test.insertUser", ui);
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        [Test()]
+        public void UpdateTest()
+        {
+            // init是系统加载时初始化加载，这里不用写，只需要加载一次
+            Session.Init();
+            // 下面是非事务保存单个数据对象
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    UserInfo ui = new UserInfo()
+                    {
+                        UserId = 1,
+                        UserName = "XY-UPDATE",
+                        Birthday = DateTime.Now,
+                        Sex = "男",
+                        Address="update address"
+
+                    };
+                    context.Save<UserInfo>("test.updateUser", ui);
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        [Test()]
+        public void DeleteTest()
+        {
+            // init是系统加载时初始化加载，这里不用写，只需要加载一次
+            Session.Init();
+            // 下面是非事务插入单个数据对象
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    context.Delete("test.deleteUserBySex", "UNKNOW");
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
         [Test()]
         public void SaveTest()
         {
@@ -53,13 +126,6 @@ namespace BlueFramework.Blood.Tests
                 }
             }
             Assert.IsTrue(pass);
-            //Assert.Fail();
-        }
-
-        [Test()]
-        public void DeleteTest()
-        {
-            Assert.Pass("passed");
             //Assert.Fail();
         }
 

@@ -83,7 +83,7 @@ namespace NUnit.Tests1
             
             DatabaseProviderFactory factory = new DatabaseProviderFactory();
             BlueFramework.Data.Database db = factory.CreateDefault();
-            DataSet ds = db.ExecuteDataSet(CommandType.Text, "select * from SAUser");
+            DataSet ds = db.ExecuteDataSet(CommandType.Text, "select * from [USER]");
             Assert.IsNotNull(ds);
         }
 

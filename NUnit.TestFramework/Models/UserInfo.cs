@@ -15,5 +15,7 @@ namespace NUnit.Tests1.Models
         public string Address { get; set; }
 
         public DateTime Birthday { get; set; }
+
+        public string Sex { get; set; }
     }
 }

@@ -77,7 +77,23 @@ namespace BlueFramework.Blood.DataAccess.Tests
         [Test()]
         public void InsertTest()
         {
-            Assert.Fail();
+            UserInfo userInfo = new UserInfo()
+            {
+                UserName = "XY",
+                Birthday = DateTime.Now
+            };
+            InsertConfig config = new InsertConfig
+            {
+                Id = "test.insertUser",
+                Sql = "insert into [user](username,birthday,address) values(#{UserName},#{Birthday},#{Address})",
+                KeyProperty = "UserId",
+                KeyMadeOrder = IdentityMadeOrder.Inserting,
+                KeyPropertySql = "select @UserId=@@IDENTITY"
+
+            };
+            Command command = new Command();
+            UserInfo o = command.Insert<UserInfo>(config, userInfo);
+            Assert.IsNotNull(o);
         }
 
         [Test()]
