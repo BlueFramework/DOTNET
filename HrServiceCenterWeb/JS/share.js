@@ -2,9 +2,9 @@
  * ultrapower share.js
  * date：2016/03/29
 */
-window.UP = {
+window.HR = {
     __namespace: true,
-    __typeName: "UP",
+    __typeName: "HR",
     __ispostback:false,
     __return: null,
     lastQueryPageURL:"",
@@ -32,7 +32,7 @@ window.UP = {
     },
     getLastQueryPage: function () {
         var top = this.getTop();
-        return top.UP.lastQueryPageURL;
+        return top.HR.lastQueryPageURL;
     },
     dispose:function(){
     },
@@ -41,7 +41,7 @@ window.UP = {
 /* 
  * ultrapower datetime
  */
-UP.Date = function UP$Date(datetime) {
+HR.Date = function HR$Date(datetime) {
     if (datetime == null) {
         datetime = new Date();
     }
@@ -74,7 +74,7 @@ UP.Date = function UP$Date(datetime) {
 /* 
  ultrapower hashmap
  */
-UP.HashMap = function UP$HashMap(){
+HR.HashMap = function HR$HashMap(){
     var size = 0;
     var dics = new Object();
     this.push = function(key, value) {
@@ -124,25 +124,25 @@ UP.HashMap = function UP$HashMap(){
         dics = new Object();
     }
 }
-UP.Dialog = function UP$Dialog(){
+HR.Dialog = function HR$Dialog(){
     ///<summary>对话框</summary>
 }
-UP.Dialog.show = function UP$Dialog$show(url,afterEvent,style){
+HR.Dialog.show = function HR$Dialog$show(url,afterEvent,style){
     // add code
 };
-UP.Dialog.close = function (){
+HR.Dialog.close = function (){
     // add code
 }
-UP.Dialog.finish = function (ds){
+HR.Dialog.finish = function (ds){
     // add code
 
 }
-UP.Dialog.callMethod = function (ds){
+HR.Dialog.callMethod = function (ds){
     // add code
 }
-UP.Form = function UP$Form() {
+HR.Form = function HR$Form() {
 }
-UP.Form.getValues = function (elementid) {
+HR.Form.getValues = function (elementid) {
     var obj = {};
     var form = $('#'+elementid);
     var fields = form.find('[form-field-name]');
@@ -183,7 +183,7 @@ UP.Form.getValues = function (elementid) {
     }
     return obj;
 }
-UP.Form.setValues = function (elementid, o) {
+HR.Form.setValues = function (elementid, o) {
     
     var form = $('#'+elementid);
     var fields = form.find('[form-field-name]');
@@ -224,7 +224,7 @@ UP.Form.setValues = function (elementid, o) {
  * @callback 回调方法
  * @ansync 是否异步调用,如果ansync为异步则可以不用定义callback
  */
-UP.Form.bindCombox = function (elementid, url, callback, ansync) {
+HR.Form.bindCombox = function (elementid, url, callback, ansync) {
     if (ansync == null) ansync = true;
     $.ajax({
         url: url,
@@ -246,10 +246,10 @@ UP.Form.bindCombox = function (elementid, url, callback, ansync) {
 }
 
 
-UP.Loader = function UP$Loader(){
+HR.Loader = function HR$Loader(){
 }
-UP.Loader.time = 0;
-UP.Loader.show = function UP$Loader$Show(text){
+HR.Loader.time = 0;
+HR.Loader.show = function HR$Loader$Show(text){
     var ele = $('#up_loading_top');
     if (ele.length == 0) {
         var width = 160;
@@ -284,18 +284,18 @@ UP.Loader.show = function UP$Loader$Show(text){
     }
     else{
     }
-    UP.Loader.time++;
+    HR.Loader.time++;
     ele.show();
 }
-UP.Loader.hide = function UP$Loader$Hide(){
-    if(UP.Loader.time>0)
-        UP.Loader.time--;
-    if( UP.Loader.time == 0 ){
+HR.Loader.hide = function HR$Loader$Hide(){
+    if(HR.Loader.time>0)
+        HR.Loader.time--;
+    if( HR.Loader.time == 0 ){
         $('#up_loading_bg').hide();
         $('#up_loading_top').hide();
     }  
 }
-UP.DownFile = function UP$DownFile(url,params){
+HR.DownFile = function HR$DownFile(url,params){
     var downloadHelper = $('<iframe style="display:none;" id="downloadHelper"></iframe>').appendTo('body')[0];
     var doc = downloadHelper.contentWindow.document;
     if (doc) {
@@ -311,17 +311,17 @@ UP.DownFile = function UP$DownFile(url,params){
         doc.close();
         var form = doc.forms[0];
         if (form) {
-            UP.Loader.show();
+            HR.Loader.show();
             form.submit();
             var icount = setInterval(function(){
                 try{
                     if(doc.readyState != 'loading'){  
-                        UP.Loader.hide();
+                        HR.Loader.hide();
                         clearTimeout(icount);
                     }
                 }
                 catch(err){
-                    UP.Loader.hide();
+                    HR.Loader.hide();
                     clearTimeout(icount);
                     alert("导出过程中发生未知错误，导出失败！");
                 }
@@ -331,35 +331,35 @@ UP.DownFile = function UP$DownFile(url,params){
     }
 }
 /* echart method */
-UP.EChart = function UP$EChart() {
+HR.EChart = function HR$EChart() {
 }
 // load echart
-UP.EChart.load = function UP$EChart$load(elementId,option) {
+HR.EChart.load = function HR$EChart$load(elementId,option) {
     var chart = echarts.init(document.getElementById(elementId));
     chart.setOption(option);
 }
 /* ajax queue method  */
-UP.Ajax = function UP$Ajax() {
+HR.Ajax = function HR$Ajax() {
 }
-UP.Ajax.queue = new Array();
-UP.Ajax.index = -1;
-UP.Ajax.clear = function UP$Ajax$clear(){
-    UP.Ajax.queue = new Array();
-    UP.Ajax.index = 0
+HR.Ajax.queue = new Array();
+HR.Ajax.index = -1;
+HR.Ajax.clear = function HR$Ajax$clear(){
+    HR.Ajax.queue = new Array();
+    HR.Ajax.index = 0
 }
-UP.Ajax.add = function UP$Ajax$add(url,params,callback) {
+HR.Ajax.add = function HR$Ajax$add(url,params,callback) {
     var thread = {
         url:url,
         params:params,
         callback:callback
     };
-    UP.Ajax.queue[UP.Ajax.Queue.length] = thread;
+    HR.Ajax.queue[HR.Ajax.Queue.length] = thread;
 }
 // default/onebyone/timeout
-UP.Ajax.load = function UP$Ajax$load(type) {
-    var queue = UP.Ajax.queue;
+HR.Ajax.load = function HR$Ajax$load(type) {
+    var queue = HR.Ajax.queue;
     if( type=='onebyone' ){
-        UP.Ajax.load_onebyone(queue[0]);
+        HR.Ajax.load_onebyone(queue[0]);
         return;
     }
     if( type=='timeout' ){
@@ -371,12 +371,12 @@ UP.Ajax.load = function UP$Ajax$load(type) {
     if( typeof(type) == 'undefined' || type == null ){
         for(var i=0;i<queue.length;i++){
             var thread = queue[i];
-            UP.Ajax.load_default(thread);
+            HR.Ajax.load_default(thread);
         }
         return;
     }
 }
-UP.Ajax.load_default = function UP$Ajax$load_default(thread){
+HR.Ajax.load_default = function HR$Ajax$load_default(thread){
     $.ajax({
         url: thread.url,
         type: "POST",
@@ -384,8 +384,8 @@ UP.Ajax.load_default = function UP$Ajax$load_default(thread){
         data: thread.params,
         success: function (data){
             eval(thread.callback + '(data)');
-            UP.Ajax.index++;
-            if( UP.Ajax.index == UP.Ajax.queue.length ){
+            HR.Ajax.index++;
+            if( HR.Ajax.index == HR.Ajax.queue.length ){
                 // hiden loading
             }
         },
@@ -394,10 +394,10 @@ UP.Ajax.load_default = function UP$Ajax$load_default(thread){
         }
     });
 }
-UP.Ajax.load_timeout = function UP$Ajax$load_timeout(){
+HR.Ajax.load_timeout = function HR$Ajax$load_timeout(){
 
 }
-UP.Ajax.load_onebyone = function UP$Ajax$load_onebyone(thread){
+HR.Ajax.load_onebyone = function HR$Ajax$load_onebyone(thread){
     $.ajax({
         url: thread.url,
         type: "POST",
@@ -405,13 +405,13 @@ UP.Ajax.load_onebyone = function UP$Ajax$load_onebyone(thread){
         data: thread.params,
         success: function (data){
             eval(thread.callback + '(data)');
-            UP.Ajax.index++;
-            if( UP.Ajax.index == UP.Ajax.queue.length ){
+            HR.Ajax.index++;
+            if( HR.Ajax.index == HR.Ajax.queue.length ){
                 // hiden loading
-                UP.Ajax.queue = new Array();
+                HR.Ajax.queue = new Array();
             }
             else{
-                UP.Ajax.load_onebyone(UP.Ajax.queue[UP.Ajax.index]);
+                HR.Ajax.load_onebyone(HR.Ajax.queue[HR.Ajax.index]);
             }
         },
         error: function (){
