@@ -111,7 +111,7 @@ namespace BlueFramework.Blood.DataAccess
         /// <param name="config"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public List<T> Select<T>(EntityConfig config, CommandParameter[] parameters)
+        public List<T> SelectList<T>(EntityConfig config, CommandParameter[] parameters)
         {
             DbCommand dbCommand = BuildCommand(config, parameters);
             try
@@ -281,6 +281,7 @@ namespace BlueFramework.Blood.DataAccess
         {
             string sql = FormatSql(config, parameters);
             DbCommand dbCommand = db.GetSqlStringCommand(sql);
+            if(parameters!=null)
             foreach (CommandParameter parameter in parameters)
             {
                 db.AddInParameter(
