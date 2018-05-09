@@ -21,6 +21,8 @@ namespace HrServiceCenterWeb
             BlueFramework.User.Session.Initialize(1000 * 30);
             // init orm
             BlueFramework.Blood.Session.Init();
+            // init hr cache
+            HrServiceCenterWeb.Manager.BaseCodeProvider.Init();
         }
     }
 }

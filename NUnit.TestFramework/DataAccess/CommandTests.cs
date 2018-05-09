@@ -108,7 +108,7 @@ namespace BlueFramework.Blood.DataAccess.Tests
                 new CommandParameter() { ParameterName="value",ParameterValue="S",ParameterType=typeof(System.String) }
             };
 
-            List<UserInfo> US = command.Select<UserInfo>(config, parameters);
+            List<UserInfo> US = command.SelectList<UserInfo>(config, parameters);
 
             Assert.IsNotNull(US);
         }

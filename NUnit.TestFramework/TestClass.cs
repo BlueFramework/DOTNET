@@ -19,16 +19,26 @@ namespace NUnit.Tests1
     }
 
     [TestFixture]
-    public class TestClass
+    public class TestStringClass
     {
         [Test]
         public void TestMethod()
         {
-            // TODO: Add your test code here
-            UserInfo ui = new UserInfo();
-            ui.UserId = 1;
-            ui.UserName = "test";
-            Assert.Pass("Your first passing test");
+            char[] vs1 = new char[] {'a','b' };
+            char[] vs2 = new char[] {'a','b' };
+
+            String a1 = new String(vs1);
+            String a2 = new String(vs2);
+            bool result = false;
+            if (a1 == a2)
+            {
+                result = true;
+            }
+            if (a1.Equals(a2))
+            {
+                result = true;
+
+            }
 
         }
 

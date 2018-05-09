@@ -110,6 +110,8 @@ namespace BlueFramework.User
 
         public VisitorAction PopAction(string actionId)
         {
+            if (string.IsNullOrEmpty(actionId))
+                return null;
             VisitorAction action;
             if (lastActions.TryGetValue(actionId, out action))
             {
