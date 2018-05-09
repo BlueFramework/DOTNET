@@ -26,5 +26,45 @@ namespace BlueFramework.User.DataAccess
             return userInfo;
             
         }
+
+        public bool AddAccount(UserInfo user)
+        {
+            return false ;
+        }
+
+        public bool Delete(UserInfo user)
+        {
+            return false;
+        }
+
+        public UserInfo GetUserByName(string userName)
+        {
+            return null;
+        }
+
+        public UserInfo QueryUserById(int userId)
+        {
+            return null;
+        }
+
+        public UserInfo GetUser(string userName)
+        {
+            return null;
+        }
+
+        public bool ChangePwd(int userID,string pwd)
+        {
+            return false;
+        }
+
+        public bool UpdateUser(UserInfo user)
+        {
+            return false;
+        }
+
+        public List<UserInfo> GetUsers(UserInfo user)
+        {
+            return null;
+        }
     }
 }
