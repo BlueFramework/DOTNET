@@ -18,11 +18,16 @@ namespace BlueFramework.User
 
         public UserInfo GetUser(string userName)
         {
-            return GetUser(1);
+            UserAccess userDao = new UserAccess();
+            return userDao.GetUserByName(userName);
         }
 
         public bool ValidatePassword(string userName, string password)
         {
+            UserAccess userDao = new UserAccess();
+            UserInfo user= userDao.GetUserByName(userName);
+            if(user.Password== password)
+            { }
             return true;
         }
     }

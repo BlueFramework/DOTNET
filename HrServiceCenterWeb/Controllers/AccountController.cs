@@ -7,14 +7,12 @@ using System.Web.Mvc;
 using System.Web.Security;
 using System.Configuration;
 using BlueFramework.User;
+using BlueFramework.User.Models;
 
 namespace HrServiceCenterWeb.Controllers
 {
     public class AccountController : Controller
     {
-        readonly string cookie_name = "UP_TESTANYSIS_NAME";
-        readonly string cookie_password = "UP_TESTANYSIS_PASSWORD";
-        readonly string cookie_remember = "UP_TESTANYSIS_REMEMBER";
 
         LoginModel lgmodel = new LoginModel();
 
@@ -34,7 +32,6 @@ namespace HrServiceCenterWeb.Controllers
         {
             try
             {
-
                 if (ModelState.IsValid)
                 {
                     UserContext.Login(model.UserName, model.Password);
@@ -53,6 +50,5 @@ namespace HrServiceCenterWeb.Controllers
                 return View(model);
             }
         }
-
     }
 }

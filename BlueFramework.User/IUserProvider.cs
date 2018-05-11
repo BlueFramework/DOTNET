@@ -16,5 +16,6 @@ namespace BlueFramework.User
         bool ModifyPassword(int userId, string password);
         bool UpdateAccount(UserInfo user, string oldName);
         List<UserInfo> GetUsers(UserInfo user);
+        UserInfo GetFullUserInfo(string userName);
     }
 }
