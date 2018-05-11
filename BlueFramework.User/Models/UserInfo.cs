@@ -21,7 +21,7 @@ namespace BlueFramework.User.Models
 
         public bool IsAdmin { get; set; }
 
-        public DateTime CreatTime { get; set; }
+        public string CreateTime { get; set; }
 
         public DateTime UpdateTime { get; set; }
 

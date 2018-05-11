@@ -60,7 +60,7 @@ namespace BlueFramework.User.DataAccess
                 user.Password = row["PASSWORD"].ToString();
                 user.OrgName = row["ORG_ID"].ToString();
                 user.TrueName = row["TRUENAME"].ToString();
-                user.CreatTime = DateTime.Parse(row["CREATE_TIME"].ToString());
+                user.CreateTime = DateTime.Parse(row["CREATE_TIME"].ToString()).ToShortDateString();
                 user.IsAdmin = (row["IsAdmin"].ToString() == "1") ? true : false;
             }
             return user;
@@ -88,7 +88,36 @@ namespace BlueFramework.User.DataAccess
 
         public List<UserInfo> GetUsers(UserInfo user)
         {
-            return null;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = @"SELECT T.*, A.ORG_NAME
+                          FROM T_S_USER T
+                           LEFT JOIN T_S_ORGANIZATION A
+                           ON T.ORG_ID = A.ORG_ID
+                           WHERE T.USERNAME <> 'ADMIN' ";
+            string whereStr = "";
+            if (!string.IsNullOrEmpty(user.UserName) && !string.IsNullOrEmpty(user.TrueName))
+            {
+                whereStr += "AND ( T.USERNAME LIKE '%" + user.UserName + "%' OR T.TRUENAME LIKE '%" + user.TrueName + "%') ";
+            }
+            whereStr += " order by userid";
+            sql += whereStr;
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            //database.AddInParameter(dbCommand, "userName", DbType.String, user.TrueName);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            List<UserInfo> users = new List<UserInfo>();
+            foreach (DataRow row in dt.Rows)
+            {
+                UserInfo ui = new UserInfo();
+                ui.UserId= int.Parse(row["USERID"].ToString());
+                ui.UserName=row["UserName"].ToString();
+                ui.TrueName = row["TrueName"].ToString();
+                ui.CreateTime= DateTime.Parse(row["CREATE_TIME"].ToString()).ToShortDateString();
+                ui.OrgName= row["ORG_NAME"].ToString();
+                users.Add(ui);
+            }
+            return users;
         }
     }
 }
