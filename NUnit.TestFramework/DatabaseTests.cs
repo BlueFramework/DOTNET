@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Data.Common;
 
 namespace NUnit.Tests1
 {
@@ -108,7 +109,19 @@ namespace NUnit.Tests1
         [Test()]
         public void ExecuteNonQueryTest()
         {
+            string sql = "insert into [USER](username) VALUES('DDDD')";
 
+            Database database = new DatabaseProviderFactory().CreateDefault();
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            try
+            {
+                int result = database.ExecuteNonQuery(dbCommand);
+                Assert.IsTrue(result > 0);
+            }
+            catch(Exception ex)
+            {
+                Assert.Fail();
+            }
         }
 
         [Test()]
