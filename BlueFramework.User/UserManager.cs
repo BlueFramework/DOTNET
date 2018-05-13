@@ -150,9 +150,12 @@ namespace BlueFramework.User
         /// <returns>成功返回true</returns>
         public int UpdateAccount(UserInfo user, string oldName)
         {
-            if (string.IsNullOrEmpty(GetUserByName(user.UserName).UserName) && user.UserName == oldName)
+            if (!string.IsNullOrEmpty(GetUserByName(user.UserName).UserName))
             {
-                return -1;
+                if (user.UserName != oldName)
+                {
+                    return -1;
+                }
             }
             return ua.UpdateUser(user);
         }

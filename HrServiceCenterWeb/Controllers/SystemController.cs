@@ -158,6 +158,76 @@ namespace HrServiceCenterWeb.Controllers
             return Json(RoleManager.Instance.GetRoleList(role));
         }
 
+        //
+        //GET:AddRole
+
+        [HttpPost]
+        public ActionResult AddRole(RoleInfo role)
+        {
+            int result = RoleManager.Instance.AddOnlyRole(role);
+            string msg = string.Empty;
+            switch (result)
+            {
+                case -1:
+                    msg = "该角色名已存在";
+                    break;
+                case 1:
+                    msg = "新增成功";
+                    break;
+                case 0:
+                    msg = "新增失败";
+                    break;
+            }
+            return Json(msg);
+        }
+
+        //
+        //GET:DeleteRole
+
+        public ActionResult DeleteRole(RoleInfo role)
+        {
+            string msg = string.Empty;
+            if (RoleManager.Instance.DeleteRole(role))
+            {
+                msg = "删除成功";
+            }
+            else
+            {
+                msg = "删除失败";
+            }
+            return Json(msg);
+        }
+
+        //
+        //GET:LoadRole
+
+        public ActionResult LoadRole(RoleInfo role)
+        {
+            return Json(RoleManager.Instance.GetRoleByRoleId(role.RoleId));
+        }
+
+        //
+        //GET:
+
+        public ActionResult UpdateOnlyRole(RoleInfo role,string oldName)
+        {
+            int result = RoleManager.Instance.UpdateOnlyRole(role,oldName);
+            string msg = string.Empty;
+            switch (result)
+            {
+                case -1:
+                    msg = "该角色名已存在";
+                    break;
+                case 1:
+                    msg = "修改成功";
+                    break;
+                case 0:
+                    msg = "修改失败";
+                    break;
+            }
+            return Json(msg);
+        }
+
         #endregion
     }
 }

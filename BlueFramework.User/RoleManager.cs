@@ -108,6 +108,20 @@ namespace BlueFramework.User
         }
 
         /// <summary>
+        /// 角色添加操作（不包括分组）
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public int AddOnlyRole(RoleInfo role)
+        {
+            if (role.RoleName == GetRoleByRoleName(role.RoleName).RoleName)
+            {
+                return -1;
+            }
+            return sysAccess.AddOnlyRole(role);
+        }
+
+        /// <summary>
         /// 删除角色信息
         /// </summary>
         /// <param name="roleId">角色ID</param>
@@ -125,6 +139,24 @@ namespace BlueFramework.User
         public int[] GetGrouping(int roleId)
         {
             return sysAccess.GetGrouping(roleId);
+        }
+
+        /// <summary>
+        /// 更新角色信息
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="oldName"></param>
+        /// <returns></returns>
+        public int UpdateOnlyRole(RoleInfo role ,string oldName)
+        {
+            if (!string.IsNullOrEmpty(GetRoleByRoleName(role.RoleName).RoleName))
+            {
+                if (role.RoleName != oldName)
+                {
+                    return -1;
+                }
+            }
+            return sysAccess.UpdateOnlyRole(role);
         }
     }
 }

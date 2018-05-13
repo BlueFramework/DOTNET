@@ -1,5 +1,7 @@
 ﻿var RoleManageOpt = window.NameSpace || {};
 
+var oldRoleName;
+
 function init() {
     RoleManageOpt.Query();
     $('#edit').window({
@@ -44,52 +46,18 @@ RoleManageOpt.Query = function () {
     });
 }
 
-RoleManageOpt.PagerFilter = function (data) {
-    if (typeof data.length == 'number' && typeof data.splice == 'function') {	// is array
-        data = {
-            total: data.length,
-            rows: data
-        }
-    }
-    var dg = $(this);
-    var opts = dg.datagrid('options');
-    var pager = dg.datagrid('getPager');
-    pager.pagination({
-        onSelectPage: function (pageNum, pageSize) {
-            opts.pageNumber = pageNum;
-            opts.pageSize = pageSize;
-            pager.pagination('refresh', {
-                pageNumber: pageNum,
-                pageSize: pageSize
-            });
-            dg.datagrid('loadData', data);
-        }
-    });
-    if (!data.originalRows) {
-        data.originalRows = (data.rows);
-    }
-    var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
-    var end = start + parseInt(opts.pageSize);
-    data.rows = (data.originalRows.slice(start, end));
-    return data;
-}
-
 //删除操作
 RoleManageOpt.Delete = function (id) {
     $.messager.confirm('删除角色', '您确认删除吗?', function (event) {
         if (event) {
             $.ajax({
-                url: '../SysManage/DeleteRole',
+                url: '../System/DeleteRole',
                 type: 'POST',
                 datatype: 'json',
                 data: { RoleId: id },
                 success: function (data) {
                     RoleManageOpt.Query();
-                    if (data == "0") {
-                        $.messager.alert('失败', '删除失败', 'error');
-                    } else {
-                        $.messager.alert('成功', '删除成功');
-                    }
+                    $.messager.alert('失败', data);
                 },
                 error: function (data) {
                     $.messager.alert('失败', '删除失败', 'error');
@@ -119,14 +87,15 @@ RoleManageOpt.EditRole = function (id) {
 RoleManageOpt.LoadRole = function () {
     $.ajax({
         type: 'POST',
-        url: "../SysManage/LoadRole",
+        url: "../System/LoadRole",
         async: false,
         data: {
             RoleId: $("#roleId").val()
         },
         dataType: "json",
         success: function (result) {
-            UP.Form.setValues('edit', result);
+            HR.Form.setValues('edit', result);
+            oldRoleName = $("#txtName").val();
         }
     });
 }
@@ -135,10 +104,13 @@ RoleManageOpt.LoadRole = function () {
 RoleManageOpt.EditRoleBtn = function () {
     var success = $("#edit").form('validate');//验证
     if (success) {
-        var Url = "../SysManage/AddRole";
-        if ($("#roleId").val() != "0")
-            Url = "../SysManage/EditRole";
-        var obj = UP.Form.getValues('edit');
+        if ($("#roleId").val() != "0") {
+            Url = "../System/UpdateOnlyRole?oldName=" + oldRoleName;
+        }
+        else {
+            var Url = "../System/AddRole";
+        }
+        var obj = HR.Form.getValues('edit');
         $.ajax({
             type: 'POST',
             url: Url,
@@ -146,19 +118,14 @@ RoleManageOpt.EditRoleBtn = function () {
             dataType: "json",
             success: function (result) {
                 $('#edit').window('close');
-                if (result == "2")
-                    $.messager.alert('提示', '操作失败，该角色已经存在', 'error');
-                else if (result == "1")
-                    $.messager.alert('提示', '操作成功！');
-                else
-                    $.messager.alert('提示', '操作失败，请重试！', 'error');
+                $.messager.alert('提示', result);
                 RoleManageOpt.Query();
             }
         });
     }
 }
 
-//编辑列【
+//编辑列
 function formatActions(val, row) {
     var name = "'" + row.RoleName + "'";
     var id = row.RoleId;
@@ -168,8 +135,8 @@ function formatActions(val, row) {
     //var menu = '<span title="分配功能" style="margin-left:20px;"><a href="../SysManage/PowersPage?RoleId=' + id + '" onclick=""><i class="fa fa-briefcase fa-lg" aria-hidden="true"></i></a></span>';
     var menu = '<span title="分配功能" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.InitTreeData(' + id + ')"><i class="fa fa-briefcase fa-lg" aria-hidden="true"></i></a></span>';
     //var data = '<span title="分配地市" style="margin-left:20px;"><a href="../SysManage/DatasPage?RoleId=' + id + '" onclick=""><i class="fa fa-globe fa-lg" aria-hidden="true"></i></a></span>';
-    var data = '<span title="分配地市" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.RightGridData(' + id + ')"><i class="fa fa-globe fa-lg" aria-hidden="true"></i></a></span>';
-    var html = '<div style="margin:0 auto; display: inline-block !important; display: inline;">' + edit + group + menu + data + deletes + '</div>';
+    //var data = '<span title="分配地市" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.RightGridData(' + id + ')"><i class="fa fa-globe fa-lg" aria-hidden="true"></i></a></span>';
+    var html = '<div style="margin:0 auto; display: inline-block !important; display: inline;">' + edit + group + menu + deletes + '</div>';
     return html;
 }
 
