@@ -30,5 +30,11 @@ namespace BlueFramework.User
             { }
             return true;
         }
+
+        public List<OrgnizationInfo> GetOrgnizations()
+        {
+            UserAccess userDao = new UserAccess();
+            return userDao.GetOrgnizations();
+        }
     }
 }

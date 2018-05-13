@@ -32,6 +32,11 @@ namespace BlueFramework.User.Models
         public string OrgName { get; set; }
 
         /// <summary>
+        /// user orgnization
+        /// </summary>
+        public OrgnizationInfo Orgnization { get; set; }
+
+        /// <summary>
         /// 用户状态
         /// </summary>
         public int State { get; set; }

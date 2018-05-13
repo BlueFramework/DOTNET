@@ -119,5 +119,40 @@ namespace BlueFramework.User.DataAccess
             }
             return users;
         }
+
+        /// <summary>
+        /// get orgniations
+        /// </summary>
+        /// <returns></returns>
+        public List<OrgnizationInfo> GetOrgnizations()
+        {
+            DataTable dataTable = null;
+            try
+            {
+                DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+                Database database = dbFactory.CreateDefault();
+                string sql = "select * from T_S_ORGANIZATION";
+                DataSet dataSet = database.ExecuteDataSet(CommandType.Text, sql);
+                dataTable = dataSet.Tables[0];
+            }
+            catch
+            {
+                return null;
+            }
+            List<OrgnizationInfo> orgnizations = new List<OrgnizationInfo>();
+            foreach(DataRow dr in dataTable.Rows)
+            {
+                OrgnizationInfo orgnization = new OrgnizationInfo()
+                {
+                    OrgId = int.Parse(dr["ORG_ID"].ToString()),
+                    ParentId = int.Parse(dr["PARENT_ID"].ToString()),
+                    OrgName = dr["ORG_NAME"].ToString(),
+                    OrgCode = dr["ORG_CODE"].ToString()
+                };
+                orgnizations.Add(orgnization);
+            }
+            return orgnizations;
+
+        }
     }
 }
