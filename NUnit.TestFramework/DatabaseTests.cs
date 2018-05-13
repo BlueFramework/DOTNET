@@ -107,7 +107,7 @@ namespace NUnit.Tests1
         }
 
         [Test()]
-        public void ExecuteNonQueryTest()
+        public void ExecuteNonQueryInsertTest()
         {
             string sql = "insert into [USER](username) VALUES('DDDD')";
 
@@ -125,9 +125,39 @@ namespace NUnit.Tests1
         }
 
         [Test()]
-        public void ExecuteNonQueryTest1()
+        public void ExecuteNonQueryTransTest()
         {
-
+            Database database = new DatabaseProviderFactory().CreateDefault();
+           
+            try
+            {
+                using (DbConnection dbConnection = database.CreateConnection())
+                {
+                    dbConnection.Open();
+                    using (DbTransaction dbTransaction = dbConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            for (int i = 1; i < 5; i++)
+                            {
+                                string sql = "insert into [USER](username) VALUES('DDDD" + i + "')";
+                                DbCommand dbCommand = database.GetSqlStringCommand(sql);
+                                int result = database.ExecuteNonQuery(dbCommand, dbTransaction);
+                            }
+                            dbTransaction.Commit();
+                        }
+                        catch(Exception exception)
+                        {
+                            dbTransaction.Rollback();
+                        }
+                    }
+                }
+                Assert.IsTrue(1 > 0);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail();
+            }
         }
 
         [Test()]
