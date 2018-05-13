@@ -1,6 +1,9 @@
-﻿using BlueFramework.User.Models;
+﻿using BlueFramework.Data;
+using BlueFramework.User.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,9 +32,31 @@ namespace BlueFramework.User.DataAccess
             return null;
         }
 
-        public List<RoleInfo> GetRoles(RoleInfo role)
+        public List<RoleInfo> GetRoles(RoleInfo roleinfo)
         {
-            return null;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = "select * from T_S_ROLE t where 1=1 ";
+            string whereStr = "";
+            if (!string.IsNullOrEmpty(roleinfo.RoleName))
+            {
+                whereStr += " and t.name like'%" + roleinfo.RoleName + "%'";
+            }
+            whereStr += " order by roleid";
+            sql += whereStr;
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            List<RoleInfo> roles = new List<RoleInfo>();
+            foreach (DataRow row in dt.Rows)
+            {
+                RoleInfo role = new RoleInfo();
+                role.RoleId = int.Parse(row["ROLEID"].ToString());
+                role.RoleName = row["NAME"].ToString();
+                role.Description = row["DESCRIPTION"].ToString();
+                roles.Add(role);
+            }
+            return roles;
         }
 
         public bool SaveMenuRights(int roleId, int[] item)

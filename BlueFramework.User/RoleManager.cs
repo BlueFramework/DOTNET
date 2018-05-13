@@ -11,15 +11,15 @@ namespace BlueFramework.User
     /// 角色功能提供
     /// 增删改查等... ...
     /// </summary>
-    public class RoleProvider:IRoleProvider
+    public class RoleManager
     {
         protected BlueFramework.User.DataAccess.SysAccess sysAccess = new User.DataAccess.SysAccess();
 
-        public static IRoleProvider Instance
+        public static RoleManager Instance
         {
             get
             {
-                RoleProvider role = new RoleProvider();
+                RoleManager role = new RoleManager();
                 return role;
             }
         }

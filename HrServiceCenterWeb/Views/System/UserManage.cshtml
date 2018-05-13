@@ -12,7 +12,7 @@
                 <input type="text" id="uname" style="width:180px;" class="form-control panelseach-text" placeholder="请输入关键字...">
             </div>
             <div class="col-md-1">
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="UserManageOpt.query()"><i class="fa fa-search"></i> 快速查询</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="UserManageOpt.queryUser()"><i class="fa fa-search"></i> 快速查询</a>
             </div>
             <div class="col-md-1">
 
@@ -65,7 +65,7 @@
         <tr>
             <td style="width: 90px; font-family: 'Microsoft YaHei'; font-size: 13px; text-align: right">归属组织：</td>
             <td>
-                <select id="cmbOrg" editable="false" class="easyui-combobox" form-field-name="GroupId" type="text" form-control-type="combobox" style="width: 100px;"></select>
+                <select id="cmbOrg" editable="false" class="easyui-combobox" data-options="valueField: 'OrgId',textField: 'OrgName',required:true" form-field-name="OrgId" type="text" form-control-type="combobox" style="width: 100px;"></select>
             </td>
         </tr>
         <tr>

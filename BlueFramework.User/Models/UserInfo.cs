@@ -29,6 +29,8 @@ namespace BlueFramework.User.Models
 
         public DateTime LastLoginTime { get; set; }
 
+        public int OrgId { get; set; }
+
         public string OrgName { get; set; }
 
         /// <summary>
