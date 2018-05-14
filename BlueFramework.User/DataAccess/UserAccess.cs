@@ -112,9 +112,12 @@ namespace BlueFramework.User.DataAccess
             DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
             Database database = dbFactory.CreateDefault();
             string sql = "select * from t_s_user t  where username=@userName";
-            DbCommand dbCommand = database.GetSqlStringCommand(sql);
-            database.AddInParameter(dbCommand, "userName", DbType.String, userName);
-            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataSet dataSet = null;
+            using (DbCommand dbCommand = database.GetSqlStringCommand(sql))
+            {
+                database.AddInParameter(dbCommand, "userName", DbType.String, userName);
+                dataSet = database.ExecuteDataSet(dbCommand);
+            }
             DataTable dt = dataSet.Tables[0];
             UserInfo user = new UserInfo();
             if (dt != null && dt.Rows.Count > 0)
