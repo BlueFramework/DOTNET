@@ -33,5 +33,10 @@ namespace BlueFramework.User.Models
         /// 角色拥有的用户
         /// </summary>
         public List<int> OwnUsers { get; set; }
+
+        /// <summary>
+        /// 角色拥有的菜单
+        /// </summary>
+        public string Menus { get; set; }
     }
 }

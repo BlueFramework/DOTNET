@@ -14,7 +14,21 @@ namespace BlueFramework.User.DataAccess
     {
         public int[] GetMenuRights(int roleId)
         {
-            return null;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = "select * from T_S_MENURIGHT t where t.roleid=" + roleId;
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            int[] str = new int[dt.Rows.Count];
+            if (dt != null || dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    str[i] = int.Parse(dt.Rows[i]["MENUID"].ToString());
+                }
+            }
+            return str;
         }
 
         public int[] GetDataRights(int roleId)
@@ -87,12 +101,69 @@ namespace BlueFramework.User.DataAccess
 
         public bool SaveMenuRights(int roleId, int[] item)
         {
-            return false;
+            Database database = new DatabaseProviderFactory().CreateDefault();
+            try
+            {
+                using (DbConnection dbConnection = database.CreateConnection())
+                {
+                    dbConnection.Open();
+                    using (DbTransaction dbTransaction = dbConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sql1 = "delete from T_S_MENURIGHT where ROLEID = '" + roleId + "'";
+                            DbCommand dbCommand1 = database.GetSqlStringCommand(sql1);
+                            database.ExecuteNonQuery(dbCommand1, dbTransaction);
+
+                            if (item != null)
+                            {
+                                string[] menu = item.Select(i => i.ToString()).ToArray();
+                                UserAccess us = new UserAccess();
+                                int Id = GetMaxMenuRightId() + 1;
+                                for (int i = 0; i < menu.Length; i++)
+                                {
+                                    string clown = menu[i];
+                                    string sql = "insert into T_S_MENURIGHT values(" + Id + "," + roleId + "," + clown + ")";
+                                    DbCommand dbCommand2 = database.GetSqlStringCommand(sql);
+                                    database.ExecuteNonQuery(dbCommand2, dbTransaction);
+                                    Id++;
+                                }
+                            }
+                            dbTransaction.Commit();
+                        }
+                        catch (Exception exception)
+                        {
+                            dbTransaction.Rollback();
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public bool SaveDataRights(int roleId, int[] item)
+        public int GetMaxMenuRightId()
         {
-            return false;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = "select max(ID) ID from T_S_MENURIGHT";
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            int maxId = 0;
+            if (dt != null && !string.IsNullOrEmpty(dt.Rows[0]["ID"].ToString()))
+            {
+                maxId = int.Parse(dt.Rows[0]["ID"].ToString());
+            }
+            else
+            {
+                maxId = 1;
+            }
+            return maxId;
         }
 
         public int AddRole(RoleInfo role)

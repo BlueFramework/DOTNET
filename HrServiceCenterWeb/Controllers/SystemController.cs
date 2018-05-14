@@ -228,6 +228,53 @@ namespace HrServiceCenterWeb.Controllers
             return Json(msg);
         }
 
-        #endregion
-    }
+        //
+        //GET:LoadMenus
+        [HttpPost]
+        public ActionResult LoadMenus()
+        {
+            return Json(RightManager.Instance.getRightTree("0"));
+        }
+
+        //
+        //GET:GetRoleMenus
+
+        public ActionResult GetRoleMenus(RoleInfo role)
+        {
+            int[] imenu = RoleManager.Instance.GetMenuRights(role.RoleId);
+            string[] smenu = imenu.Select(i => i.ToString()).ToArray();
+            string strmenu = string.Join(",", smenu);
+            return Json(strmenu);
+        }
+
+        //
+        //POST:SaveRoleMenus
+
+        public ActionResult SaveRoleMenus(RoleInfo role)
+        {
+            int[] menuArr = null;
+            if (role.Menus != null && role.Menus != "")
+            {
+                string strMenu = role.Menus;
+                string[] strArr = strMenu.Split(',');
+                menuArr = new int[strArr.Length];
+                for (int i = 0; i < strArr.Length; i++)
+                {
+                    menuArr[i] = Convert.ToInt32(strArr[i]);
+                }
+            }
+            string msg = string.Empty;
+            if (RightManager.Instance.SaveMenuRights(role.RoleId, menuArr))
+            {
+                msg = "保存成功";
+            }
+            else
+            {
+                msg = "保存失败";
+            }
+            return Json(msg);
+        }
+
+            #endregion
+        }
 }

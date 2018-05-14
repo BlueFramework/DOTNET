@@ -132,109 +132,18 @@ function formatActions(val, row) {
     var deletes = '<span title="删除" style="margin-left:20px; "><a href="javascript:void(0)" onclick="RoleManageOpt.Delete(' + id + ')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></span>';
     var edit = '<span title="编辑" "><a href="javascript:void(0)" onclick="RoleManageOpt.EditRole(' + id + ')"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a></span>';
     var group = '<span title="分配组" style="margin-left:20px;"><a href="../SysManage/Group?RoleId=' + id + '" onclick=""><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a></span>';
-    //var menu = '<span title="分配功能" style="margin-left:20px;"><a href="../SysManage/PowersPage?RoleId=' + id + '" onclick=""><i class="fa fa-briefcase fa-lg" aria-hidden="true"></i></a></span>';
     var menu = '<span title="分配功能" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.InitTreeData(' + id + ')"><i class="fa fa-briefcase fa-lg" aria-hidden="true"></i></a></span>';
-    //var data = '<span title="分配地市" style="margin-left:20px;"><a href="../SysManage/DatasPage?RoleId=' + id + '" onclick=""><i class="fa fa-globe fa-lg" aria-hidden="true"></i></a></span>';
-    //var data = '<span title="分配地市" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.RightGridData(' + id + ')"><i class="fa fa-globe fa-lg" aria-hidden="true"></i></a></span>';
     var html = '<div style="margin:0 auto; display: inline-block !important; display: inline;">' + edit + group + menu + deletes + '</div>';
     return html;
 }
 
-//加载地市列表
-RoleManageOpt.RightGridData = function (id) {
-    $('#win').window('open');
-    $("#roleGroup").val(id);
-    $('#dg1').datagrid({
-        url: '../Account/GetAllCitys',
-        rownumbers: true,
-        singleSelect: false,
-        autoRowHeight: false,
-        pagination: false,
-        method: 'post',
-        onBeforeLoad: function (params) {
-        },
-        onLoadSuccess: function (data) {
-            $.ajax({
-                type: 'POST',
-                url: "../SysManage/LoadRoleDatas",
-                async: false,
-                data: { RoleId: $("#roleGroup").val() },
-                dataType: "json",
-                success: function (result) {
-                    if (result != "") {
-                        var arr = new Array();
-                        arr = result.split(',');
-                        $.each(data.rows, function (index, item) {
-                            //if (right.DataRights.indexOf(item.AreaId) > -1) {
-                            //    $('#dg').datagrid('checkRow', index);
-                            //}
-                            $.each(arr, function (i, n) {
-                                if (arr[i] == item.GroupID) {
-                                    $('#dg1').datagrid('checkRow', index);
-                                }
-                            });
-                        });
-                    }
-                }
-            });
-        },
-        onLoadError: function (data) {
-            $.messager.alert('错误提示', '加载数据失败，请重试！', 'error');
-        }
-    });
-}
-//获取选中行的AreaId
-RoleManageOpt.GetGirdData = function () {
-    var rows = $('#dg1').datagrid('getSelections');
-    if (rows.length == 0) {
-        return "";
-    }
-    else {
-        var re = "";
-        rows.forEach(function (item) {
-            re += "," + item.GroupID;
-        });
-    }
-    return re.substr(1);
-}
-
-RoleManageOpt.DataSave = function () {
-    var DataRight = RoleManageOpt.GetGirdData();
-    //if (DataRight == "") {
-    //    $.messager.alert('警告','请至少为该角色分配一项地市权限！','warning');
-    //    return;
-    //}
-    var url = '../SysManage/SaveRoleDatas';
-    $.ajax({
-        url: url,
-        type: 'POST',
-        datatype: 'json',
-        data: {
-            RoleId: $("#roleGroup").val(),
-            Datas: DataRight
-        },
-        success: function (data) {
-            if (data == "1") {
-                $.messager.alert('成功', '成功为该角色分配地市权限', 'info', function () {
-
-                })
-            }
-            else {
-                $.messager.alert('失败', '分配失败，请联系管理员', 'error');
-            }
-        },
-        error: function () {
-            $.messager.alert('错误提示', '分配失败，请联系管理员', 'error');
-        }
-    });
-}
 
 //加载功能列表
 RoleManageOpt.InitTreeData = function (roleId) {
     $('#menu').window('open');
     $("#roleMenu").val(roleId);
     $('#tree').tree({
-        url: '../SysManage/LoadMenus',
+        url: '../System/LoadMenus',
         checkbox: true,
         onContextMenu: function (e, node) {
             e.preventDefault();
@@ -243,7 +152,7 @@ RoleManageOpt.InitTreeData = function (roleId) {
         onLoadSuccess: function (data) {
             $.ajax({
                 type: 'POST',
-                url: "../SysManage/GetRoleMenus",
+                url: "../System/GetRoleMenus",
                 async: false,
                 data: { RoleId: $("#roleMenu").val() },
                 dataType: "json",
@@ -268,11 +177,7 @@ RoleManageOpt.InitTreeData = function (roleId) {
 
 RoleManageOpt.MenuSave = function () {
     var MenuRight = RoleManageOpt.GetTreeData();
-    //if (MenuRight == "") {
-    //    $.messager.alert('警告','请至少为该角色分配一项菜单权限！','warning');
-    //    return;
-    //}
-    var url = '../SysManage/SaveRoleMenus';
+    var url = '../System/SaveRoleMenus';
     $.ajax({
         url: url,
         type: 'POST',
@@ -282,14 +187,7 @@ RoleManageOpt.MenuSave = function () {
             Menus: MenuRight
         },
         success: function (data) {
-            if (data == "1") {
-                $.messager.alert('成功', '成功为该角色分配菜单权限', 'info', function () {
-
-                })
-            }
-            else {
-                $.messager.alert('失败', '分配失败，请联系管理员', 'error');
-            }
+            $.messager.alert('提示', data);
         },
         error: function () {
             $.messager.alert('错误提示', '分配失败，请联系管理员', 'error');

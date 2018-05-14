@@ -66,23 +66,7 @@
     </table>
 </div>
 
-<div id="win" class="easyui-window" title="分配地市" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width: 330px; height: 500px; padding: 10px; display: none;">
-    <input id="roleGroup" type="hidden" form-field-name="RoleId" value="0" />
-    <table id="dg1" style="" class="easyui-table">
-        <thead>
-            <tr>
-                <th data-options="field:'GroupID',checkbox:true,width:50" align="center">选择</th>
-                <th data-options="field:'CityName',width:210" align="center"><span style="font-weight: bold;">地市名称</span></th>
-            </tr>
-        </thead>
-    </table>
-    <div style="margin-top: 10px; text-align: center;">
-        <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="RoleManageOpt.DataSave()"><i class="fa fa-pencil-square-o"></i> 提交</a></span>
-        <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="$('#win').window('close')"><i class="fa fa-pencil-square-o"></i> 返回</a></span>
-    </div>
-</div>
-
-<div id="menu" class="easyui-window" title="分配功能" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width: 300px; height: 450px; padding: 10px; display: none;">
+<div id="menu" class="easyui-window" title="分配功能" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width: 280px; height: 450px; padding: 10px; display: none;">
     <input id="roleMenu" type="hidden" form-field-name="RoleId" value="0" />
     <div class="row container-content" style="width: 100%">
         <ul id="tree"></ul>

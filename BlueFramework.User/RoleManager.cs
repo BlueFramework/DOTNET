@@ -87,17 +87,6 @@ namespace BlueFramework.User
         }
 
         /// <summary>
-        /// 保存数据权限
-        /// </summary>
-        /// <param name="roleId"></param>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        public bool SaveDataRights(int roleId, int[] items)
-        {
-            return sysAccess.SaveDataRights(roleId,items);
-        }
-
-        /// <summary>
         /// 新增角色
         /// </summary>
         /// <param name="role"></param>

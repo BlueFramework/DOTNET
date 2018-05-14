@@ -72,5 +72,18 @@ namespace BlueFramework.User.Models
         /// 显示状态：true:显示  false：隐藏
         /// </summary>
         public bool MobDisplay { get; set; }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public MenuInfo(int id, int pid, string name)
+        {
+            this.MenuId = id;
+            this.ParentId = pid;
+            this.Name = name;
+        }
+
+        public MenuInfo()
+        { }
     }
 }
