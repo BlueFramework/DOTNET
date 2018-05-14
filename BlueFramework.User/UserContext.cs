@@ -133,7 +133,7 @@ namespace BlueFramework.User
         {
             string encodePassword = MD5Encrypt64(password);
             UserManager userManager = new UserManager();
-            bool pass = userManager.ValidatePassword(userName, password);
+            bool pass = userManager.ValidatePassword(userName, encodePassword);
             return pass;
         }
 
