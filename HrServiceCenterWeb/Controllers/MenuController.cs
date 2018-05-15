@@ -76,6 +76,7 @@ namespace HrServiceCenterWeb.Controllers
                 XmlNodeList nodes = title.ChildNodes;
                 foreach (XmlNode node in nodes)
                 {
+                    if (node.NodeType != XmlNodeType.Element) continue;
                     XmlElement nd = (XmlElement)node;
                     MenuInfo mis = new MenuInfo();
                     mis.Url = nd.GetAttribute("url");

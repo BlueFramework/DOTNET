@@ -16,7 +16,9 @@
     <Node  id="202" caption="员工信息" url="~/~" title ="员工信息" ic_class="" ic_id="" mob_display="true"/>
   </Title>
   <Title id="3" caption="缴存发放" title="缴存发放" isroot="false" ic_class="icon icon-poi" ul_class="" ic_id="drop1" mob_display="true">
+    <!--
     <Node  id="301" caption="缴存发放项目管理" url="~/~" title ="缴存发放项目管理" ic_class="" ic_id="" mob_display="true"/>
+    -->
     <Node  id="302" caption="单位模板" url="~/~" title ="单位模板" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="303" caption="社保导入" url="~/~" title ="社保导入" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="304" caption="缴存发放" url="~/~" title ="缴存发放" ic_class="" ic_id="" mob_display="true"/>
