@@ -170,6 +170,11 @@ namespace BlueFramework.User
             return ua.GetUsers(user);
         }
 
+        public List<UserInfo> GetUserList()
+        {
+            return ua.GetUserList();
+        }
+
         /// <summary>
         /// 64位的MD5加密
         /// </summary>

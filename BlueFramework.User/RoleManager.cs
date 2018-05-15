@@ -147,5 +147,10 @@ namespace BlueFramework.User
             }
             return sysAccess.UpdateOnlyRole(role);
         }
+
+        public bool UpdateRoleUsers(RoleInfo role)
+        {
+            return sysAccess.UpdateRoleUsers(role);
+        }
     }
 }

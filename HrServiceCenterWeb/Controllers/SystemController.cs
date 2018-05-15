@@ -275,6 +275,61 @@ namespace HrServiceCenterWeb.Controllers
             return Json(msg);
         }
 
-            #endregion
+        #endregion
+
+        #region ROLE GROUPING
+        //
+        // GET:RoleGrouping
+
+        public ActionResult RoleGrouping(int RoleId)
+        {
+            ViewBag.RoleId = RoleId;
+            return View();
         }
+
+        //
+        //POST:LoadRoleUsers
+        [HttpPost]
+        public ActionResult LoadRoleUsers(RoleInfo role)
+        {
+            RoleInfo right = new RoleInfo();
+            int[] iuser =RoleManager.Instance.GetGrouping(role.RoleId);
+            string[] suser = iuser.Select(i => i.ToString()).ToArray();
+            string struser = string.Join(",", suser);
+            return Json(struser);
+        }
+
+        //
+        //GET:GetUserList
+        public ActionResult GetUserList()
+        {
+            return Json(UserManager.Instance.GetUserList());
+        }
+
+        //
+        //GET:SaveRoleUsers
+        public ActionResult SaveRoleUsers(RoleInfo role)
+        {
+            role.Users = new List<int>();
+            if (role.Grouping != null && role.Grouping.Contains(','))
+            {
+                string[] str = role.Grouping.Split(',');
+                foreach (string st in str)
+                {
+                    role.Users.Add(int.Parse(st));
+                }
+            }
+            else if (role.Grouping != null && role.Grouping.Length > 0)
+            {
+                role.Users.Add(int.Parse(role.Grouping));
+            }
+            if (RoleManager.Instance.UpdateRoleUsers(role))
+                return Json("分配成功");
+            else
+                return Json("分配失败");
+        }
+
+
+        #endregion
+    }
 }

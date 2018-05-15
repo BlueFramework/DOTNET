@@ -251,7 +251,21 @@ namespace BlueFramework.User.DataAccess
 
         public int[] GetGrouping(int roleId)
         {
-            return null;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = "select * from T_S_USERROLE t where t.roleid=" + roleId;
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            int[] str = new int[dt.Rows.Count];
+            if (dt != null || dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    str[i] = int.Parse(dt.Rows[i]["USERID"].ToString());
+                }
+            }
+            return str;
         }
 
         public int UpdateOnlyRole(RoleInfo role)
@@ -264,6 +278,53 @@ namespace BlueFramework.User.DataAccess
             DbCommand dbCommand = database.GetSqlStringCommand(sql);
             int result = database.ExecuteNonQuery(dbCommand);
             return result;
+        }
+
+        public bool UpdateRoleUsers(RoleInfo role)
+        {
+            Database database = new DatabaseProviderFactory().CreateDefault();
+            try
+            {
+                using (DbConnection dbConnection = database.CreateConnection())
+                {
+                    dbConnection.Open();
+                    using (DbTransaction dbTransaction = dbConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            //删除角色对应的用户
+                            string sql1 = "delete from T_S_USERROLE where ROLEID = '" + role.RoleId + "'";
+                            DbCommand dbCommand1 = database.GetSqlStringCommand(sql1);
+                            database.ExecuteNonQuery(dbCommand1, dbTransaction);
+                            //增加角色对应的用户
+                            if (role.Users.Count > 0)
+                            {
+                                string[] group = role.Users.Select(i => i.ToString()).ToArray();
+
+                                for (int i = 0; i < group.Length; i++)
+                                {
+                                    string clown = group[i];
+                                    string sql2 = "insert into T_S_USERROLE values('" + role.RoleId + "','" + clown + "')";
+                                    DbCommand dbCommand2 = database.GetSqlStringCommand(sql2);
+                                    database.ExecuteNonQuery(dbCommand2, dbTransaction);
+                                }
+                            }
+
+                            dbTransaction.Commit();
+                        }
+                        catch (Exception exception)
+                        {
+                            dbTransaction.Rollback();
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

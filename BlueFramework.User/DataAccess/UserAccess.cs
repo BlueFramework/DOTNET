@@ -32,6 +32,30 @@ namespace BlueFramework.User.DataAccess
             return null;
         }
 
+        public List<UserInfo> GetUserList()
+        {
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            string sql = "select t.*,p.ORG_NAME areaname from T_S_USER t,T_S_ORGANIZATION p where t.username<>'admin' and t.ORG_ID=p.ORG_ID";
+            DbCommand dbCommand = database.GetSqlStringCommand(sql);
+            DataSet dataSet = database.ExecuteDataSet(dbCommand);
+            DataTable dt = dataSet.Tables[0];
+            List<UserInfo> users = new List<UserInfo>();
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    UserInfo useri = new UserInfo();
+                    useri.UserId = int.Parse(row["USERID"].ToString());
+                    useri.UserName = row["USERNAME"].ToString();
+                    useri.TrueName = row["TRUENAME"].ToString();
+                    useri.OrgName = row["ORG_NAME"].ToString();
+                    users.Add(useri);
+                }
+            }
+            return users;
+        }
+
         public bool AddAccount(UserInfo user)
         {
             DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();

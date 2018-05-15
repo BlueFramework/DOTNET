@@ -131,7 +131,7 @@ function formatActions(val, row) {
     var id = row.RoleId;
     var deletes = '<span title="删除" style="margin-left:20px; "><a href="javascript:void(0)" onclick="RoleManageOpt.Delete(' + id + ')"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></span>';
     var edit = '<span title="编辑" "><a href="javascript:void(0)" onclick="RoleManageOpt.EditRole(' + id + ')"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a></span>';
-    var group = '<span title="分配组" style="margin-left:20px;"><a href="../SysManage/Group?RoleId=' + id + '" onclick=""><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a></span>';
+    var group = '<span title="分配组" style="margin-left:20px;"><a href="../System/RoleGrouping?RoleId=' + id + '" onclick=""><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a></span>';
     var menu = '<span title="分配功能" style="margin-left:20px;"><a href="javascript:void(0)" onclick="RoleManageOpt.InitTreeData(' + id + ')"><i class="fa fa-briefcase fa-lg" aria-hidden="true"></i></a></span>';
     var html = '<div style="margin:0 auto; display: inline-block !important; display: inline;">' + edit + group + menu + deletes + '</div>';
     return html;
