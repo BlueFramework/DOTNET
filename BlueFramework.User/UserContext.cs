@@ -53,10 +53,8 @@ namespace BlueFramework.User
                         if (IsAuthenticated)
                         {
                             // load user from db
-                            Models.UserInfo ui = new Models.UserInfo();
-                            ui.UserId = 1;
-                            ui.UserName = "admin";
-                            visitor = new Visitor(ui);
+                            UserInfo user = new UserManager().GetUser(CurrentVisitorId);
+                            visitor = new Visitor(user);
                             Session.Current.AddVisitor(visitor);
                         }
 

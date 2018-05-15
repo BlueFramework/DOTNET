@@ -50,5 +50,12 @@ namespace HrServiceCenterWeb.Controllers
                 return View(model);
             }
         }
+
+        // GET: /Account/Logoff
+        public ActionResult LogOff()
+        {
+            UserContext.Logout();
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
