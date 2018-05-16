@@ -1,5 +1,5 @@
 ﻿/*
- * ultrapower share.js
+ * share.js
  * date：2016/03/29
 */
 window.HR = {

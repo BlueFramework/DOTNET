@@ -23,7 +23,7 @@
     <Node  id="303" caption="社保导入" url="~/~" title ="社保导入" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="304" caption="缴存发放" url="~/~" title ="缴存发放" ic_class="" ic_id="" mob_display="true"/>
   </Title>
-  <Title  id="4" caption="统计报表" title="统计报表" isroot="false" ic_class="icon icon-compas" ul_class="" ic_id="" mob_display="true">
+  <Title  id="4" caption="统计报表" title="统计报表" isroot="false" ic_class="icon icon-pin" ul_class="" ic_id="" mob_display="true">
     <Node  id="401" caption="单位用人统计" url="~/~" title ="单位用人统计" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="402" caption="单位缴存发放统计" url="~/~" title ="单位缴存发放统计" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="403" caption="个人缴存发放统计" url="~/~" title ="个人缴存发放统计" ic_class="" ic_id="" mob_display="true"/>

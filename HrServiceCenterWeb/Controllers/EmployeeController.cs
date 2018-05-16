@@ -18,6 +18,14 @@ namespace HrServiceCenterWeb.Controllers
             return View();
         }
 
+        // GetCompanyList?query=
+        public ActionResult GetCompanyList(string query)
+        {
+            List<CompanyInfo> list = new Manager.EmployeeManager().GetCompanies(query);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
         // GET: /Account/
         public ActionResult EmployeeList()
         {
@@ -28,6 +36,7 @@ namespace HrServiceCenterWeb.Controllers
         {
             return View();
         }
+
 
     }
 }
