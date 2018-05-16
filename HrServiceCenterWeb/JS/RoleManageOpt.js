@@ -13,8 +13,8 @@ function init() {
             $('#txtDesc').validatebox('enableValidation');
         },
         onOpen: function () {
-            $('#txtName').validatebox('validate');
-            $('#txtDesc').validatebox('validate');
+            //$('#txtName').validatebox('validate');
+            //$('#txtDesc').validatebox('validate');
         }
     })
 }
@@ -24,7 +24,7 @@ RoleManageOpt.Query = function () {
     var obj = HR.Form.getValues('pnlSearch');
     var que = $("#uname").val();
     $('#dg').datagrid({
-        url: '../System/RolesQuery?userName=' + que,
+        url: '../System/RolesQuery?roleName=' + que,
         fitColumns: true,
         rownumbers: true,
         singleSelect: true,

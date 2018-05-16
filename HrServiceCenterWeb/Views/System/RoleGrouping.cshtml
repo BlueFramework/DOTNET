@@ -17,122 +17,18 @@
             </thead>
         </table>
         <div style="margin-top: 10px; text-align: right;">
-            <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="Save()"><i class="fa fa-pencil-square-o"></i> 提交</a></span>
-            <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="../SysManage/RoleManage" onclick=""><i class="fa fa-pencil-square-o"></i> 返回</a></span>
+            <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="GroupingOpt.Save()"><i class="fa fa-pencil-square-o"></i> 提交</a></span>
+            <span style="margin-left: 25px;"><a class="btn btn-primary btn-sm" href="../System/RoleManage" onclick=""><i class="fa fa-pencil-square-o"></i> 返回</a></span>
         </div>
     </div>
 </div>
 <script>
     $(function () {
         $("#roleId").val(@ViewBag.RoleId);
-        loadRoleUsers();
+        GroupingOpt.loadRoleUsers();
     })
-
-    function loadRoleUsers() {
-        $("#dg").datagrid({
-            url: '../System/GetUserList',
-            rownumbers: true,
-            singleSelect: false,
-            autoRowHeight: true,
-            pagination: true,
-            nowrap: false,
-            loadFilter: pagerFilter,
-            pageSize: 10,
-            pageList: [10, 20, 30, 50, 50],
-            striped: true,
-            method: 'post',
-            onBeforeLoad: function (params) {
-            },
-            onLoadSuccess: function (data) {
-                $.ajax({
-                    type: 'POST',
-                    url: "../System/LoadRoleUsers",
-                    async: false,
-                    data: { RoleId: $("#roleId").val() },
-                    dataType: "json",
-                    success: function (result) {
-                        if (data && result != "") {
-                            $.each(data.rows, function (index, item) {
-                                if (result.indexOf(item.UserId) > -1) {
-                                    $('#dg').datagrid('checkRow', index);
-                                }
-                            });
-                        }
-                    }
-                });
-            },
-            onLoadError: function (data) {
-                $.messager.alert('错误提示', '加载数据失败，请重试！', 'error');
-            }
-        })
-    }
-
-    function pagerFilter(data) {
-        if (typeof data.length == 'number' && typeof data.splice == 'function') {	// is array
-            data = {
-                total: data.length,
-                rows: data
-            }
-        }
-        var dg = $(this);
-        var opts = dg.datagrid('options');
-        var pager = dg.datagrid('getPager');
-        pager.pagination({
-            onSelectPage: function (pageNum, pageSize) {
-                opts.pageNumber = pageNum;
-                opts.pageSize = pageSize;
-                pager.pagination('refresh', {
-                    pageNumber: pageNum,
-                    pageSize: pageSize
-                });
-                dg.datagrid('loadData', data);
-            }
-        });
-        if (!data.originalRows) {
-            data.originalRows = (data.rows);
-        }
-        var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
-        var end = start + parseInt(opts.pageSize);
-        data.rows = (data.originalRows.slice(start, end));
-        return data;
-    }
-
-    //获取选中行的USERID
-    function getUserId() {
-        var rows = $('#dg').datagrid('getSelections');
-        if (rows.length == 0) {
-            return "";
-        }
-        else {
-            var re = "";
-            rows.forEach(function (item) {
-                re += "," + item.UserId;
-            });
-        }
-        return re.substr(1);
-
-    }
-
-    //保存操作（分组的用户）
-    function Save() {
-        var roleid = $("#roleId").val();
-        var Grouping = getUserId();
-        $.ajax({
-            url: "../System/SaveRoleUsers",
-            type: "POST",
-            //data:obj,
-            data: {
-                RoleId: roleid,
-                Grouping: Grouping//分组
-            },
-            success: function (msg) {
-                $.messager.alert('成功', msg);
-                error: function () {
-                    $.messager.alert('失败', '提交失败');
-                }
-            }
-        });
-    }
 </script>
+
+<script src="~/JS/GroupingOpt.js"></script>
 
 
