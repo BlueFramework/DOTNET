@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Data.Common;
 using BlueFramework.Blood.Config;
 using BlueFramework.Data;
+using BlueFramework.Common.Logger;
 
 namespace BlueFramework.Blood.DataAccess
 {
@@ -98,8 +99,9 @@ namespace BlueFramework.Blood.DataAccess
                 }
                 return o;
             }
-            catch
+            catch(Exception ex)
             {
+                LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.Select<T>" ,ex);
                 return default(T);
             }
         }
@@ -124,8 +126,9 @@ namespace BlueFramework.Blood.DataAccess
                 }
                 return list;
             }
-            catch
+            catch(Exception ex)
             {
+                LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.SelectList<T> :" , ex);
                 return null;
             }
         }
@@ -156,8 +159,9 @@ namespace BlueFramework.Blood.DataAccess
 
                     insertCount = db.ExecuteNonQuery(dbCommand);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.Insert<T> :" , ex);
                     insertCount = 0;
                 }
             }
@@ -187,8 +191,9 @@ namespace BlueFramework.Blood.DataAccess
 
                     db.ExecuteNonQuery(dbCommand);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.Update<T> :" , ex);
                     pass = false;
                 }
             }
@@ -209,8 +214,9 @@ namespace BlueFramework.Blood.DataAccess
                 {
                     db.ExecuteNonQuery(dbCommand);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.Delete :" , ex);
                     pass = false;
                 }
             }
@@ -265,6 +271,7 @@ namespace BlueFramework.Blood.DataAccess
                 }
                 sql = sql.Replace("${"+parameter.ParameterName+"}", parameterValue);
             }
+            LogHelper.Debugger("BlueFramework.Blood.DataAccess.Command.FormatSql", sql);
             return sql;
         }
 

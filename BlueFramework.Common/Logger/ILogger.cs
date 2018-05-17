@@ -12,6 +12,11 @@ namespace BlueFramework.Common.Logger
     public interface ILogger
     {
         /// <summary>
+        /// 初始化
+        /// </summary>
+        void Init();
+
+        /// <summary>
         /// write information
         /// </summary>
         /// <param name="message"></param>
