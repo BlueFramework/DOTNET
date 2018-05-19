@@ -9,6 +9,12 @@ namespace HrServiceCenterWeb.Manager
 {
     public class EmployeeManager
     {
+        public List<PositionInfo> GetPositions()
+        {
+            EntityContext context = Session.CreateContext();
+            List<PositionInfo> list = context.SelectList<PositionInfo>("hr.position.findPositions", null);
+            return list;
+        }
 
         public List<CompanyInfo> GetCompanies(string query)
         {
@@ -16,6 +22,24 @@ namespace HrServiceCenterWeb.Manager
             List<CompanyInfo> list = context.SelectList<CompanyInfo>("hr.company.findCompanys", query);
             return list;
         }
+
+        public CompanyInfo GetCompany(int companyId)
+        {
+            EntityContext context = Session.CreateContext();
+            CompanyInfo companyInfo = context.Selete<CompanyInfo>("hr.company.findCompanyById", companyId);
+            return companyInfo;
+        }
+
+        public CompanyInfo SaveCompany(CompanyInfo companyInfo)
+        {
+            EntityContext context = Session.CreateContext();
+            if(companyInfo.CompanyId>0)
+                context.Save<CompanyInfo>("hr.company.updateCompany", companyInfo);
+            else
+                context.Save<CompanyInfo>("hr.company.insertCompany", companyInfo);
+            return companyInfo;
+        }
+
 
         public List<object> GetEmployees()
         {

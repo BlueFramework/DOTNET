@@ -63,6 +63,13 @@ namespace BlueFramework.Blood
             return ts;
         }
 
+        public List<T> SelectList<T>(string selectId,params CommandParameter[] parameters)
+        {
+            EntityConfig config = ConfigManagent.Configs[selectId];
+            List<T> ts = command.SelectList<T>(config, parameters);
+            return ts;
+        }
+
         public void BeginTransaction()
         {
             command.BeginTransaction();

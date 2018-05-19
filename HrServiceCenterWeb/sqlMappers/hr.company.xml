@@ -7,4 +7,20 @@
     LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID
     where t.NAME like '%${value}%'
   </select>
+  <select id="findCompanyById" >
+    select t.COMPANY_ID CompanyId,t.NAME,t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(a.ACCOUNT_BALANCE,0) AccountBalance
+    from HR_COMPANY t
+    LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID
+    where t.COMPANY_ID=#{value}
+  </select>
+  <insert id="insertCompany">
+    <selectKey keyProperty="CompanyId" order="INSERTING" >
+      <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
+      select @CompanyId=@@IDENTITY
+    </selectKey>
+    insert into HR_COMPANY(NAME,CODE,REMARK,REPRESENTATIVE,STATE) values(#{Name},#{Code},#{Representative},#{Remark},0)
+  </insert>
+  <update id="updateCompany">
+    update [HR_COMPANY] set  NAME=#{Name},Code=#{Code},Representative=#{Representative} where COMPANY_ID=#{CompanyId}
+  </update>
 </mapper>

@@ -37,7 +37,11 @@ namespace BlueFramework.Blood.DataAccess
                 string propertyName = property.Name;
                 if (dt.Columns.Contains(propertyName))
                 {
-                    property.SetValue(o, row[propertyName]);
+                    bool isNull = row[propertyName] is System.DBNull;
+                    if (!isNull)
+                    {
+                        property.SetValue(o, row[propertyName]);
+                    }
                 }
             }
             return o;
@@ -72,7 +76,11 @@ namespace BlueFramework.Blood.DataAccess
                 T o = System.Activator.CreateInstance<T>();
                 foreach (PropertyInfo pi in properties)
                 {
-                    pi.SetValue(o, dr[pi.Name]);
+                    bool isNull  = dr[pi.Name] is System.DBNull;
+                    if (!isNull)
+                    {
+                        pi.SetValue(o, dr[pi.Name]);
+                    }
                 }
                 objects.Add(o);
             }

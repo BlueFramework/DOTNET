@@ -194,7 +194,7 @@ HR.Form.setValues = function (elementid, o) {
         var fieldName = ele.attr('form-field-name');
         var value = eval('o.' + fieldName);
         if (value == null) continue;
-        switch(ctlType){
+        switch (ctlType) {
             case 'combobox':
                 ele.combobox('setValue',value);
                 break;

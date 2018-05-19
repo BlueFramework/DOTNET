@@ -55,6 +55,7 @@
     <Compile Include="EntityFramework\BaseObject.cs" />
     <Compile Include="EntityFramework\ObjectCollection.cs" />
     <Compile Include="EntityFramework\ObjectProvider.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SqlCommand.cs" />
