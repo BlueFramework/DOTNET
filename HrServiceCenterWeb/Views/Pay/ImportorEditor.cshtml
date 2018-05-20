@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "社保管理";
+}
+<!-- import opt js-->
+<script src="~/JS/demo.demoOpt .js"></script>
+<script type="text/javascript">
+    var dataId = 0;
+</script>
+<div class="container container-layout">
+    <div class="page-header">
+        <h3>发放管理.<small>&nbsp;<a href="~/Company/CompanyList">社保管理</a></small>.<small>&nbsp;社保导入</small></h3>
+    </div>
+
+    <!-- 导入信息 -->
+    <div style="margin:20px 0;"></div>
+    <div>
+        <form class="form-horizontal" id="formCompany">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">标题</label>
+                <div class="col-sm-10">
+                    <input class="easyui-textbox" form-field-name="Name" form-control-type="textbox" data-options="prompt:'2018年XX月工伤保险.',required:true,validType:'length[3,100]'" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-primary" onclick="opt.save();return false;">保存标题</button>
+                    <button class="btn btn-success" onclick="opt.import();return false;">导入保险</button>
+                    <button class="btn btn-warning" onclick="opt.delete();return false;">删除数据</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 导入详情 -->
+    <div style="height:300px;background-color:silver;font-size:20px;">
+        导入不做编辑功能，只允许重新导入或删除：
+        目前只允许导入保险项目数据；导入人员通过身份证号码匹配ID,导入项目通过名称匹配；项目匹配不上，不允许导入；人员未匹配到，给出提示即可。导入时自动保存。
+    </div>
+
+
+</div>
+
+
