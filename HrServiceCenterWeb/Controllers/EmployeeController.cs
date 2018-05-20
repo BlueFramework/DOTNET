@@ -13,22 +13,13 @@ namespace HrServiceCenterWeb.Controllers
 {
     public class EmployeeController : Controller
     {
-        public ActionResult CompanyList()
-        {
-            return View();
-        }
-
-        // GetCompanyList?query=
-        public ActionResult GetCompanyList(string query)
-        {
-            List<CompanyInfo> list = new Manager.EmployeeManager().GetCompanies(query);
-            JsonResult jsonResult = Json(list);
-            return jsonResult;
-        }
-
         // GET: /Account/
         public ActionResult EmployeeList()
         {
+            if (this.HttpContext.Request.QueryString["id"] == null)
+                ViewBag.CompanyId = 0;
+            else
+                ViewBag.CompanyId = int.Parse(this.HttpContext.Request.QueryString["id"]);
             return View();
         }
 

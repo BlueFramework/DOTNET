@@ -10,6 +10,8 @@ function init() {
 
 //查询用户列表
 opt.query = function () {
+    // TODO 
+    return;
     var url =  '../Company/GetCompanyList';
     var params = { query: $('#txtQuery').val() };
     $('#dg').datagrid('loading');
@@ -32,6 +34,7 @@ opt.query = function () {
 
 //删除操作
 opt.delete = function (id) {
+    // TODO 
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
             $.ajax({
@@ -55,12 +58,14 @@ opt.delete = function (id) {
 
 
 opt.add = function () {
-    var url = '../Company/CompanyPage?id=0';
+    // TODO 
+    var url = '../Pay/TemplateEditor?id=0';
     self.location = url;
 }
 
-//编辑用户
+//编辑对象
 opt.edit = function (id) {
+    // TODO 
     var row = $('#dg').datagrid('getSelected');
     if (row == null) {
         $.messager.alert('提示', '未选中任何数据!');

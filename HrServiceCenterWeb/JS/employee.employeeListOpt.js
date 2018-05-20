@@ -1,10 +1,9 @@
 ﻿var opt = window.NameSpace || {};
 
 function init() {
-    var height = $('.container-layout').height() - 160;
+    var height = $('.container-layout').height() - 180;
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
-    opt.query();
 }
 
 

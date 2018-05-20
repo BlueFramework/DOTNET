@@ -30,6 +30,18 @@ namespace HrServiceCenterWeb.Controllers
             return jsonResult;
         }
 
+        // Company/QueryCompanyList?q=
+        public ActionResult QueryCompanyList(string q)
+        {
+            if (String.IsNullOrEmpty(q))
+            {
+                return null;
+            }
+            List<CompanyInfo> list = new Manager.EmployeeManager().GetCompanies(q);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
         public ActionResult CompanyPage()
         {
             ViewBag.CompanyId = int.Parse(this.HttpContext.Request.QueryString["id"]);

@@ -2,18 +2,25 @@
 @{
     ViewBag.Title = "人员档案";
 }
-<script src="~/JS/company.CompanyListOpt.js"></script>
+<script src="~/JS/employee.employeeListOpt.js"></script>
+<script>
+    var dataId = '@ViewBag.CompanyId';
+</script>
 <div class="container container-layout">
     <div class="page-header">
         <h3>基础信息.<small>&nbsp;人员信息</small></h3>
+
     </div>
     <div id="pnlSearch">
         <div class="row">
-            <div class="col-md-2">
-                <input type="text" id="txtQuery" style="width:180px;" class="form-control panelseach-text" placeholder="请输入关键字...">
-            </div>
-            <div class="col-md-1">
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.query()"><i class="fa fa-search"></i> 快速查询</a>
+            <div class="col-md-4">
+                <input id="cmbCompany" class="easyui-combobox" style="width:100%;height:30px;" data-options="
+				url:'@Url.Action("QueryCompanyList","Company")',
+				prompt:'输入单位名称查询人员列表',
+				mode: 'remote',
+				valueField: 'CompanyId',
+				textField: 'Name',
+				delay:2000">
             </div>
             <div class="col-md-5">
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.add()"><i class="fa fa-address-book-o" aria-hidden="true"></i> 新建</a>
@@ -23,25 +30,27 @@
 
     </div>
     <!-- 数据列表 -->
-    <div style="margin:20px 0;"></div>
-    <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:400px"
-           data-options="idField:'CompanyId',
+    <div id="dgContainer"  style="margin:20px 0;">
+        <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:100%"
+               data-options="idField:'CompanyId',
 			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,loadFilter:pagerFilter,
 			        autoRowHeight:true,
 			        pagination:true,
 			        pageSize:10,pageList:[10,20,30,40,50,100]">
-        <thead>
-            <tr>
-                <th data-options="field:'CompanyId',width:100">ID</th>
-                <th data-options="field:'Name',width:100">单位名称</th>
-                <th data-options="field:'Code',width:80">姓名</th>
-                <th data-options="field:'Representative',width:150">身份证号码</th>
-                <th data-options="field:'Remark',width:80">性别</th>
-                <th data-options="field:'AccountBalance',width:150'">出生年月</th>
+            <thead>
+                <tr>
+                    <th data-options="field:'CompanyId',width:100">ID</th>
+                    <th data-options="field:'Name',width:100">单位名称</th>
+                    <th data-options="field:'Code',width:120,align:'right'">组织机构编码</th>
+                    <th data-options="field:'Representative',width:150,align:'right'">法人代表</th>
+                    <th data-options="field:'Remark',width:250">备注</th>
+                    <th data-options="field:'AccountBalance',width:150,align:'center'">账户余额</th>
 
-            </tr>
-        </thead>
-    </table>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
 </div>
 
 
