@@ -159,10 +159,6 @@ namespace BlueFramework.User.DataAccess
             {
                 maxId = int.Parse(dt.Rows[0]["ID"].ToString());
             }
-            else
-            {
-                maxId = 1;
-            }
             return maxId;
         }
 
@@ -193,13 +189,9 @@ namespace BlueFramework.User.DataAccess
             DataSet dataSet = database.ExecuteDataSet(dbCommand);
             DataTable dt = dataSet.Tables[0];
             int maxId = 0;
-            if (dt != null && dt.Rows.Count > 0)
+            if (dt != null && !string.IsNullOrEmpty(dt.Rows[0]["ID"].ToString()))
             {
                 maxId = int.Parse(dt.Rows[0]["ID"].ToString());
-            }
-            else
-            {
-                maxId = 1;
             }
             return maxId;
         }
