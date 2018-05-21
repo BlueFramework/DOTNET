@@ -21,6 +21,15 @@ namespace HrServiceCenterWeb.Controllers
             return View();
         }
 
+        //获取所有模板列表
+        //VIEW: /Pay/GetTemplateList
+        public ActionResult GetTemplateList()
+        {
+            List<Models.TemplateInfo> list = new Manager.PayManager().GetTemplateList();
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
         // 模板编辑器
         // VIEW: /Pay/TemplateEditor
         public ActionResult TemplateEditor()
