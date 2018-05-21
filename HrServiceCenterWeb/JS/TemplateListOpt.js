@@ -1,16 +1,25 @@
 ﻿var TemplateListOpt = window.NameSpace || {};
 
 function init() {
+    var height = $('.container-layout').height() - 160;
+    $('#dgContainer').height(height);
+    $('#dg').datagrid('resize');
     TemplateListOpt.QueryTemplateList();
 }
 
 TemplateListOpt.QueryTemplateList = function () {
-    $('#dg').datagrid({
+    $('#dg').datagrid('loading');
+    $.ajax({
         url: '../Pay/GetTemplateList',
-        type: 'json',
-        method: 'post',
-        onLoadError: function (data) {
-            $.messager.alert('提示', '模板列表加载失败，请重试！');
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            $('#dg').datagrid('loadData', data);
+            $('#dg').datagrid('loaded');
+        },
+        error: function () {
+            $('#dg').datagrid('loaded');
+            $.messager.alert('提示', '查询出错！');
         }
-    })
+    });
 }

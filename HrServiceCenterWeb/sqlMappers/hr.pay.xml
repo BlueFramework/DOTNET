@@ -7,7 +7,8 @@
     t.TEMPLATE_NAME TemplateName,
     c.CODE CompanyCode,
     c.NAME CompanyName,
-    t.CREATE_TIME CreatTime,
+    --t.CREATE_TIME CreatTime,
+    CONVERT(varchar,t.CREATE_TIME,120) CreatTime,
     c.REPRESENTATIVE
     from HR_SALARY_TEMPLATE t
     left join HR_COMPANY c on t.COMPANY_ID=c.COMPANY_ID
