@@ -16,8 +16,9 @@
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.query()"><i class="fa fa-search"></i> 快速查询</a>
             </div>
             <div class="col-md-5">
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.add()"><i class="fa fa-address-book-o" aria-hidden="true"></i> 新建</a>
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.edit()"><i class="fa fa-address-book-o" aria-hidden="true"></i> 编辑</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.add()" style="width:80px;"><i class="fa fa-file-o" aria-hidden="true"></i> 新建</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.edit()" style="width:80px;"><i class="fa fa-circle-o" aria-hidden="true"></i> 编辑</a>
+                <a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="opt.delete()" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
             </div>
         </div>
 
@@ -33,10 +34,10 @@
             <thead>
                 <tr>
                     <th data-options="field:'CompanyId',width:100">ID</th>
-                    <th data-options="field:'Name',width:100">单位名称</th>
-                    <th data-options="field:'Code',width:120,align:'right'">组织机构编码</th>
-                    <th data-options="field:'Representative',width:150,align:'right'">法人代表</th>
-                    <th data-options="field:'Remark',width:250">备注</th>
+                    <th data-options="field:'Name',width:300">单位名称</th>
+                    <th data-options="field:'Code',width:150">组织机构编码</th>
+                    <th data-options="field:'Representative',width:100">法人代表</th>
+                    <th data-options="field:'Remark',width:200">备注</th>
                     <th data-options="field:'AccountBalance',width:150,align:'center'">账户余额</th>
 
                 </tr>

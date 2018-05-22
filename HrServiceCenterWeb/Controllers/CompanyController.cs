@@ -69,5 +69,19 @@ namespace HrServiceCenterWeb.Controllers
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
         }
+
+        public ActionResult DeleteCompany(int id)
+        {
+            bool pass = new Manager.EmployeeManager().DeleteCompany(id);
+            Object result = new
+            {
+                success = pass,
+                data = pass?"删除成功": "删除失败，数据可能已经被引用。"
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+
     }
 }

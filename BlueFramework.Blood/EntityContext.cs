@@ -38,10 +38,11 @@ namespace BlueFramework.Blood
             }
         }
 
-        public void Delete(string commandId,object objectId)
+        public bool Delete(string commandId,object objectId)
         {
             EntityConfig config = ConfigManagent.Configs[commandId];
-            command.Delete((DeleteConfig)config, objectId);
+            bool pass = command.Delete((DeleteConfig)config, objectId);
+            return pass;
         }
 
         public T Selete<T>(string selectId,object objectId)

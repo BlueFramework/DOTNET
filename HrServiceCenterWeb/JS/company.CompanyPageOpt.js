@@ -1,13 +1,18 @@
 ﻿var opt = window.NameSpace || {};
 
 function init() {
-    opt.query();
+    if (dataId > 0) {
+        opt.query();
+    }
+    else {
+        $('[name="btnPosition"]').attr('disabled', true);
+    }
 }
 
 
 //查询信息
 opt.query = function () {
-    if (dataId == 0) return;
+    
     var url = '../Company/GetCompany';
     var params = { id: dataId };
     $.ajax({
@@ -34,6 +39,7 @@ opt.save = function () {
     var o = HR.Form.getValues('formCompany');
     o.CompanyId = dataId;
     var url = '../Company/SaveCompany';
+    HR.Loader.show("loading...");
     $.ajax({
         url: url,
         type: "POST",
@@ -42,7 +48,10 @@ opt.save = function () {
         data: JSON.stringify(o),
         success: function (data) {
             if (data.success) {
-                self.location.href = "../Company/CompanyList";
+                //self.location.href = "../Company/CompanyList";
+                HR.Loader.hide();
+                dataId = data.id;
+                $('[name="btnPosition"]').removeAttr("disabled");
             }
             else {
                 $.messager.alert('提示', '保存失败！');

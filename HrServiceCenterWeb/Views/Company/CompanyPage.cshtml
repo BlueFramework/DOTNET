@@ -45,7 +45,7 @@
                     <input class="easyui-textbox" data-options="disabled:true" style="height:30px;width:100px" />
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-default" onclick="opt.recharge();return false;">充值</button>
+                    <button class="btn btn-success" onclick="opt.recharge();return false;" >充值</button>
                 </div>
             </div>
             <div class="form-group" id="divRecharge" style="display:none;">
@@ -54,40 +54,38 @@
                     <input id="nbRecharge" class="easyui-numberbox" value="0.00" data-options="precision:2,groupSeparator:','" style="height:30px;width:100px" />
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-default" onclick="opt.saveRecharge();return false;">确定</button>
+                    <button class="btn btn-success" onclick="opt.saveRecharge();return false;">确定</button>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-default" onclick="opt.save();return false;">保存</button>
+                <div class="col-sm-offset-1 col-sm-10">
+                    <button class="btn btn-primary" onclick="opt.save();return false;" style="width:110px;">保存公司信息</button>
+                    <button class="btn btn-info" onclick="opt.addPosition();return false;" style="width:110px;" name="btnPosition">+增加岗位</button>
+                    <button class="btn btn-info" onclick="opt.removePosition();return false;" style="width:110px;" name="btnPosition">+删除岗位</button>
                 </div>
             </div>
         </form>
     </div>
-    <div style="padding:10 0 0 50;" id="dgContainer">
-        <table id="dg" class="easyui-datagrid" title="人员编制设置" style="width:100%;height:400px"
-               data-options="idField:'PositionId',
-			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,toolbar: '#tb',
-			        autoRowHeight:true,onClickRow: onClickRow">
-            <thead>
-                <tr>
-                    <th data-options="field:'PositionId',width:50">ID</th>
-                    <th data-options="field:'PositionName',width:100">岗位类型</th>
-                    <th data-options="field:'BaseSalary',width:80">基本工资</th>
-                    <th data-options="field:'AssistSalary',width:80">辅助工资</th>
-                    <th data-options="field:'ConsolationFee',width:80">慰问费</th>
-                    <th data-options="field:'Insurance',width:80">社保/年</th>
-                    <th data-options="field:'AccumulationFund',width:80">公积金/年</th>
-                    <th data-options="field:'AccumulationFund',width:80" >编制人数</th>
-                </tr>
-            </thead>
-        </table>
+    <div id="dgContainer" class="row">
+        <div class="col-sm-offset-1 col-sm-10">
+            <table id="dg" class="easyui-datagrid" title="人员编制设置" style="width:100%;height:400px"
+                   data-options="idField:'PositionId',
+			        singleSelect:true,collapsible:false,rownumbers:true,striped:true">
+                <thead>
+                    <tr>
+                        <th data-options="field:'PositionId',width:50">ID</th>
+                        <th data-options="field:'PositionName',width:100">岗位类型</th>
+                        <th data-options="field:'BaseSalary',width:80">基本工资</th>
+                        <th data-options="field:'AssistSalary',width:80">辅助工资</th>
+                        <th data-options="field:'ConsolationFee',width:80">慰问费</th>
+                        <th data-options="field:'Insurance',width:80">社保/年</th>
+                        <th data-options="field:'AccumulationFund',width:80">公积金/年</th>
+                        <th data-options="field:'AccumulationFund',width:80">编制人数</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
-</div>
-
-<div id="tb" style="height:auto">
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="opt.addPosition()">增加</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="opt.removePostion()">删除</a>
 </div>
 
 

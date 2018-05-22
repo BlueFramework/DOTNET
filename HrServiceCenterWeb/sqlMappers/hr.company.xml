@@ -23,4 +23,7 @@
   <update id="updateCompany">
     update [HR_COMPANY] set  NAME=#{Name},Code=#{Code},Representative=#{Representative} where COMPANY_ID=#{CompanyId}
   </update>
+  <delete id="deleteCompany">
+    delete from [HR_COMPANY] where COMPANY_ID=#{value}
+  </delete>
 </mapper>

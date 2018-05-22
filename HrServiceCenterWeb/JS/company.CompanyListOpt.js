@@ -31,19 +31,20 @@ opt.query = function () {
 
 
 //删除操作
-opt.delete = function (id) {
+opt.delete = function () {
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
+            var row = $('#dg').datagrid('getSelected');
+            var id = row.CompanyId;
             $.ajax({
-                type: 'POST',
-                url: "../Company/DeleteCompany",
-                data: {
-                    UserId: id
-                },
+                type: 'GET',
+                url: "../Company/DeleteCompany?id=" + id,
                 dataType: "json",
                 success: function (result) {
-                    $.messager.alert('提示', result);
-                    UserManageOpt.query();
+                    $.messager.alert('提示', result.data);
+                    if (result.success) {
+                        opt.query();
+                    }
                 }
             });
         }

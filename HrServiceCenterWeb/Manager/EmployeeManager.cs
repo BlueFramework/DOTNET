@@ -40,6 +40,13 @@ namespace HrServiceCenterWeb.Manager
             return companyInfo;
         }
 
+        public bool DeleteCompany(int companyId)
+        {
+            EntityContext context = Session.CreateContext();
+            bool pass = context.Delete("hr.company.deleteCompany", companyId);
+            return pass;
+        }
+
 
         public List<object> GetEmployees()
         {
