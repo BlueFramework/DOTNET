@@ -119,8 +119,14 @@ namespace BlueFramework.Blood.Config
                             break;
                     }
                 }
-                //selectCfg.OutputParameterType = node.Attributes["resultType"].Value;
-                insertCfg.Sql = node.InnerText;
+                foreach (XmlNode child in node.ChildNodes)
+                {
+                    if(child.NodeType== XmlNodeType.Text)
+                    {
+                        insertCfg.Sql = child.InnerText;
+                        break;
+                    }
+                }
                 configs.Add(insertCfg);
             }
         }

@@ -32,18 +32,84 @@ namespace HrServiceCenterWeb.Manager
 
         public CompanyInfo SaveCompany(CompanyInfo companyInfo)
         {
-            EntityContext context = Session.CreateContext();
-            if(companyInfo.CompanyId>0)
-                context.Save<CompanyInfo>("hr.company.updateCompany", companyInfo);
-            else
-                context.Save<CompanyInfo>("hr.company.insertCompany", companyInfo);
+
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+
+                    if (companyInfo.CompanyId > 0)
+                        context.Save<CompanyInfo>("hr.company.updateCompany", companyInfo);
+                    else
+                    {
+                        context.Save<CompanyInfo>("hr.company.insertCompany", companyInfo);
+                        CompanyAccountInfo account = new CompanyAccountInfo()
+                        {
+                            CompanyId = companyInfo.CompanyId
+                        };
+                        context.Save<CompanyAccountInfo>("hr.company.insertAccount", account);
+                    }
+
+                    context.Commit();
+                }
+                catch (Exception ex)
+                {
+                    ex = null;
+                    context.Rollback();
+                    companyInfo = null;
+                }
+            }
             return companyInfo;
+        }
+
+        public bool SaveRecharge(CompanyAccountRecordInfo accountRecordInfo)
+        {
+            bool pass = true;
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    CompanyAccountInfo accountInfo = new CompanyAccountInfo()
+                    {
+                        CompanyId = accountRecordInfo.CompanyId,
+                        AccountId = accountRecordInfo.AccountId,
+                        AccountBalance = accountRecordInfo.Money
+                    };
+                    context.Save<CompanyAccountInfo>("hr.company.updateCompanyAccount", accountInfo);
+                    context.Save<CompanyAccountRecordInfo>("hr.company.insertCompanyAccountDetail", accountRecordInfo);
+                    context.Commit();
+                }
+                catch (Exception ex)
+                {
+                    ex = null;
+                    context.Rollback();
+                    pass = false;
+                }
+            }
+            return pass;
         }
 
         public bool DeleteCompany(int companyId)
         {
-            EntityContext context = Session.CreateContext();
-            bool pass = context.Delete("hr.company.deleteCompany", companyId);
+            bool pass = true;
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    context.Delete("hr.company.deleteCompanyAccount", companyId);
+                    context.Delete("hr.company.deleteCompany", companyId);
+                    context.Commit();
+                }
+                catch (Exception ex)
+                {
+                    ex = null;
+                    context.Rollback();
+                    pass = false;
+                }
+            }
             return pass;
         }
 

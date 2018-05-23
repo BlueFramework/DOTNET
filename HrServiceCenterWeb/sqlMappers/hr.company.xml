@@ -20,10 +20,29 @@
     </selectKey>
     insert into HR_COMPANY(NAME,CODE,REMARK,REPRESENTATIVE,STATE) values(#{Name},#{Code},#{Representative},#{Remark},0)
   </insert>
+  <insert id="insertAccount">
+    <selectKey keyProperty="AccountId" order="INSERTING" >
+      <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
+      select @AccountId=@@IDENTITY
+    </selectKey>
+    insert into HR_CO_ACCOUNT(COMPANY_ID,ACCOUNT_BALANCE) values(#{CompanyId},0)
+  </insert>
   <update id="updateCompany">
     update [HR_COMPANY] set  NAME=#{Name},Code=#{Code},Representative=#{Representative} where COMPANY_ID=#{CompanyId}
   </update>
+  
+  <!-- 删除公司事务 -->
+  <delete id="deleteCompanyAccount">
+    delete from [HR_CO_ACCOUNT] where COMPANY_ID=#{value}
+  </delete>
   <delete id="deleteCompany">
     delete from [HR_COMPANY] where COMPANY_ID=#{value}
   </delete>
+  <!-- 充值事务 -->
+  <update id="updateCompanyAccount">
+    update [HR_CO_ACCOUNT] set  ACCOUNT_BALANCE=ACCOUNT_BALANCE+#{AccountBalance} where COMPANY_ID=#{CompanyId}
+  </update>
+  <insert id="insertCompanyAccountDetail">
+    insert into HR_CO_ACCOUNT_RECORD(ACCOUNT_ID,ACCOUNT_BALANCE,CREATE_TIME,CREATOR,MONEY,REMARK) values(#{AccountId},#{AccountBalance},#{CreateTime},#{Creator},Money,'')
+  </insert>
 </mapper>

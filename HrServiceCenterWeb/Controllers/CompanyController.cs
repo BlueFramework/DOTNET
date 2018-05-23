@@ -63,6 +63,18 @@ namespace HrServiceCenterWeb.Controllers
             CompanyInfo ci = new Manager.EmployeeManager().SaveCompany(companyInfo);
             Object result = new
             {
+                success = ci==null?false:true,
+                data = ci==null?0:ci.CompanyId
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        public ActionResult SaveRecharge(CompanyInfo companyInfo)
+        {
+            CompanyInfo ci = new Manager.EmployeeManager().SaveCompany(companyInfo);
+            Object result = new
+            {
                 success = true,
                 data = ci.CompanyId
             };

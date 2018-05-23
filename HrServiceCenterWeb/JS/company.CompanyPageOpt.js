@@ -66,9 +66,35 @@ opt.save = function () {
 // 充值
 opt.recharge = function () {
     $('#divRecharge').show();
-    
 }
 opt.saveRecharge = function () {
+    if (dataId == 0) {
+        $.messager.alert('提示', '请先保存公司信息！');
+        return;
+    }
+    var value = $('#nbRecharge').textbox('getValue');
+    var url = '../Company/SaveCompany';
+    HR.Loader.show("loading...");
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(o),
+        success: function (data) {
+            if (data.success) {
+                HR.Loader.hide();
+                $('[name="btnPosition"]').removeAttr("disabled");
+            }
+            else {
+                $.messager.alert('提示', '保存失败！');
+            }
+
+        },
+        error: function () {
+            $.messager.alert('提示', '查询出错！');
+        }
+    });
 
 }
 //删除操作
