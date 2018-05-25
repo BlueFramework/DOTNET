@@ -17,6 +17,8 @@ namespace HrServiceCenterWeb.Models
 
         public string Remark { get; set; }
 
+        public int AccountId { get; set; }
+
         public decimal AccountBalance { get; set; }
     }
 }

@@ -4,9 +4,7 @@ function init() {
     if (dataId > 0) {
         opt.query();
     }
-    else {
-        $('[name="btnPosition"]').attr('disabled', true);
-    }
+    opt.setControlState();
 }
 
 
@@ -33,7 +31,15 @@ opt.add = function () {
     var url = '../Company/CompanyPage?id=0';
     self.location = url;
 }
+opt.setControlState = function () {
+    if (dataId == 0) {
+        $('[name="onOldData"]').attr("disabled", true);
+    }
+    else {
+        $('[name="onOldData"]').removeAttr("disabled");
 
+    }
+}
 // 保存
 opt.save = function () {
     var o = HR.Form.getValues('formCompany');
@@ -48,10 +54,9 @@ opt.save = function () {
         data: JSON.stringify(o),
         success: function (data) {
             if (data.success) {
-                //self.location.href = "../Company/CompanyList";
                 HR.Loader.hide();
                 dataId = data.id;
-                $('[name="btnPosition"]').removeAttr("disabled");
+                opt.setControlState();
             }
             else {
                 $.messager.alert('提示', '保存失败！');
@@ -72,19 +77,18 @@ opt.saveRecharge = function () {
         $.messager.alert('提示', '请先保存公司信息！');
         return;
     }
-    var value = $('#nbRecharge').textbox('getValue');
-    var url = '../Company/SaveCompany';
+    var money = $('#nbRecharge').textbox('getValue');
+    var url = '../Company/SaveRecharge';
     HR.Loader.show("loading...");
+    var param = { companyId: dataId, money: money };
     $.ajax({
         url: url,
         type: "POST",
-        contentType: "application/json",
         dataType: "json",
-        data: JSON.stringify(o),
+        data: param,
         success: function (data) {
             if (data.success) {
                 HR.Loader.hide();
-                $('[name="btnPosition"]').removeAttr("disabled");
             }
             else {
                 $.messager.alert('提示', '保存失败！');

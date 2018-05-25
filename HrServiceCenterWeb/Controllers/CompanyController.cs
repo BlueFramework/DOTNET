@@ -8,6 +8,7 @@ using System.Web.Security;
 using System.Configuration;
 using BlueFramework.User;
 using BlueFramework.User.Models;
+using HrServiceCenterWeb.Manager;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -70,13 +71,23 @@ namespace HrServiceCenterWeb.Controllers
             return jsonResult;
         }
 
-        public ActionResult SaveRecharge(CompanyInfo companyInfo)
+        public ActionResult SaveRecharge(int companyId,decimal money)
         {
-            CompanyInfo ci = new Manager.EmployeeManager().SaveCompany(companyInfo);
+            EmployeeManager manager = new EmployeeManager();
+            CompanyInfo company = manager.GetCompany(companyId);
+            CompanyAccountRecordInfo recordInfo = new CompanyAccountRecordInfo()
+            {
+                AccountId = company.AccountId,
+                CompanyId = companyId,
+                Creator = BlueFramework.User.UserContext.CurrentUser.UserId,
+                Money = money,
+                AccountBalance = money
+            };
+            bool pass = manager.SaveRecharge(recordInfo);
             Object result = new
             {
                 success = true,
-                data = ci.CompanyId
+                data = companyId
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;

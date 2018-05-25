@@ -66,6 +66,7 @@ namespace HrServiceCenterWeb.Manager
         public bool SaveRecharge(CompanyAccountRecordInfo accountRecordInfo)
         {
             bool pass = true;
+            accountRecordInfo.CreateTime = DateTime.Now;
             using (EntityContext context = Session.CreateContext())
             {
                 try
