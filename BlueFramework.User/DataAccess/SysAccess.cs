@@ -20,15 +20,18 @@ namespace BlueFramework.User.DataAccess
             DbCommand dbCommand = database.GetSqlStringCommand(sql);
             DataSet dataSet = database.ExecuteDataSet(dbCommand);
             DataTable dt = dataSet.Tables[0];
-            int[] str = new int[dt.Rows.Count];
-            if (dt != null || dt.Rows.Count > 0)
+            if (dt != null && dt.Rows.Count > 0)
             {
+                int[] str = new int[dt.Rows.Count];
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     str[i] = int.Parse(dt.Rows[i]["MENUID"].ToString());
                 }
+                return str;
             }
-            return str;
+            else
+                return null;
+            
         }
 
         public int[] GetDataRights(int roleId)
@@ -118,7 +121,6 @@ namespace BlueFramework.User.DataAccess
                             if (item != null)
                             {
                                 string[] menu = item.Select(i => i.ToString()).ToArray();
-                                UserAccess us = new UserAccess();
                                 int Id = GetMaxMenuRightId() + 1;
                                 for (int i = 0; i < menu.Length; i++)
                                 {

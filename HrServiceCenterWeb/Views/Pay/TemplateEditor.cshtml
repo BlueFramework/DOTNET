@@ -3,10 +3,7 @@
     ViewBag.Title = "公司档案信息";
 }
 <!-- import opt js-->
-<script src="~/JS/demo.demoOpt .js"></script>
-<script type="text/javascript">
-    var dataId = 0;
-</script>
+<script src="~/JS/pay.TemplateEditOpt.js"></script>
 <div class="container container-layout">
     <div class="page-header">
         <h3>发放管理.<small>&nbsp;<a href="~/Company/CompanyList">模板列表</a></small>.<small>&nbsp;模板编辑</small></h3>
@@ -15,45 +12,26 @@
     <!-- 模板基本信息 -->
     <div style="margin:20px 0;"></div>
     <div>
-        <form class="form-horizontal" id="formCompany">
-            <div class="form-group">
-                <label class="col-sm-2 control-label">单位名称</label>
+        <input id="hideview" type="hidden" value="@ViewBag.TemplateId" />
+        <form class="form-horizontal" id="formTemplate">
+            <div class="form-group" id="form-cmp">
+                <label class="col-sm-2 control-label">公司名称</label>
                 <div class="col-sm-10">
-                    <input class="easyui-textbox" form-field-name="Name" form-control-type="textbox" data-options="prompt:'输入单位的名称.',required:true,validType:'length[3,100]'" style="height:30px;width:100%" />
+                    <input id="cmpname" class="easyui-combobox" form-field-name="CompanyName" form-control-type="textbox" data-options="valueField: 'CompanyId',textField: 'Name',required:true,editable:false" style="height:30px;width:20%" />
                 </div>
+                <hr />
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">组织结构编码</label>
-                <div class="col-sm-10">
-                    <input class="easyui-textbox" form-field-name="code" form-control-type="textbox" data-options="prompt:'输入组织结构编码.',validType:'length[3,50]'" style="height:30px;width:100%" />
+                <div class="col-sm-12">
+                    <ul id="tree"></ul>
                 </div>
             </div>
+            <hr />
             <div class="form-group">
-                <label class="col-sm-2 control-label">企业法人</label>
-                <div class="col-sm-10">
-                    <input class="easyui-textbox" form-field-name="Representative" form-control-type="textbox" data-options="prompt:'输入法人姓名.',validType:'length[3,50]'" style="height:30px;width:100%" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">备注</label>
-                <div class="col-sm-10">
-                    <input class="easyui-textbox" form-field-name="Remark" form-control-type="textbox" data-options="prompt:'输入备注.',validType:'length[3,250]'" style="height:30px;width:100%" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-default" onclick="opt.save();return false;">保存</button>
-                </div>
+                <button class="btn btn-default" onclick="opt.save();return false;" style="height:30px;width:100%;margin-top:20px; text-align:center;">保存</button>
             </div>
         </form>
     </div>
-    <!-- 生成模板 -->
-    <div style="height:300px;background-color:silver;font-size:20px;">
-        这里设计模板创建面板：
-        通过选择薪酬项目的末级创建模板，然后点击预览，可以再弹出页面中查看多表头的格式
-    </div>
-
-
 </div>
 
 
