@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <mapper namespace="hr.company">
-  <!-- 返回排序后所有的基础编码数据  -->
+  <!-- 查询公司列表  -->
   <select id="findCompanys" >
     select t.COMPANY_ID CompanyId,t.NAME,t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(a.ACCOUNT_BALANCE,0) AccountBalance,isnull(a.ACCOUNT_ID,0) AccountId
     from HR_COMPANY t
@@ -8,11 +8,21 @@
     where t.NAME like '%${value}%'
   </select>
   <select id="findCompanyById" >
-    select t.COMPANY_ID CompanyId,t.NAME,t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(a.ACCOUNT_BALANCE,0) AccountBalance
+    select t.COMPANY_ID CompanyId,t.NAME,t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(a.ACCOUNT_BALANCE,0) AccountBalance,isnull(a.ACCOUNT_ID,0) AccountId
     from HR_COMPANY t
     LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID
     where t.COMPANY_ID=#{value}
   </select>
+  <select id="findPositions" >
+    SELECT t.POSITION_ID PositionId,POSITION_NAME PositionName,
+    POSITION_DESC PositionDesc,BASE_SALARY BaseSalary,ASSIST_SALARY AssistSalary,CONSOLATION_FEE ConsolationFee,
+    INSURANCE Insurance,ACCUMULATION_FUND AccumulationFund ,s.PLAN_COUNT PlanCount
+    FROM [HR_POSITION] t
+    inner JOIN HR_CO_SETTING s on s.POSITION_ID=t.POSITION_ID
+    where s.COMPANY_ID=#{value}
+    order by t.POSITION_ID
+  </select>
+  
   <insert id="insertCompany">
     <selectKey keyProperty="CompanyId" order="INSERTING" >
       <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
@@ -40,9 +50,16 @@
   </delete>
   <!-- 充值事务 -->
   <update id="updateCompanyAccount">
-    update [HR_CO_ACCOUNT] set  ACCOUNT_BALANCE=ACCOUNT_BALANCE+#{AccountBalance} where COMPANY_ID=#{CompanyId}
+    update [HR_CO_ACCOUNT] set  ACCOUNT_BALANCE=#{AccountBalance} where COMPANY_ID=#{CompanyId}
   </update>
   <insert id="insertCompanyAccountDetail">
-    insert into HR_CO_ACCOUNT_RECORD(ACCOUNT_ID,ACCOUNT_BALANCE,CREATE_TIME,CREATOR,MONEY,REMARK) values(#{AccountId},#{AccountBalance},#{CreateTime},#{Creator},Money,'')
+    insert into HR_CO_ACCOUNT_RECORD(ACCOUNT_ID,ACCOUNT_BALANCE,CREATE_TIME,CREATOR,MONEY,REMARK) values(#{AccountId},#{AccountBalance},#{CreateTime},#{Creator},#{Money},'')
+  </insert>
+  <!-- 岗位设置事务 -->
+  <delete id="deletePositions">
+    delete from [HR_CO_SETTING] where COMPANY_ID=#{CompanyId} and POSITION_ID=#{PositionId}
+  </delete>
+  <insert id="insertPosition">
+    insert into HR_CO_SETTING(POSITION_ID,COMPANY_ID,PLAN_COUNT) values(#{PositionId},#{CompanyId},#{PlanCount})
   </insert>
 </mapper>

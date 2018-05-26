@@ -21,11 +21,16 @@ namespace HrServiceCenterWeb.Manager
 
 
         private List<BaseCodeInfo> baseCodes = null;
+        private List<PositionInfo> positions = null;
+
         public static void Init()
         {
             current = new BaseCodeProvider();
-            EntityContext context = Session.CreateContext();
-            current.baseCodes = context.SelectList<BaseCodeInfo>("hr.basecode.findBasecodes", null);
+            using (EntityContext context = Session.CreateContext())
+            {
+                current.baseCodes = context.SelectList<BaseCodeInfo>("hr.basecode.findBasecodes", null);
+                current.positions = context.SelectList<PositionInfo>("hr.basecode.findPositions", null);
+            }
         }
 
         public BaseCodeProvider()
@@ -44,5 +49,12 @@ namespace HrServiceCenterWeb.Manager
             List<BaseCodeInfo> codes = baseCodes.Where(o => o.CategoryId == 2 && o.IsLeaf == true).ToList();
             return codes;
         }
+
+        public List<PositionInfo> GetPositions()
+        {
+            return this.positions;
+        }
+
+        
     }
 }

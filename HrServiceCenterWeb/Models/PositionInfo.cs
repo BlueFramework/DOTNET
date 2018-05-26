@@ -14,7 +14,7 @@ namespace HrServiceCenterWeb.Models
 
         public string PositionName { get; set; }
 
-        public string Desc { get; set; }
+        public string PositionDesc { get; set; }
 
         /// <summary>
         /// 基本工资

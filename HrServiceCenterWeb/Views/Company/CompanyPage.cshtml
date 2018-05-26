@@ -42,10 +42,10 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">账户余额</label>
                 <div class="col-sm-2">
-                    <input class="easyui-textbox" data-options="disabled:true" style="height:30px;width:100px" />
+                    <input class="easyui-textbox" form-field-name="AccountBalance" form-control-type="textbox" data-options="disabled:true" style="height:30px;width:100px" />
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-success" onclick="opt.recharge();return false;"  name="onOldData">充值</button>
+                    <button class="btn btn-success" onclick="opt.recharge();return false;" name="onOldData">充值</button>
                 </div>
             </div>
             <div class="form-group" id="divRecharge" style="display:none;">
@@ -54,7 +54,7 @@
                     <input id="nbRecharge" class="easyui-numberbox" value="0.00" data-options="precision:2,groupSeparator:','" style="height:30px;width:100px" />
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-success" onclick="opt.saveRecharge();return false;">确定</button>
+                    <button id="btnSaveRecharge" class="btn btn-success" onclick="opt.saveRecharge();return false;">确定</button>
                 </div>
             </div>
             <div class="form-group">
@@ -70,7 +70,7 @@
         <div class="col-sm-offset-1 col-sm-10">
             <table id="dg" class="easyui-datagrid" title="人员编制设置" style="width:100%;height:400px"
                    data-options="idField:'PositionId',
-			        singleSelect:true,collapsible:false,rownumbers:true,striped:true">
+			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,onDblClickRow:function(rowIndex,rowData){opt.editPosition(rowData)}">
                 <thead>
                     <tr>
                         <th data-options="field:'PositionId',width:50">ID</th>
@@ -80,12 +80,75 @@
                         <th data-options="field:'ConsolationFee',width:80">慰问费</th>
                         <th data-options="field:'Insurance',width:80">社保/年</th>
                         <th data-options="field:'AccumulationFund',width:80">公积金/年</th>
-                        <th data-options="field:'AccumulationFund',width:80">编制人数</th>
+                        <th data-options="field:'PlanCount',width:80">编制人数</th>
                     </tr>
                 </thead>
             </table>
         </div>
     </div>
+</div>
+
+<!-- 岗位编辑窗 -->
+<div id="dlg" class="easyui-dialog" title="岗位设置窗" style="width:600px;height:400px;padding:20px 0px 0px 50px;" data-options="
+                closed:true,modal:true,
+				buttons: [{
+					text:'确定',
+					iconCls:'icon-ok',
+					handler:function(){
+						opt.savePosition();
+					}
+				},{
+					text:'取消',
+					handler:function(){
+						$('#dlg').dialog('close');
+					}
+				}]">
+    <form id="frmPosition" class="form-horizontal" style="overflow:hidden;">
+        <div class="form-group">
+            <div class="col-sm-2">岗位名称</div>
+            <div class="col-sm-4">
+                <input class="easyui-combobox" id="cmbPosition" style="width:100%;" form-field-name="PositionId" form-control-type="combobox"
+                       data-options="
+                url:'../BaseCode/GetPositions',
+                method:'get',
+                editable:false,
+                valueField:'PositionId',
+                textField:'PositionName',
+                onSelect: function(rec){
+                    opt.selectPosition(rec);
+                },
+                panelHeight:'auto'" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">编制数量</div>
+            <div class="col-sm-4"><input type="text" id="txtPositionCount" class="easyui-numberbox" value="0" data-options="min:0,precision:0"></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">基本工资</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="BaseSalary" /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">辅助工资</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="AssistSalary" /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">慰问费</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="ConsolationFee" /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">社保/年</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="Insurance" /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">公积金/年</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="AccumulationFund" /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">岗位描述</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="PositionDesc" /></div>
+        </div>
+    </form>
 </div>
 
 

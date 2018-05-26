@@ -7,7 +7,7 @@ function init() {
     opt.setControlState();
 }
 
-
+opt.positions = new Array();
 //查询信息
 opt.query = function () {
     
@@ -20,6 +20,22 @@ opt.query = function () {
         data: params,
         success: function (data) {
             HR.Form.setValues('formCompany', data);
+            $('#dg').datagrid('loadData', data.Positions);
+            $('#dg').datagrid('loaded');
+        },
+        error: function () {
+            $.messager.alert('提示', '查询出错！');
+        }
+    });
+
+    url = '../BaseCode/GetPositions';
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        data: null,
+        success: function (data) {
+            opt.positions = data;
         },
         error: function () {
             $.messager.alert('提示', '查询出错！');
@@ -52,10 +68,10 @@ opt.save = function () {
         contentType: "application/json",
         dataType: "json",
         data: JSON.stringify(o),
-        success: function (data) {
-            if (data.success) {
+        success: function (result) {
+            if (result.success) {
                 HR.Loader.hide();
-                dataId = data.id;
+                dataId = result.data;
                 opt.setControlState();
             }
             else {
@@ -80,6 +96,7 @@ opt.saveRecharge = function () {
     var money = $('#nbRecharge').textbox('getValue');
     var url = '../Company/SaveRecharge';
     HR.Loader.show("loading...");
+    $('#btnSaveRecharge').attr('disabled', true);
     var param = { companyId: dataId, money: money };
     $.ajax({
         url: url,
@@ -89,6 +106,7 @@ opt.saveRecharge = function () {
         success: function (data) {
             if (data.success) {
                 HR.Loader.hide();
+
             }
             else {
                 $.messager.alert('提示', '保存失败！');
@@ -106,10 +124,76 @@ opt.delete = function (id) {
 
 }
 
+opt.editPosition = function(position){
+    HR.Form.setValues('frmPosition', position);
+    $('#txtPositionCount').textbox('setValue', position.PlanCount);
+    $('#dlg').dialog('open');
+}
 opt.addPosition = function () {
-   
+    $('#dlg').dialog('open');
+    $('#cmbPosition').combobox('setValue', '');
+}
+opt.selectPosition = function (position) {
+    this.positions.forEach(function (p, index) {
+        if (p.PositionId == position.PositionId) {
+            HR.Form.setValues('frmPosition', p);
+            $('#txtPositionCount').textbox('setValue', position.PlanCount);
+        }
+    });
+}
+opt.savePosition = function () {
+    var param = {
+        CompanyId: dataId,
+        PositionId: $('#cmbPosition').combobox('getValue'),
+        PlanCount: $('#txtPositionCount').textbox('getValue')
+    };
+    var url = '../Company/SavePosition';
+    HR.Loader.show();
+    $.ajax({
+        url: url,
+        type: "POST",
+        dataType: "json",
+        data: param,
+        success: function (data) {
+            if (data.success) {
+                HR.Loader.hide();
+                $('#dlg').dialog('close');
+                opt.query();
+            }
+            else {
+                $.messager.alert('提示', '保存失败！');
+            }
+
+        },
+        error: function () {
+            $.messager.alert('提示', '查询出错！');
+        }
+    });
 }
 
 opt.removePosition = function () {
-
+    $.messager.confirm('警告', '数据删除无法恢复，您确定要删除?', function (r) {
+        if (r) {
+            var row = $('#dg').datagrid('getSelected');
+            row.CompanyId = dataId;
+            if (row == null) {
+                $.messager.alert('提示', '未选中任何数据!');
+                return;
+            }
+            var url = '../Company/DeletePosition';
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                data: row,
+                success: function (data) {
+                    $.messager.show({ title: '提示', msg: '删除成功.', timeout: 2000, showType: 'slide' });
+                    opt.query();
+                },
+                error: function () {
+                    $.messager.alert('提示', '删除失败！');
+                }
+            });
+        }
+    });
 }

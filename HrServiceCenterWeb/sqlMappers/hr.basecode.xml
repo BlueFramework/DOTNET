@@ -4,4 +4,9 @@
   <select id="findBasecodes" >
     SELECT t.id,t.PARENTID,t.CODE,t.OBJECT_TEXT Text,T.OBJECT_VALUE ObjectValue,t.CATEGORYID,t.ISLEAF FROM [T_S_BASECODE] t WHERE disabled=0 order by code
   </select>
+  <select id="findPositions" >
+    SELECT POSITION_ID PositionId,POSITION_NAME PositionName,
+    POSITION_DESC PositionDesc,BASE_SALARY BaseSalary,ASSIST_SALARY AssistSalary,CONSOLATION_FEE ConsolationFee,
+    INSURANCE Insurance,ACCUMULATION_FUND AccumulationFund FROM [HR_POSITION] t order by POSITION_ID
+  </select>
 </mapper>

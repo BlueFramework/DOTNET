@@ -27,6 +27,7 @@ namespace HrServiceCenterWeb.Manager
         {
             EntityContext context = Session.CreateContext();
             CompanyInfo companyInfo = context.Selete<CompanyInfo>("hr.company.findCompanyById", companyId);
+            companyInfo.Positions = context.SelectList<CompanyPositionSetInfo>("hr.company.findPositions", companyId);
             return companyInfo;
         }
 
@@ -66,7 +67,9 @@ namespace HrServiceCenterWeb.Manager
         public bool SaveRecharge(CompanyAccountRecordInfo accountRecordInfo)
         {
             bool pass = true;
+            
             accountRecordInfo.CreateTime = DateTime.Now;
+
             using (EntityContext context = Session.CreateContext())
             {
                 try
@@ -76,15 +79,14 @@ namespace HrServiceCenterWeb.Manager
                     {
                         CompanyId = accountRecordInfo.CompanyId,
                         AccountId = accountRecordInfo.AccountId,
-                        AccountBalance = accountRecordInfo.Money
+                        AccountBalance = accountRecordInfo.AccountBalance+accountRecordInfo.Money
                     };
                     context.Save<CompanyAccountInfo>("hr.company.updateCompanyAccount", accountInfo);
                     context.Save<CompanyAccountRecordInfo>("hr.company.insertCompanyAccountDetail", accountRecordInfo);
                     context.Commit();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    ex = null;
                     context.Rollback();
                     pass = false;
                 }
@@ -113,13 +115,52 @@ namespace HrServiceCenterWeb.Manager
             }
             return pass;
         }
-
-
+   
         public List<object> GetEmployees()
         {
             DataAccess.EmployeeAccess db = new DataAccess.EmployeeAccess();
             System.Data.DataTable dt = db.GetEmployees();
             return null;
+        }
+
+        public List<CompanyPositionSetInfo> GetPositonSets(int companyId)
+        {
+            List<CompanyPositionSetInfo> list = null;
+            using (EntityContext context = new EntityContext())
+            {
+                list = context.SelectList<CompanyPositionSetInfo>("hr.company.findPositions", companyId);
+            }
+            return list;
+        }
+
+        public bool SavePosition(CompanyPositionSetInfo positionSetInfo)
+        {
+            bool pass = true;
+            using (EntityContext context = new EntityContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    context.Delete<CompanyPositionSetInfo>("hr.company.deletePositions", positionSetInfo);
+                    context.Save< CompanyPositionSetInfo>("hr.company.insertPosition", positionSetInfo);
+                    context.Commit();
+                }
+                catch
+                {
+                    pass = false;
+                    context.Rollback();
+                }
+            }
+            return pass;
+        }
+
+        public bool DeletePostion(CompanyPositionSetInfo positionSetInfo)
+        {
+            using (EntityContext context = new EntityContext())
+            {
+                context.Delete<CompanyPositionSetInfo>("hr.company.deletePositions", positionSetInfo);
+            }
+            return true;
         }
     }
 }

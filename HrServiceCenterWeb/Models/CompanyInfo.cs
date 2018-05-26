@@ -20,5 +20,7 @@ namespace HrServiceCenterWeb.Models
         public int AccountId { get; set; }
 
         public decimal AccountBalance { get; set; }
+
+        public List<CompanyPositionSetInfo> Positions { get; set; }
     }
 }

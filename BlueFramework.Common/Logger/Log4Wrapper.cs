@@ -42,10 +42,11 @@ namespace BlueFramework.Common.Logger
         /// <summary>
         /// write warnning message
         /// </summary>
-        /// <param name="meeeage"></param>
-        public void Warn(string meeeage)
+        /// <param name="message"></param>
+        public void Warn(string message)
         {
-
+            log4net.ILog log = log4net.LogManager.GetLogger(this.GetType());
+            log.Warn(message);
         }
     }
 }

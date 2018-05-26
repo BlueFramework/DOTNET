@@ -235,6 +235,33 @@ namespace BlueFramework.Blood.DataAccess
             return pass;
         }
 
+        public bool Delete<T>(DeleteConfig config, object deleteObject)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            CommandParameter[] parameters = BuildCommandParameters(deleteObject, properties);
+            DbCommand dbCommand = BuildCommand(config, parameters);
+            bool pass = true;
+            if (dbTransaction == null)
+            {
+                try
+                {
+
+                    db.ExecuteNonQuery(dbCommand);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.Delete<T> :", ex);
+                    pass = false;
+                }
+            }
+            else
+            {
+                db.ExecuteNonQuery(dbCommand, dbTransaction);
+            }
+            return pass;
+        }
+
 
 
         public void BeginTransaction()

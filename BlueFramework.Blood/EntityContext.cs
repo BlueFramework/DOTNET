@@ -45,6 +45,13 @@ namespace BlueFramework.Blood
             return pass;
         }
 
+        public bool Delete<T>(string commandId, object deleteObject)
+        {
+            EntityConfig config = ConfigManagent.Configs[commandId];
+            bool pass = command.Delete<T>((DeleteConfig)config, deleteObject);
+            return pass;
+        }
+
         public T Selete<T>(string selectId,object objectId)
         {
             EntityConfig config = ConfigManagent.Configs[selectId];

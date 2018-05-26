@@ -33,5 +33,15 @@ namespace HrServiceCenterWeb.Controllers
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return json;
         }
+
+        // GET: BaseCode/GetPositions/
+        [HttpGet]
+        public ActionResult GetPositions()
+        {
+            List<PositionInfo> list = BaseCodeProvider.Current.GetPositions();
+            JsonResult json = Json(list);
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return json;
+        }
     }
 }

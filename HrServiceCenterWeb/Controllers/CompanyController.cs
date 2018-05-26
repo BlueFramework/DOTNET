@@ -81,13 +81,13 @@ namespace HrServiceCenterWeb.Controllers
                 CompanyId = companyId,
                 Creator = BlueFramework.User.UserContext.CurrentUser.UserId,
                 Money = money,
-                AccountBalance = money
+                AccountBalance = company.AccountBalance
             };
             bool pass = manager.SaveRecharge(recordInfo);
             Object result = new
             {
-                success = true,
-                data = companyId
+                success = pass,
+                data = pass?"充值成功！":"充值失败！"
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
@@ -105,6 +105,31 @@ namespace HrServiceCenterWeb.Controllers
             return jsonResult;
         }
 
+        // Company/SavePosition
+        [HttpPost]
+        public ActionResult SavePosition(CompanyPositionSetInfo positionSetInfo)
+        {
+            bool pass = new Manager.EmployeeManager().SavePosition(positionSetInfo);
+            Object result = new
+            {
+                success = pass,
+                data = pass?"成功":"失败"
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        public ActionResult DeletePosition(CompanyPositionSetInfo positionSetInfo)
+        {
+            bool pass = new Manager.EmployeeManager().DeletePostion(positionSetInfo);
+            Object result = new
+            {
+                success = pass,
+                data = pass ? "成功" : "失败"
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
 
     }
 }
