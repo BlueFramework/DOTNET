@@ -8,11 +8,9 @@ function init() {
 }
 
 
-//查询用户列表
+//查询模板列表
 opt.query = function () {
-    // TODO 
-    return;
-    var url =  '../Company/GetCompanyList';
+    var url =  '../Pay/GetTemplateList';
     var params = { query: $('#txtQuery').val() };
     $('#dg').datagrid('loading');
     $.ajax({
@@ -35,18 +33,24 @@ opt.query = function () {
 //删除操作
 opt.delete = function (id) {
     // TODO 
+    var row = $('#dg').datagrid('getSelected');
+
+    if (row == null) {
+        $.messager.alert('提示', '未选中任何数据!');
+        return;
+    }
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
             $.ajax({
                 type: 'POST',
-                url: "../Company/DeleteCompany",
+                url: "../Pay/DeleteTemplate",
                 data: {
-                    UserId: id
+                    id: row.TemplateId
                 },
                 dataType: "json",
                 success: function (result) {
                     $.messager.alert('提示', result);
-                    UserManageOpt.query();
+                    opt.query();
                 }
             });
         }
@@ -71,7 +75,7 @@ opt.edit = function (id) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
-    var id = row.CompanyId;
-    var url = '../Company/CompanyPage?id=' + id;
+    var id = row.TemplateId;
+    var url = '../Pay/TemplateEditor?id=' + id;
     self.location = url;
 }

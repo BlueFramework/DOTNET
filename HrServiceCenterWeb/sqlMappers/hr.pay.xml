@@ -1,17 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <mapper namespace="hr.pay">
   <!-- 返回排序后所有的基础编码数据  -->
-  <select id="findTempList" >
-    select
-    t.TEMPLATE_ID TemplateId,
-    t.TEMPLATE_NAME TemplateName,
-    c.CODE CompanyCode,
-    c.NAME CompanyName,
-    --t.CREATE_TIME CreatTime,
-    CONVERT(varchar,t.CREATE_TIME,120) CreatTime,
-    c.REPRESENTATIVE
-    from HR_SALARY_TEMPLATE t
-    left join HR_COMPANY c on t.COMPANY_ID=c.COMPANY_ID
-    where t.IS_GLOBAL !=1
-  </select>
+
+
+
+  
 </mapper>
