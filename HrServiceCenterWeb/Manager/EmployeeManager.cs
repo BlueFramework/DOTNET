@@ -115,13 +115,6 @@ namespace HrServiceCenterWeb.Manager
             }
             return pass;
         }
-   
-        public List<object> GetEmployees()
-        {
-            DataAccess.EmployeeAccess db = new DataAccess.EmployeeAccess();
-            System.Data.DataTable dt = db.GetEmployees();
-            return null;
-        }
 
         public List<CompanyPositionSetInfo> GetPositonSets(int companyId)
         {
@@ -161,6 +154,58 @@ namespace HrServiceCenterWeb.Manager
                 context.Delete<CompanyPositionSetInfo>("hr.company.deletePositions", positionSetInfo);
             }
             return true;
+        }
+
+        public EmployeeInfo GetEmployee(int personId)
+        {
+            EmployeeInfo employeeInfo = null;
+            using (EntityContext context = new EntityContext())
+            {
+                employeeInfo = context.Selete<EmployeeInfo>("hr.employee.findEmployee", personId);
+            }
+            return employeeInfo;
+        }
+
+        public List<EmployeeInfo> GetEmployees(int companyId)
+        {
+            EmployeeInfo employee = new EmployeeInfo();
+            employee.CompanyId = companyId;
+            return GetEmployees(employee);
+        }
+
+        public List<EmployeeInfo> GetEmployees(EmployeeInfo employee)
+        {
+            List<EmployeeInfo> list = null;
+            using (EntityContext context = new EntityContext())
+            {
+                list = context.SelectListByTemplate<EmployeeInfo>("hr.employee.findEmployees", employee);
+            }
+            return list;
+        }
+
+        public bool SaveEmployee(EmployeeInfo employeeInfo)
+        {
+            bool pass;
+            using (EntityContext context = Session.CreateContext())
+            {
+                if(employeeInfo.PersonId==0)
+                    pass = context.Save<EmployeeInfo>("hr.employee.insertEmployee", employeeInfo);
+                else
+                    pass = context.Save<EmployeeInfo>("hr.employee.updateEmployee", employeeInfo);
+            }
+
+            return pass;
+        }
+
+        public bool DeleteEmployee(int personId)
+        {
+            bool pass;
+            using (EntityContext context = Session.CreateContext())
+            {
+                pass = context.Delete("hr.employee.deleteEmployee", personId);
+            }
+
+            return pass;
         }
     }
 }

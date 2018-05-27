@@ -1,7 +1,122 @@
 ﻿
 @{
-    ViewBag.Title = "Company";
+    ViewBag.Title = "公司档案信息";
 }
+<script src="~/JS/employee.EmployeePageOpt.js"></script>
+<script type="text/javascript">
+    var dataId = @ViewBag.EmployeeId;
+    var CompanyId = @ViewBag.CompanyId;
+</script>
+<div class="container container-layout">
+    <div class="page-header">
+        <h3>基础信息.<small>&nbsp;<a href="~/Employee/EmployeeList">人员列表</a></small>.<small>&nbsp;人员信息</small></h3>
+    </div>
 
-<h2>Company</h2>
-
+    <!-- 档案信息 -->
+    <div style="margin:20px 0;"></div>
+    <div>
+        <form class="form-horizontal" id="formEmployee">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">姓名</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="PersonName" form-control-type="textbox" data-options="prompt:'输入姓名.',required:true,validType:'length[1,50]'" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">单位</label>
+                <div class="col-sm-4">
+                    <input class="easyui-combobox" form-field-name="CompanyId" form-control-type="combobox" id="cmbCompany" style="width:100%;height:30px;" data-options="{url:'@Url.Content("~/Company/GetCompanyList?query=")',valueField: 'CompanyId',textField: 'Name',required:true}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">岗位</label>
+                <div class="col-sm-4">
+                    <input class="easyui-combobox" form-field-name="PositionId" form-control-type="combobox" style="width:100%;height:30px;" data-options="{url:'@Url.Content("~/BaseCode/GetPositions")',valueField: 'PositionId',textField: 'PositionName',method: 'get',editable:false,required:true}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">身份证</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="CardId" form-control-type="textbox" data-options="prompt:'输入身份证.',validType:'length[5,50]',required:true" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">性别</label>
+                <div class="col-sm-4">
+                    <select class="easyui-combobox" form-field-name="Sex" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}" >
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">出生日期</label>
+                <div class="col-sm-4">
+                    <input class="easyui-datebox" form-field-name="Birthday" form-control-type="datebox" style="width:100%;height:30px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">学历</label>
+                <div class="col-sm-4">
+                    <input class="easyui-combobox" form-field-name="Degree" form-control-type="combobox" style="width:100%;height:30px;" data-options="{url:'@Url.Content("~/BaseCode/GetEduciationCodes")',valueField: 'ObjectValue',textField: 'Text',method: 'get'}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">专业</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="Specialty" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">学校</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="School" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">政治面貌</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="Polity" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">民族</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="Nation" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">电话</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="Phone" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">地址</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="Address" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">联系人</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="ContactsPerson" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">联系人电话</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="ContactsPhone" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-4">
+                    <button class="btn btn-primary" onclick="opt.save();return false;" style="width:110px;">保存人员信息</button>
+                    <button class="btn btn-info" onclick="opt.add();return false;" style="width:110px;">+继续新建</button>
+                    <button class="btn btn-success" onclick="opt.exit();return false;" style="width:110px;">退出编辑</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+</div>

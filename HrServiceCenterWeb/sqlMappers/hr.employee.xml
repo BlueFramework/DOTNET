@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="hr.employee">
+  <!-- 返回排序后所有的基础编码数据  -->
+  <select id="findEmployees" >
+    select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
+    t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,
+    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT DegreeName
+    from HR_EMPLOYEE t
+    INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
+    INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
+    INNER JOIN T_S_BASECODE b1 on b1.OBJECT_VALUE=t.DEGREE and b1.CATEGORYID=2
+    where (#{CompanyId}=0 or t.COMPANY_ID=#{CompanyId})
+  </select>
+  <select id="findEmployee" >
+    select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
+    t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,
+    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT
+    from HR_EMPLOYEE t
+    INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
+    INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
+    INNER JOIN T_S_BASECODE b1 on b1.OBJECT_VALUE=t.DEGREE and b1.CATEGORYID=2
+    where t.PERSON_ID=#{value}
+  </select>
+  <insert id="insertEmployee">
+    <selectKey keyProperty="PersonId" order="INSERTING" >
+      <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
+      select @PersonId=@@IDENTITY
+    </selectKey>
+    insert into HR_EMPLOYEE(COMPANY_ID,POSITION_ID,PERSON_NAME,CARD_ID,SEX,BIRTHDAY,DEGREE,POLITY,NATION,PHONE,ADDRESS,CONTACTS_PERSON,CONTACTS_PHONE,SPECIALTY,SCHOOL,CREATOR,CREATE_TIME,STATE)
+    values(#{CompanyId},#{PositionId},#{PersonName},#{CardId},#{Sex},#{Birthday},#{Degree},#{Polity},#{Nation}
+    ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{State})
+  </insert>
+  <insert id="updateEmployee">
+    update HR_EMPLOYEE set COMPANY_ID=#{CompanyId},POSITION_ID=#{PositionId},PERSON_NAME=#{PersonName},CARD_ID=#{CardId},SEX=#{Sex}
+    ,BIRTHDAY=#{Birthday},DEGREE=#{Degree},POLITY=#{Polity},NATION=#{Nation},PHONE=#{Phone},ADDRESS=#{Address}
+    ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},STATE=#{State})
+    where PERSON_ID=#{PersonId}
+  </insert>
+  <delete id="deleteEmployee">
+    delete from HR_EMPLOYEE where PERSON_ID=#{value}
+  </delete>
+</mapper>

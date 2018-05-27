@@ -92,11 +92,11 @@ namespace BlueFramework.Blood.DataAccess
         /// </summary>
         /// <typeparam name="T">entity template</typeparam>
         /// <param name="config">config</param>
-        /// <param name="objectId">query value or entity id</param>
+        /// <param name="objectValue">query value or entity id</param>
         /// <returns></returns>
-        public T Select<T>(EntityConfig config, object objectId)
+        public T Select<T>(EntityConfig config, object objectValue)
         {
-            DbCommand dbCommand = BuildCommand(config, objectId);
+            DbCommand dbCommand = BuildCommand(config, objectValue);
             try
             {
                 T o = default(T);
@@ -139,6 +139,15 @@ namespace BlueFramework.Blood.DataAccess
                 LogHelper.Warn("BlueFramework.Blood.DataAccess.Command.SelectList<T> :" , ex);
                 return null;
             }
+        }
+
+        public List<T> SelectList<T>(EntityConfig config,T objectValue)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            CommandParameter[] parameters = BuildCommandParameters(objectValue, properties);
+            List<T> list = SelectList<T>(config, parameters);
+            return list;
         }
 
         private CommandParameter[] BuildCommandParameters(object o, PropertyInfo[] properties)

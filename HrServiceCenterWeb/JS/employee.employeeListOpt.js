@@ -4,13 +4,14 @@ function init() {
     var height = $('.container-layout').height() - 180;
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
+    opt.query();
 }
 
 
 //查询用户列表
 opt.query = function () {
-    var url =  '../Company/GetCompanyList';
-    var params = { query: $('#txtQuery').val() };
+    var url =  '../Employee/GetEmployeeList';
+    var params = { companyId:0 };
     $('#dg').datagrid('loading');
     $.ajax({
         url: url,
@@ -28,21 +29,27 @@ opt.query = function () {
     });
 }
 
+opt.selectCompany = function (company) {
+    opt.query();
+}
+
 
 //删除操作
 opt.delete = function (id) {
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
+            var row = $('#dg').datagrid('getSelected');
+            var id = row.PersonId;
             $.ajax({
                 type: 'POST',
-                url: "../Company/DeleteCompany",
+                url: "../Employee/DeleteEmployee",
                 data: {
-                    UserId: id
+                    personId: id
                 },
                 dataType: "json",
                 success: function (result) {
-                    $.messager.alert('提示', result);
-                    UserManageOpt.query();
+                    $.messager.alert('提示', result.data);
+                    opt.query();
                 }
             });
         }
@@ -54,7 +61,7 @@ opt.delete = function (id) {
 
 
 opt.add = function () {
-    var url = '../Company/CompanyPage?id=0';
+    var url = '../Employee/EmployeePage?id=0';
     self.location = url;
 }
 
@@ -65,7 +72,7 @@ opt.edit = function (id) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
-    var id = row.CompanyId;
-    var url = '../Company/CompanyPage?id=' + id;
+    var id = row.PersonId;
+    var url = '../Employee/EmployeePage?id=' + id;
     self.location = url;
 }

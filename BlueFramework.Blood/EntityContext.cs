@@ -22,10 +22,10 @@ namespace BlueFramework.Blood
         {
         }
 
-        public void Save<T>(string commandId,T o)
+        public bool Save<T>(string commandId,T o)
         {
             EntityConfig config = ConfigManagent.Configs[commandId];
-            bool pass;
+            bool pass = false;
             switch (config.ConfigType)
             {
                 case ConfigType.Insert:
@@ -36,6 +36,7 @@ namespace BlueFramework.Blood
                     pass = command.Update<T>((UpdateConfig)config, o);
                     break;
             }
+            return pass;
         }
 
         public bool Delete(string commandId,object objectId)
@@ -75,6 +76,13 @@ namespace BlueFramework.Blood
         {
             EntityConfig config = ConfigManagent.Configs[selectId];
             List<T> ts = command.SelectList<T>(config, parameters);
+            return ts;
+        }
+
+        public List<T> SelectListByTemplate<T>(string selectId, T objectValue)
+        {
+            EntityConfig config = ConfigManagent.Configs[selectId];
+            List<T> ts = command.SelectList<T>(config, objectValue);
             return ts;
         }
 
