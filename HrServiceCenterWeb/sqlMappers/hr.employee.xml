@@ -30,12 +30,12 @@
     values(#{CompanyId},#{PositionId},#{PersonName},#{CardId},#{Sex},#{Birthday},#{Degree},#{Polity},#{Nation}
     ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{State})
   </insert>
-  <insert id="updateEmployee">
+  <update id="updateEmployee">
     update HR_EMPLOYEE set COMPANY_ID=#{CompanyId},POSITION_ID=#{PositionId},PERSON_NAME=#{PersonName},CARD_ID=#{CardId},SEX=#{Sex}
     ,BIRTHDAY=#{Birthday},DEGREE=#{Degree},POLITY=#{Polity},NATION=#{Nation},PHONE=#{Phone},ADDRESS=#{Address}
-    ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},STATE=#{State})
+    ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},STATE=#{State}
     where PERSON_ID=#{PersonId}
-  </insert>
+  </update>
   <delete id="deleteEmployee">
     delete from HR_EMPLOYEE where PERSON_ID=#{value}
   </delete>
