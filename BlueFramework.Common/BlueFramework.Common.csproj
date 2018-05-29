@@ -37,6 +37,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Code\DOTNET\HE\RefComponet\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\RefComponet\NPOI 2.0\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSV\CsvFileParser.cs" />
+    <Compile Include="CSV\CsvPagesParser.cs" />
+    <Compile Include="CSV\CsvPaggingEventArg.cs" />
+    <Compile Include="Excel\ExcelFactory.cs" />
+    <Compile Include="Excel\IExcel.cs" />
+    <Compile Include="Excel\POIExcel.cs" />
     <Compile Include="Http\HttpWebRequestUtil.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Log4Wrapper.cs" />
