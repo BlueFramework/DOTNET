@@ -8,11 +8,9 @@ function init() {
 }
 
 
-//查询用户列表
+//查询列表
 opt.query = function () {
-    // TODO 
-    return;
-    var url =  '../Company/GetCompanyList';
+    var url = '../Pay/QueryImportorList';
     var params = { query: $('#txtQuery').val() };
     $('#dg').datagrid('loading');
     $.ajax({
@@ -34,19 +32,24 @@ opt.query = function () {
 
 //删除操作
 opt.delete = function (id) {
-    // TODO 
+    var row = $('#dg').datagrid('getSelected');
+
+    if (row == null) {
+        $.messager.alert('提示', '未选中任何数据!');
+        return;
+    }
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
             $.ajax({
                 type: 'POST',
-                url: "../Company/DeleteCompany",
+                url: "../Pay/DeleteInsurance",
                 data: {
-                    UserId: id
+                    id: row.ImportId
                 },
                 dataType: "json",
                 success: function (result) {
                     $.messager.alert('提示', result);
-                    UserManageOpt.query();
+                    opt.query();
                 }
             });
         }
@@ -74,4 +77,19 @@ opt.edit = function (id) {
     var id = row.CompanyId;
     var url = '../Company/CompanyPage?id=' + id;
     self.location = url;
+}
+
+//上传文件
+opt.import = function () {
+    $('#inputform').form('submit', {
+        url: '../Pay/ImportorEditor',
+        success: function (result) {
+            $('#inputwindow').window('close');
+            alert("导入成功！");
+        },
+        error: function () {
+            $('#inputwindow').window('close');
+            alert("导入失败！");
+        }
+    });
 }

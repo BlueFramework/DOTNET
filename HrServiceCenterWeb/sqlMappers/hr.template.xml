@@ -59,4 +59,8 @@
     UPDATE_TIME=#{UpdateTime}
     where TEMPLATE_ID=#{TemplateId}
   </update>
+  
+  <select id="findSalaryItemTitle" >
+    select t.ITEM_TITLE Name,ITEM_ID ItemId from HR_SALARY_ITEM t where t.ISLEAF=1
+  </select>
 </mapper>

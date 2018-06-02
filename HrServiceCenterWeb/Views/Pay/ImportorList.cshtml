@@ -3,7 +3,7 @@
     ViewBag.Title = "社保管理";
 }
 <!-- import opt js-->
-<script src="~/JS/pay.ImportorListOpt.js"></script> 
+<script src="~/JS/pay.ImportorListOpt.js"></script>
 <div class="container container-layout">
     <div class="page-header">
         <h3>发放管理.<small>&nbsp;社保管理</small></h3>
@@ -17,8 +17,9 @@
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.query()"><i class="fa fa-search"></i> 快速查询</a>
             </div>
             <div class="col-md-5">
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.add()"><i class="fa fa-file-o" aria-hidden="true"></i> 导入社保</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="$('#inputwindow').window('open')"><i class="fa fa-file-o" aria-hidden="true"></i> 导入社保</a>
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.edit()"><i class="fa fa-file-o" aria-hidden="true"></i> 查看详情</a>
+                <a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="opt.delete()" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
             </div>
         </div>
 
@@ -33,14 +34,22 @@
 			        pageSize:10,pageList:[10,20,30,40,50,100]">
             <thead>
                 <tr>
-                    <th data-options="field:'a',width:100">ID</th>
-                    <th data-options="field:'b',width:300">标题</th>
-                    <th data-options="field:'c',width:120">创建时间</th>
-                    <th data-options="field:'d',width:120">创建人</th>
+                    <th data-options="field:'ImportId',width:100">ID</th>
+                    <th data-options="field:'Title',width:300">标题</th>
+                    <th data-options="field:'CreateTime',width:120">创建时间</th>
+                    <th data-options="field:'CreatorName',width:120">创建人</th>
                 </tr>
             </thead>
         </table>
     </div>
+    <!--模态框-->
+    <div id="inputwindow" class="easyui-window" title="社保导入" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:150px;">
+        <form id="inputform" method="post" enctype="multipart/form-data">
+            <input id="upload1" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...'" style="width: 150px" />
+            <input type="submit" class="btn btn-success" onclick="opt.import(); return false;" title="导入保险" />
+        </form>
+    </div>
 </div>
+
 
 

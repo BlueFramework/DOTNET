@@ -4,10 +4,9 @@ using System.Linq;
 using HrServiceCenterWeb.Models;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Configuration;
-using BlueFramework.User;
-using BlueFramework.User.Models;
+using System.IO;
+using System.Data;
+using BlueFramework.Common.CSV;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -66,7 +65,7 @@ namespace HrServiceCenterWeb.Controllers
             return Json(strtemp);
         }
 
-        public ActionResult SaveTemplateForTable(int id,string temps)
+        public ActionResult SaveTemplateForTable(int id, string temps)
         {
             int[] tempArr = null;
             if (!string.IsNullOrEmpty(temps))
@@ -137,10 +136,62 @@ namespace HrServiceCenterWeb.Controllers
             return View();
         }
 
-        // 导入保险编辑器
+        //查询保险导入列表
+        //VIEW: /Pay/QueryImportorList
+        public ActionResult QueryImportorList(string query)
+        {
+            List<InsuranceInfo> list = new Manager.PayManager().QueryImportorList(query);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        public ActionResult DeleteInsurance(int id)
+        {
+            string msg = string.Empty;
+            if (new Manager.PayManager().DeleteInsurance(id))
+            {
+                msg = "删除成功";
+            }
+            else
+            {
+                msg = "删除失败";
+            }
+            return Json(msg);
+        }
+
+        // 导入保险
         // VIEW: /Pay/ImportorEditor
         public ActionResult ImportorEditor()
         {
+            HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+            string outmsg = string.Empty;
+            bool success = false;
+            if (files.Count > 0)
+            {
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFile file1 = files[i];
+                    Stream stream = file1.InputStream;
+                    string fileName = System.IO.Path.GetFileName(file1.FileName);
+                    string fileType = System.IO.Path.GetExtension(file1.FileName).ToLower();
+                    switch (fileType)
+                    {
+                        case ".csv":
+                            CsvFileParser cfp = new CsvFileParser();
+                            DataTable dt = cfp.TryParse(stream, out outmsg);
+                            success = new Manager.PayManager().Import(dt, fileName,ref outmsg);
+                            break;
+                        case ".xls":
+                            success = false;
+                            break;
+                        default:
+                            success = false;
+                            outmsg += "文件：" + fileName +"格式不支持；";
+                            break;
+                    }
+                }
+                outmsg += "提交失败，请联系管理员；";
+            }
             return View();
         }
 

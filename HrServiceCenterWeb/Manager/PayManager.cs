@@ -125,7 +125,7 @@ namespace HrServiceCenterWeb.Manager
                 return null;
         }
 
-        public bool SaveTemplateForTable(int tempId,int[] tempItems)
+        public bool SaveTemplateForTable(int tempId, int[] tempItems)
         {
             using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
             {
@@ -161,7 +161,7 @@ namespace HrServiceCenterWeb.Manager
             }
         }
 
-        public bool SaveTemplateMsg(int cmpId,int[] tempItems)
+        public bool SaveTemplateMsg(int cmpId, int[] tempItems)
         {
             EmployeeManager em = new EmployeeManager();
             CompanyInfo cmp = em.GetCompany(cmpId);
@@ -180,7 +180,7 @@ namespace HrServiceCenterWeb.Manager
                         {
                             TemplateDetailInfo tdi = new TemplateDetailInfo();
                             tdi.TemplateId = tp.TemplateId;
-                            tdi.ItemId= temp[i];
+                            tdi.ItemId = temp[i];
                             context.Save<TemplateDetailInfo>("hr.template.insertTemplateDetail", tdi);
                         }
                     }
@@ -203,10 +203,110 @@ namespace HrServiceCenterWeb.Manager
                 context.Delete("hr.template.deleteTemp", tempId);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
+        }
+
+        public List<InsuranceInfo> QueryImportorList(string query)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsurance", query);
+            return list;
+        }
+
+        public bool DeleteInsurance(int id)
+        {
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    context.Delete("hr.insurance.deleteInsurance", id);
+
+                    context.Delete("hr.insurance.deleteInsuranceDetail", id);
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public bool Import(DataTable dt, string fileName,ref string outmsg)
+        {
+            Dictionary<string, int> cardIds = getItemCardId();
+            Dictionary<string, int> titles = getItemTitle();
+
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+
+                    //判断是否已经入库
+                    //add code
+
+                    InsuranceInfo ii = new InsuranceInfo();
+                    ii.Title = fileName;
+                    ii.CreatorId = UserContext.CurrentUser.UserId;
+                    ii.CreateTime = DateTime.Now.ToShortDateString();
+                    context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (cardIds.ContainsKey(row["身份证号码"].ToString()) && titles.ContainsKey(row["险种"].ToString()))
+                        {
+                            InsuranceDetailInfo idi = new InsuranceDetailInfo();
+                            idi.ImportId = ii.ImportId;
+                            idi.PersonId = cardIds[row["身份证号码"].ToString()];
+                            idi.PayMonth = row["账户月度"].ToString();
+                            idi.ItemId = titles[row["险种"].ToString()];
+                            idi.ItemValue = decimal.Parse(row["缴存值"].ToString());
+                            context.Save<InsuranceDetailInfo>("hr.insurance.insertInsuranceDetail", idi);
+                        }
+                    }
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    outmsg += "服务器内部错误，请联系管理员";
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
+
+        private Dictionary<string, int> getItemCardId()
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<EmployeeInfo> list = context.SelectList<EmployeeInfo>("hr.employee.findEmployeesCardId", null);
+            Dictionary<string, int> dic = new Dictionary<string, int>();
+            foreach (EmployeeInfo ei in list)
+            {
+                if (!dic.ContainsKey(ei.CardId))
+                    dic.Add(ei.CardId, ei.PersonId);
+            }
+            return dic;
+        }
+
+        private Dictionary<string, int> getItemTitle()
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<SalaryItemInfo> list = context.SelectList<SalaryItemInfo>("hr.template.findSalaryItemTitle", null);
+            Dictionary<string, int> dic = new Dictionary<string, int>();
+            foreach (SalaryItemInfo si in list)
+            {
+                if (!dic.ContainsKey(si.Name))
+                    dic.Add(si.Name, si.ItemId);
+            }
+            return dic;
         }
     }
 }

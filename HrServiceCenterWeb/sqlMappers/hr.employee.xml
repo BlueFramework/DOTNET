@@ -39,4 +39,8 @@
   <delete id="deleteEmployee">
     delete from HR_EMPLOYEE where PERSON_ID=#{value}
   </delete>
+  <!-- 获取所有人员的身份证号 -->
+  <select id="findEmployeesCardId" >
+    select t.CARD_ID CardId,PERSON_ID PersonId from HR_EMPLOYEE t
+  </select>
 </mapper>
