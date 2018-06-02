@@ -18,7 +18,7 @@
             </div>
             <div class="col-md-5">
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="$('#inputwindow').window('open')"><i class="fa fa-file-o" aria-hidden="true"></i> 导入社保</a>
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.edit()"><i class="fa fa-file-o" aria-hidden="true"></i> 查看详情</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.querydetail()"><i class="fa fa-file-o" aria-hidden="true"></i> 查看详情</a>
                 <a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="opt.delete()" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
             </div>
         </div>
@@ -44,10 +44,12 @@
     </div>
     <!--模态框-->
     <div id="inputwindow" class="easyui-window" title="社保导入" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:150px;">
-        <form id="inputform" method="post" enctype="multipart/form-data">
-            <input id="upload1" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...'" style="width: 150px" />
-            <input type="submit" class="btn btn-success" onclick="opt.import(); return false;" title="导入保险" />
-        </form>
+        <div style="margin:0 auto;text-align:center;line-height:100px;">
+            <form id="inputform" method="post" enctype="multipart/form-data">
+                <input id="upload" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...'" style="width: 250px" />
+                <input type="submit" class="btn btn-success" onclick="opt.import(); return false;" title="导入保险" style="margin-left:10px;" />
+            </form>
+        </div>
     </div>
 </div>
 

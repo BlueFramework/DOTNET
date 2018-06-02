@@ -249,10 +249,15 @@ namespace HrServiceCenterWeb.Manager
                     context.BeginTransaction();
 
                     //判断是否已经入库
-                    //add code
+                    List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsuranceByTitle", fileName);
+                    if (list.Count > 0)
+                    {
+                        outmsg += "文件：" + fileName + "已上传；";
+                        return true;
+                    }
 
                     InsuranceInfo ii = new InsuranceInfo();
-                    ii.Title = fileName;
+                    ii.Title = fileName; 
                     ii.CreatorId = UserContext.CurrentUser.UserId;
                     ii.CreateTime = DateTime.Now.ToShortDateString();
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
@@ -275,7 +280,7 @@ namespace HrServiceCenterWeb.Manager
                 }
                 catch (Exception ex)
                 {
-                    outmsg += "服务器内部错误，请联系管理员";
+                    outmsg += "服务器内部错误，请联系管理员；";
                     context.Rollback();
                     return false;
                 }
@@ -307,6 +312,13 @@ namespace HrServiceCenterWeb.Manager
                     dic.Add(si.Name, si.ItemId);
             }
             return dic;
+        }
+
+        public List<InsuranceDetailInfo> QueryInsuranceDetail(int importId)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<InsuranceDetailInfo> list = context.SelectList<InsuranceDetailInfo>("hr.insurance.findInsuranceDetailById", importId);
+            return list;
         }
     }
 }

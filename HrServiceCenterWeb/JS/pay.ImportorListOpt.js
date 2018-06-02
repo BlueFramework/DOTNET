@@ -59,23 +59,16 @@ opt.delete = function (id) {
     });
 }
 
-
-opt.add = function () {
-    // TODO 
-    var url = '../Pay/ImportorEditor?id=0';
-    self.location = url;
-}
-
-//编辑对象
-opt.edit = function (id) {
+//查看详情
+opt.querydetail = function (id) {
     // TODO 
     var row = $('#dg').datagrid('getSelected');
     if (row == null) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
-    var id = row.CompanyId;
-    var url = '../Company/CompanyPage?id=' + id;
+    var id = row.ImportId;
+    var url = '../Pay/ImportorDetail?importId=' + id;
     self.location = url;
 }
 
@@ -84,12 +77,15 @@ opt.import = function () {
     $('#inputform').form('submit', {
         url: '../Pay/ImportorEditor',
         success: function (result) {
+            var retuDa = $.parseJSON(result)
             $('#inputwindow').window('close');
-            alert("导入成功！");
+            $.messager.alert('提示', retuDa);
+            opt.query();
         },
         error: function () {
             $('#inputwindow').window('close');
-            alert("导入失败！");
+            $.messager.alert('提示', "服务器内部错误，请联系管理员");
+            opt.query();
         }
     });
 }

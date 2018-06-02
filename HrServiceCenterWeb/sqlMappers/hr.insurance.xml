@@ -26,4 +26,16 @@
     </selectKey>
     insert into HR_SALARY_IMPORTOR(TITLE,CREATOR,CREATE_TIME) values(#{Title},#{CreatorId},#{CreateTime})
   </insert>
+  <select id="findInsuranceByTitle" >
+    select t.IMPORT_ID ImportId,t.TITLE Title,u.USERNAME CreatorName,CONVERT(varchar,t.CREATE_TIME,120) CreateTime
+    from HR_SALARY_IMPORTOR t
+    left join T_S_USER u on t.CREATOR=u.USERID
+    where t.TITLE = #{value}
+  </select>
+  <select id="findInsuranceDetailById">
+    select t.IMPORT_ID ImportId,e.PERSON_NAME PersonName,t.PAY_MONTH PayMonth,s.ITEM_TITLE ItemName,t.TEM_VALUE ItemValue from HR_SALARY_IMPORTOR_DATA t 
+    left join HR_EMPLOYEE e on t.PERSON_ID=e.PERSON_ID
+    left join HR_SALARY_ITEM s on t.ITEM_ID=s.ITEM_ID
+    where t.IMPORT_ID=#{value}
+  </select>
 </mapper>

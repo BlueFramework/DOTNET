@@ -172,27 +172,47 @@ namespace HrServiceCenterWeb.Controllers
                 {
                     HttpPostedFile file1 = files[i];
                     Stream stream = file1.InputStream;
-                    string fileName = System.IO.Path.GetFileName(file1.FileName);
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(file1.FileName);
                     string fileType = System.IO.Path.GetExtension(file1.FileName).ToLower();
                     switch (fileType)
                     {
                         case ".csv":
                             CsvFileParser cfp = new CsvFileParser();
                             DataTable dt = cfp.TryParse(stream, out outmsg);
-                            success = new Manager.PayManager().Import(dt, fileName,ref outmsg);
+                            success = new Manager.PayManager().Import(dt, fileName, ref outmsg);
                             break;
                         case ".xls":
                             success = false;
                             break;
                         default:
                             success = false;
-                            outmsg += "文件：" + fileName +"格式不支持；";
+                            outmsg += "文件：" + fileName + "格式不支持；";
                             break;
                     }
                 }
-                outmsg += "提交失败，请联系管理员；";
             }
+            else
+            {
+                outmsg += "未获取到文件，请重试；";
+            }
+            if (string.IsNullOrEmpty(outmsg))
+                outmsg = "上传成功！";
+            return Json(outmsg);
+        }
+
+        public ActionResult ImportorDetail(int importId)
+        {
+            ViewBag.ImportId = importId;
             return View();
+        }
+
+        //详细列表
+        //VIEW: /Pay/QueryInsuranceDetail
+        public ActionResult QueryInsuranceDetail(int importId)
+        {
+            List<InsuranceDetailInfo> list = new Manager.PayManager().QueryInsuranceDetail(importId);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
         }
 
         // 发放列表
