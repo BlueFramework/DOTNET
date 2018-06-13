@@ -8,11 +8,9 @@ function init() {
 }
 
 
-//查询用户列表
+//查询发放列表
 opt.query = function () {
-    // TODO 
-    return;
-    var url =  '../Company/GetCompanyList';
+    var url =  '../Pay/QueryPayList';
     var params = { query: $('#txtQuery').val() };
     $('#dg').datagrid('loading');
     $.ajax({

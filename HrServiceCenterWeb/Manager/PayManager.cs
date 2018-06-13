@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Xml;
 
 namespace HrServiceCenterWeb.Manager
 {
@@ -237,7 +238,7 @@ namespace HrServiceCenterWeb.Manager
             }
         }
 
-        public bool Import(DataTable dt, string fileName,ref string outmsg)
+        public bool Import(DataTable dt, string fileName, ref string outmsg)
         {
             Dictionary<string, int> cardIds = getItemCardId();
             Dictionary<string, int> titles = getItemTitle();
@@ -257,7 +258,7 @@ namespace HrServiceCenterWeb.Manager
                     }
 
                     InsuranceInfo ii = new InsuranceInfo();
-                    ii.Title = fileName; 
+                    ii.Title = fileName;
                     ii.CreatorId = UserContext.CurrentUser.UserId;
                     ii.CreateTime = DateTime.Now.ToShortDateString();
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
@@ -319,6 +320,181 @@ namespace HrServiceCenterWeb.Manager
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
             List<InsuranceDetailInfo> list = context.SelectList<InsuranceDetailInfo>("hr.insurance.findInsuranceDetailById", importId);
             return list;
+        }
+
+        public List<PayList> QueryPayList(string query)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<PayList> list = context.SelectList<PayList>("hr.pay.findPayList", query);
+            return list;
+        }
+
+        public HashSet<int> QueryTemplateDetail(int id)
+        {
+            HashSet<int> result = new HashSet<int>();
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<TemplateDetailInfo> list = context.SelectList<TemplateDetailInfo>("hr.template.findTemplateDetailByCompanyId", id);
+            foreach (TemplateDetailInfo temp in list)
+            {
+                result.Add(temp.ItemId);
+            }
+            return result;
+        }
+
+        public List<PayDetailInfo> GetPayDetail(int id)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<PayDetailInfo> list = context.SelectList<PayDetailInfo>("hr.pay.findPayDetail", id);
+            Dictionary<int, Dictionary<string, decimal>> dic = GetPersionInsuranceDic();
+            foreach (PayDetailInfo info in list)
+            {
+                if (dic.ContainsKey(info.PersonId))
+                {
+                    foreach (KeyValuePair<string, decimal> kv in dic[info.PersonId])
+                    {
+                        Type type = info.GetType();
+                        System.Reflection.PropertyInfo propertyInfo = type.GetProperty(kv.Key);
+                        propertyInfo.SetValue(info, kv.Value);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public Dictionary<int, Dictionary<string, decimal>> GetPersionInsuranceDic()
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<InsuranceDetailInfo> list = context.SelectList<InsuranceDetailInfo>("hr.insurance.findInsuranceDetailByNewMonth", null);
+            Dictionary<int, string> ItemConfigDic = GetItemConfigDic();
+            Dictionary<int, Dictionary<string, decimal>> dic = new Dictionary<int, Dictionary<string, decimal>>();
+            foreach (InsuranceDetailInfo info in list)
+            {
+                if (!dic.ContainsKey(info.PersonId))
+                {
+                    Dictionary<string, decimal> sdic = new Dictionary<string, decimal>();
+                    if (ItemConfigDic.ContainsKey(info.ItemId))
+                    {
+                        sdic.Add(ItemConfigDic[info.ItemId], info.ItemValue);
+                        dic.Add(info.PersonId, sdic);
+                    }
+                }
+                else
+                {
+                    if (ItemConfigDic.ContainsKey(info.ItemId))
+                    {
+                        dic[info.PersonId].Add(ItemConfigDic[info.ItemId], info.ItemValue);
+                    }
+                }
+            }
+            return dic;
+        }
+
+        public Dictionary<int, string> GetItemConfigDic()
+        {
+            Dictionary<int, string> dic = new Dictionary<int, string>();
+            XmlDocument doc = new XmlDocument();
+            string path = System.AppDomain.CurrentDomain.BaseDirectory + "Setting/Pay/PayTableConfig.xml";
+            doc.Load(path);
+            XmlNode root = doc.SelectSingleNode("Root");
+            XmlNodeList xn = root.ChildNodes;
+            foreach (XmlNode xmlnode in xn)
+            {
+                XmlElement xe = (XmlElement)xmlnode;
+                if (xe.GetAttribute("isDynamic") == "true")
+                {
+                    dic.Add(int.Parse(xe.GetAttribute("code")), xe.GetAttribute("fieldName"));
+                }
+                if (xe.GetAttribute("isLastStage") == "false")
+                {
+                    XmlNodeList child = xmlnode.ChildNodes;
+                    foreach (XmlNode node in child)
+                    {
+                        XmlElement nd = (XmlElement)node;
+                        dic.Add(int.Parse(nd.GetAttribute("code")), nd.GetAttribute("fieldName"));
+                    }
+                }
+            }
+            return dic;
+        }
+
+        public bool SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time,string count,ref string msg)
+        {
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+
+                    Models.TemplateInfo temp = context.Selete<Models.TemplateInfo>("hr.template.findTemplateIdByCompanyId", cmpid);
+                    PayList pl = new PayList();
+                    pl.CompanyId = cmpid;
+                    pl.TemplateId = temp.TemplateId;
+                    pl.PayTitle = tname;
+                    pl.PayMonth = time;
+                    pl.CreatorId= UserContext.CurrentUser.UserId;
+                    pl.CreateTime = DateTime.Now.ToShortDateString();
+                    context.Save<PayList>("hr.pay.insertPayTable", pl);
+
+                    Dictionary<string, int> dic = GetIdConfigDic();
+                    foreach (PayDetailInfo info in list)
+                    {
+                        foreach (System.Reflection.PropertyInfo p in info.GetType().GetProperties())
+                        {
+                            if (dic.ContainsKey(p.Name))
+                            {
+                                PayValueInfo pvi = new PayValueInfo();
+                                pvi.PayId = pl.PayId;
+                                pvi.ItemId = dic[p.Name];
+                                pvi.PersonId = info.PersonId;
+                                pvi.PayValue = decimal.Parse(p.GetValue(info).ToString());
+                                context.Save<PayValueInfo>("hr.pay.insertPayTableDetail", pvi);
+                            }
+                        }
+                    }
+
+                    CompanyAccountInfo cai = new CompanyAccountInfo();
+                    cai.AccountBalance = decimal.Parse(count);
+                    cai.CompanyId = cmpid;
+                    context.Save<CompanyAccountInfo>("hr.company.updateCompanyBalance", cai);
+
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    msg += "服务器内部错误，请联系管理员；";
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public Dictionary<string, int> GetIdConfigDic()
+        {
+            Dictionary<string, int> dic = new Dictionary<string, int>();
+            XmlDocument doc = new XmlDocument();
+            string path = System.AppDomain.CurrentDomain.BaseDirectory + "Setting/Pay/PayTableConfig.xml";
+            doc.Load(path);
+            XmlNode root = doc.SelectSingleNode("Root");
+            XmlNodeList xn = root.ChildNodes;
+            foreach (XmlNode xmlnode in xn)
+            {
+                XmlElement xe = (XmlElement)xmlnode;
+                if (xe.GetAttribute("isDynamic") == "true")
+                {
+                    dic.Add(xe.GetAttribute("fieldName"), int.Parse(xe.GetAttribute("code")));
+                }
+                if (xe.GetAttribute("isLastStage") == "false")
+                {
+                    XmlNodeList child = xmlnode.ChildNodes;
+                    foreach (XmlNode node in child)
+                    {
+                        XmlElement nd = (XmlElement)node;
+                        dic.Add( nd.GetAttribute("fieldName"), int.Parse(nd.GetAttribute("code")));
+                    }
+                }
+            }
+            return dic;
         }
     }
 }

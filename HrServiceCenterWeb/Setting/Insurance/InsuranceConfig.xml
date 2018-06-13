@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Parentclass name="医疗">
+    <Sonclass name="工伤"></Sonclass>
+    <Sonclass name="生育"></Sonclass>
+  </Parentclass>
+</Root>

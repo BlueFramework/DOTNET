@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.IO;
 using System.Data;
 using BlueFramework.Common.CSV;
+using System.Xml;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -216,17 +217,131 @@ namespace HrServiceCenterWeb.Controllers
         }
 
         // 发放列表
-        // VIEW: /Pay/ImportorList
+        // VIEW: /Pay/PayList
         public ActionResult PayList()
         {
             return View();
         }
 
+        //查询发放列表
+        //VIEW：/Pay/QueryPayList
+        public ActionResult QueryPayList(string query)
+        {
+            List<PayList> list = new Manager.PayManager().QueryPayList(query);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
         // 发放编辑器
         // VIEW: /Pay/PayEditor
-        public ActionResult PayEditor()
+        public ActionResult PayEditor(string id)
         {
             return View();
+        }
+
+        public List<PayTableConfig> PayTableInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        //动态加载表头
+        [HttpPost]
+        public ActionResult RefreshTable(int id)
+        {
+            List<PayTableConfig> list = GetTableColumns();
+            HashSet<int> temp = new Manager.PayManager().QueryTemplateDetail(id);
+            if (temp.Count > 0)
+            {
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    if (list[i].IsDynamic == true)
+                    {
+                        if (list[i].Subnode.Count > 0)
+                        {
+                            for (int n = list[i].Subnode.Count - 1; n >= 0; n--)
+                            {
+                                if (!temp.Contains(list[i].Subnode[n].ItemId))
+                                    list[i].Subnode.RemoveAt(n);
+                            }
+                        }
+                        else
+                        {
+                            if (!temp.Contains(list[i].ItemId))
+                                list.RemoveAt(i);
+                        }
+                    }
+                }
+            }
+            list = list.Where(i => i.IsLastStage == false && i.Subnode.Count > 0|| i.IsLastStage == true && i.Subnode.Count == 0).ToList();
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        //获取发放表配置
+        public List<PayTableConfig> GetTableColumns()
+        {
+            List<PayTableConfig> list = new List<PayTableConfig>();
+            XmlDocument doc = new XmlDocument();
+            string path = System.AppDomain.CurrentDomain.BaseDirectory + "Setting/Pay/PayTableConfig.xml";
+            doc.Load(path);
+            XmlNode root = doc.SelectSingleNode("Root");
+            XmlNodeList xn = root.ChildNodes;
+            foreach (XmlNode xmlnode in xn)
+            {
+                XmlElement xe = (XmlElement)xmlnode;
+                PayTableConfig config = new PayTableConfig();
+                config.FieldCode = xe.GetAttribute("fieldName");
+                config.FieldTitle = xe.GetAttribute("title");
+                config.ItemId = int.Parse(xe.GetAttribute("code"));
+                config.IsLastStage = bool.Parse(xe.GetAttribute("isLastStage"));
+                config.IsEdit = bool.Parse(xe.GetAttribute("isEdit"));
+                config.IsShow = bool.Parse(xe.GetAttribute("isShow"));
+                config.IsDynamic = bool.Parse(xe.GetAttribute("isDynamic"));
+                if (!config.IsLastStage)
+                {
+                    XmlNodeList child = xmlnode.ChildNodes;
+                    foreach (XmlNode node in child)
+                    {
+                        XmlElement nd = (XmlElement)node;
+                        PayTableConfig configs = new PayTableConfig();
+                        configs.FieldCode = nd.GetAttribute("fieldName");
+                        configs.FieldTitle = nd.GetAttribute("title");
+                        configs.ItemId = int.Parse(nd.GetAttribute("code"));
+                        configs.IsLastStage = bool.Parse(nd.GetAttribute("isLastStage"));
+                        configs.IsEdit = bool.Parse(nd.GetAttribute("isEdit"));
+                        configs.IsShow = bool.Parse(nd.GetAttribute("isShow"));
+                        configs.IsDynamic = bool.Parse(nd.GetAttribute("isDynamic"));
+                        config.Subnode.Add(configs);
+                    }
+                }
+                list.Add(config);
+            }
+            return list;
+        }
+
+        public ActionResult GetPayDetail(int id)
+        {
+            List<PayDetailInfo> list = new Manager.PayManager().GetPayDetail(id);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        [HttpPost]
+        public ActionResult SavePayDetail(List<PayDetailInfo> list,int cmpid,string tname,string time,string count)
+        {
+            string msg = string.Empty;
+            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time,count, ref msg))
+            {
+                msg = "发放成功";
+            }
+            else
+            {
+                msg += "发放失败！";
+            }
+            return Json(msg);
         }
     }
 }

@@ -31,6 +31,13 @@
     where t.TEMPLATE_ID=#{value}
   </select>
 
+  <select id="findTemplateIdByCompanyId" >
+    select
+    t.TEMPLATE_ID TemplateId
+    from HR_SALARY_TEMPLATE t
+    where t.COMPANY_ID=#{value}
+  </select>
+
   <delete id="deleteTemp" >
     delete from HR_SALARY_TEMPLATE where TEMPLATE_ID=#{value}
   </delete>
@@ -62,5 +69,10 @@
   
   <select id="findSalaryItemTitle" >
     select t.ITEM_TITLE Name,ITEM_ID ItemId from HR_SALARY_ITEM t where t.ISLEAF=1
+  </select>
+
+  <select id="findTemplateDetailByCompanyId">
+    select t.TEMPLATE_ID TemplateId,t.ITEM_ID ItemId from HR_SALARY_TEMPLATE_ITEM t
+    inner join HR_SALARY_TEMPLATE l on t.TEMPLATE_ID=l.TEMPLATE_ID and l.COMPANY_ID=${value}
   </select>
 </mapper>

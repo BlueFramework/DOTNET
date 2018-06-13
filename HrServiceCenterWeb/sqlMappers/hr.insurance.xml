@@ -38,4 +38,10 @@
     left join HR_SALARY_ITEM s on t.ITEM_ID=s.ITEM_ID
     where t.IMPORT_ID=#{value}
   </select>
+
+  <select id="findInsuranceDetailByNewMonth">
+    select t.PERSON_ID PersonId,t.ITEM_ID ItemId,ITEM_VALUE ItemValue
+    from HR_SALARY_IMPORTOR_DATA t
+    where t.PAY_MONTH=convert(char(6) ,GETDATE() , 112)
+  </select>
 </mapper>

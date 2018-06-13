@@ -62,4 +62,8 @@
   <insert id="insertPosition">
     insert into HR_CO_SETTING(POSITION_ID,COMPANY_ID,PLAN_COUNT) values(#{PositionId},#{CompanyId},#{PlanCount})
   </insert>
+  <!-- 更新余额 -->
+  <update id="updateCompanyBalance">
+    update [HR_CO_ACCOUNT] set  ACCOUNT_BALANCE=ACCOUNT_BALANCE-#{AccountBalance} where COMPANY_ID=#{CompanyId}
+  </update>
 </mapper>
