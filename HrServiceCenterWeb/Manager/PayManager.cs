@@ -389,10 +389,22 @@ namespace HrServiceCenterWeb.Manager
             return list;
         }
 
-        public List<PayList> QueryPayList(string query)
+        public List<PayMent> QueryPayList(string query)
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
-            List<PayList> list = context.SelectList<PayList>("hr.pay.findPayList", query);
+            List<PayMent> list = context.SelectList<PayMent>("hr.pay.findPayList", query);
+            return list;
+        }
+
+        /// <summary>
+        /// 根据发放表ID查询发放表信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public PayMent GetPayDetailByPayId(int id)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            PayMent list = context.Selete<PayMent>("hr.pay.findPayByPayId", id);
             return list;
         }
 
@@ -408,13 +420,15 @@ namespace HrServiceCenterWeb.Manager
             return result;
         }
 
-        public List<PayDetailInfo> GetPayDetail(int id)
+        public List<PayDetailInfo> GetPayDetail(int id, int payid)
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
-            List<PayDetailInfo> list = context.SelectList<PayDetailInfo>("hr.pay.findPayDetail", id);
+            List<PayDetailInfo> list = context.SelectList<PayDetailInfo>("hr.pay.findPayDefaultDetail", id);
             Dictionary<int, Dictionary<string, decimal>> dic = GetPersionInsuranceDic();
+            Dictionary<int, Dictionary<string, decimal>> payDetailDic = getPayDetailDic(payid);
             foreach (PayDetailInfo info in list)
             {
+                //填充保险
                 if (dic.ContainsKey(info.PersonId))
                 {
                     foreach (KeyValuePair<string, decimal> kv in dic[info.PersonId])
@@ -424,8 +438,48 @@ namespace HrServiceCenterWeb.Manager
                         propertyInfo.SetValue(info, kv.Value);
                     }
                 }
+                //填充发放表金额
+                if (payDetailDic.ContainsKey(info.PersonId))
+                {
+                    foreach (KeyValuePair<string, decimal> kv in payDetailDic[info.PersonId])
+                    {
+                        Type type = info.GetType();
+                        System.Reflection.PropertyInfo propertyInfo = type.GetProperty(kv.Key);
+                        propertyInfo.SetValue(info, kv.Value);
+                    }
+                }
             }
             return list;
+        }
+
+        /// <summary>
+        /// 键：人员ID
+        /// 值：（键：项目名，值：金额）
+        /// </summary>
+        /// <param name="payId">发放ID</param>
+        /// <returns></returns>
+        private Dictionary<int, Dictionary<string, decimal>> getPayDetailDic(int payId)
+        {
+            Dictionary<int, Dictionary<string, decimal>> dic = new Dictionary<int, Dictionary<string, decimal>>();
+            if (payId == 0)
+                return dic;
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<PayValueInfo> list = context.SelectList<PayValueInfo>("hr.pay.findPayDetailByPayId", payId);
+            Dictionary<int, string> cfgdic = GetItemConfigDic();
+            foreach (PayValueInfo info in list)
+            {
+                if (!dic.ContainsKey(info.PersonId))
+                {
+                    Dictionary<string, decimal> infodic = new Dictionary<string, decimal>();
+                    infodic.Add(cfgdic[info.ItemId], info.PayValue);
+                    dic.Add(info.PersonId, infodic);
+                }
+                else
+                {
+                    dic[info.PersonId].Add(cfgdic[info.ItemId], info.PayValue);
+                }
+            }
+            return dic;
         }
 
         public Dictionary<int, Dictionary<string, decimal>> GetPersionInsuranceDic()
@@ -484,24 +538,33 @@ namespace HrServiceCenterWeb.Manager
             return dic;
         }
 
-        public bool SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count, ref string msg)
+        public bool SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count, int status, ref string msg)
         {
             using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
             {
                 try
                 {
                     context.BeginTransaction();
-
                     Models.TemplateInfo temp = context.Selete<Models.TemplateInfo>("hr.template.findTemplateIdByCompanyId", cmpid);
-                    PayList pl = new PayList();
+                    PayMent pl = new PayMent();
                     pl.CompanyId = cmpid;
                     pl.TemplateId = temp.TemplateId;
                     pl.PayTitle = tname;
                     pl.PayMonth = time;
                     pl.CreatorId = UserContext.CurrentUser.UserId;
                     pl.CreateTime = DateTime.Now.ToShortDateString();
-                    context.Save<PayList>("hr.pay.insertPayTable", pl);
-
+                    pl.Status = status;
+                    if (status == 0)//新建发放表重复校验
+                    {
+                        PayMent payinfo = context.SelectListByTemplate<PayMent>("hr.pay.findPay", pl)[0];
+                        if (payinfo.PayId != 0)
+                        {
+                            msg += "该公司该月份已创建发放表！<br />";
+                            context.Rollback();
+                            return false;
+                        }
+                        context.Save<PayMent>("hr.pay.insertPayTable", pl);
+                    }
                     Dictionary<string, int> dic = GetIdConfigDic();
                     foreach (PayDetailInfo info in list)
                     {
@@ -518,18 +581,67 @@ namespace HrServiceCenterWeb.Manager
                             }
                         }
                     }
-
-                    CompanyAccountInfo cai = new CompanyAccountInfo();
-                    cai.AccountBalance = decimal.Parse(count);
-                    cai.CompanyId = cmpid;
-                    context.Save<CompanyAccountInfo>("hr.company.updateCompanyBalance", cai);
-
+                    if (status == 2)//归档
+                    {
+                        CompanyAccountInfo cai = new CompanyAccountInfo();
+                        cai.AccountBalance = decimal.Parse(count);
+                        cai.CompanyId = cmpid;
+                        context.Save<CompanyAccountInfo>("hr.company.updateCompanyBalance", cai);
+                    }
                     context.Commit();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    msg += "服务器内部错误，请联系管理员；";
+                    msg += "服务器内部错误，请联系管理员！<br />";
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新发放表
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="cmpid"></param>
+        /// <param name="tname"></param>
+        /// <param name="time"></param>
+        /// <param name="count"></param>
+        /// <param name="status"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool UpdatePayDetail(List<PayDetailInfo> list, int payid)
+        {
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+
+                    context.Delete("hr.pay.deletePayDetail", payid);
+
+                    Dictionary<string, int> dic = GetIdConfigDic();
+                    foreach (PayDetailInfo info in list)
+                    {
+                        foreach (System.Reflection.PropertyInfo p in info.GetType().GetProperties())
+                        {
+                            if (dic.ContainsKey(p.Name))
+                            {
+                                PayValueInfo pvi = new PayValueInfo();
+                                pvi.PayId = payid;
+                                pvi.ItemId = dic[p.Name];
+                                pvi.PersonId = info.PersonId;
+                                pvi.PayValue = decimal.Parse(p.GetValue(info).ToString());
+                                context.Save<PayValueInfo>("hr.pay.insertPayTableDetail", pvi);
+                            }
+                        }
+                    }
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
                     context.Rollback();
                     return false;
                 }
@@ -562,6 +674,39 @@ namespace HrServiceCenterWeb.Manager
                 }
             }
             return dic;
+        }
+
+        /// <summary>
+        /// 删除发放表
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool DeletePay(int id, ref string msg)
+        {
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+
+                    PayMent payinfo = context.Selete<PayMent>("hr.pay.findPayByPayId", id);
+                    if (payinfo.Status == 2)
+                    {
+                        msg += "该发放表已归档，不能删除！";
+                        return false;
+                    }
+                    context.Delete("hr.pay.deletePayDetail", id);
+
+                    context.Delete("hr.pay.deletePay", id);
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    context.Rollback();
+                    return false;
+                }
+            }
         }
     }
 }

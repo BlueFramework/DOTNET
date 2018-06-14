@@ -8,7 +8,7 @@ namespace HrServiceCenterWeb.Models
     /// <summary>
     /// 发放列表实体
     /// </summary>
-    public class PayList
+    public class PayMent
     {
         public int PayId { get; set; }
 
@@ -29,5 +29,10 @@ namespace HrServiceCenterWeb.Models
         public string CreatorName { get; set; }
 
         public string CreateTime { get; set; }
+
+        /// <summary>
+        /// 审核状态0 未审核  2归档
+        /// </summary>
+        public int Status { get; set; }
     }
 }

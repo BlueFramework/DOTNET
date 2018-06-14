@@ -238,16 +238,25 @@ namespace HrServiceCenterWeb.Controllers
         //VIEW：/Pay/QueryPayList
         public ActionResult QueryPayList(string query)
         {
-            List<PayList> list = new Manager.PayManager().QueryPayList(query);
+            List<PayMent> list = new Manager.PayManager().QueryPayList(query);
             JsonResult jsonResult = Json(list);
             return jsonResult;
         }
 
         // 发放编辑器
         // VIEW: /Pay/PayEditor
-        public ActionResult PayEditor(string id)
+        public ActionResult PayEditor(int id)
         {
+            ViewBag.PayId = id;
             return View();
+        }
+
+        //
+        //VIEW: Pay/GetPayDetailByPayId
+        public ActionResult GetPayDetailByPayId(int id)
+        {
+            PayMent pay = new Manager.PayManager().GetPayDetailByPayId(id);
+            return Json(pay);
         }
 
         public List<PayTableConfig> PayTableInfo
@@ -333,24 +342,82 @@ namespace HrServiceCenterWeb.Controllers
             return list;
         }
 
-        public ActionResult GetPayDetail(int id)
+        public ActionResult GetPayDetail(int cmpid, int payid)
         {
-            List<PayDetailInfo> list = new Manager.PayManager().GetPayDetail(id);
+            List<PayDetailInfo> list = new Manager.PayManager().GetPayDetail(cmpid, payid);
             JsonResult jsonResult = Json(list);
             return jsonResult;
         }
 
         [HttpPost]
-        public ActionResult SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count)
+        public ActionResult SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count, int stus)
         {
             string msg = string.Empty;
-            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time, count, ref msg))
+            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time, count, stus, ref msg))
             {
                 msg = "发放成功";
             }
             else
             {
-                msg += "发放失败！";
+                msg = "发放失败！<br />" + msg;
+            }
+            return Json(msg);
+        }
+        /// <summary>
+        /// 归档
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="cmpid"></param>
+        /// <param name="tname"></param>
+        /// <param name="time"></param>
+        /// <param name="count"></param>
+        /// <param name="stus"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult OnFilePay(List<PayDetailInfo> list, int cmpid, string tname, string time, string count, int stus)
+        {
+            string msg = string.Empty;
+            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time, count, stus, ref msg))
+            {
+                msg = "归档成功";
+            }
+            else
+            {
+                msg = "归档失败！<br />" + msg;
+            }
+            return Json(msg);
+        }
+
+        /// <summary>
+        /// 删除发放表
+        /// 只能删除未归档的发放表
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeletePay(int id)
+        {
+            string msg = string.Empty;
+            if (new Manager.PayManager().DeletePay(id,ref msg))
+            {
+                msg = "删除成功！";
+            }
+            else
+            {
+                msg = "删除失败！<br />" + msg;
+            }
+            return Json(msg);
+        }
+
+        public ActionResult UpdatePayDetail(List<PayDetailInfo> list,int id)
+        {
+            string msg = string.Empty;
+            if (new Manager.PayManager().UpdatePayDetail(list, id))
+            {
+                msg = "更新成功！";
+            }
+            else
+            {
+                msg = "更新失败！";
             }
             return Json(msg);
         }

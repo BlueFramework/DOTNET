@@ -33,18 +33,24 @@ opt.query = function () {
 //删除操作
 opt.delete = function (id) {
     // TODO 
+    var row = $('#dg').datagrid('getSelected');
+
+    if (row == null) {
+        $.messager.alert('提示', '未选中任何数据!');
+        return;
+    }
     $.messager.confirm('提示窗', '您确认删除吗?', function (event) {
         if (event) {
             $.ajax({
                 type: 'POST',
-                url: "../Company/DeleteCompany",
+                url: "../Pay/DeletePay",
                 data: {
-                    UserId: id
+                    id: row.PayId
                 },
                 dataType: "json",
                 success: function (result) {
                     $.messager.alert('提示', result);
-                    UserManageOpt.query();
+                    opt.query();
                 }
             });
         }
@@ -53,7 +59,6 @@ opt.delete = function (id) {
         }
     });
 }
-
 
 opt.add = function () {
     // TODO 
@@ -69,7 +74,7 @@ opt.edit = function (id) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
-    var id = row.CompanyId;
-    var url = '../Company/CompanyPage?id=' + id;
+    var id = row.PayId;
+    var url = '../Pay/PayEditor?id=' + id;
     self.location = url;
 }

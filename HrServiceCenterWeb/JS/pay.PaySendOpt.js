@@ -7,20 +7,72 @@ function init() {
     opt.loadCmp();
     opt.initDateBox();
     //opt.query();
+
+    var payId = $("#hideview").val();
+    if (payId != 0) {
+        opt.loadDetail();
+    }
+    else {
+        $('#savebtn').click(function () {
+            opt.save(0);
+        });
+    }
+}
+
+//加载发放表详情
+opt.loadDetail = function () {
+    //填充日期
+    //填充发放表名称
+    //填充公司名
+    $("#savebtn").html('更新发放数据');
+    $('#savebtn').click(function () {
+        opt.update();
+    });
+    var payId = $("#hideview").val();
+    $.ajax({
+        url: '../Pay/GetPayDetailByPayId',
+        type: 'post',
+        data: { 'id': payId },
+        success: function (result) {
+            $("#datebox").datebox("setValue", result.PayMonth);
+            $("#datebox").combobox('readonly', true);
+            $('#cmpname').combobox('select', result.CompanyId);
+            $("#cmpname").combobox('readonly', true);
+            $("#tempname").attr("value", result.PayTitle);
+            $("#tempname").attr("readonly", "readonly");
+            $("#creatbtn").attr('disabled', true);
+            if (result.Status == 2) {//已归档发放表不允许再提交
+                $("#savebtn").attr('disabled', true);
+                $("#filebtn").attr('disabled', true);
+            }
+            opt.loadTable();
+        }
+    })
 }
 
 //加载公司下拉
 opt.loadCmp = function () {
     HR.Form.bindCombox('cmpname', '../Company/GetCompanyList?query=', null, true);
+    $('#cmpname').combobox({
+        onChange: function (newValue, oldValue) {
+            if (newValue != undefined && newValue != '') {
+                var text = $('#cmpname').combobox('getText');
+                var month = $('#datebox').datebox('getValue');
+                var newmonth = month.replace('-', '年') + '月';
+                $("#tempname").attr("value", text + newmonth + '发放表');
+            }
+        }
+    });
 }
 
 //加载人员
 opt.loadTable = function () {
     var cmpId = $('#cmpname').combobox('getValue');
-    if (cmpId == null || cmpId == undefined || cmpId=="") {
+    if (cmpId == null || cmpId == undefined || cmpId == "") {
         $.messager.alert('提示', '请选择公司');
         return;
     }
+    var payId = $("#hideview").val();
     $.ajax({
         url: "../Pay/RefreshTable",
         type: "Post",
@@ -28,7 +80,7 @@ opt.loadTable = function () {
         success: function (data) {
             $('#dg').datagrid({
                 title: ' ',
-                url: '../Pay/GetPayDetail?id=' + cmpId,
+                url: '../Pay/GetPayDetail?cmpid=' + cmpId + '&payid=' + payId,
                 columns: getCfg(data),
                 onClickCell: onClickCell,
                 onLoadSuccess: function (data) {
@@ -214,11 +266,11 @@ opt.loadCountLab = function () {
         var l = eaRows[num].ServiceWage == undefined ? 0 : parseFloat(eaRows[num].ServiceWage);
         countpay += opt.formatFloat(a + b + c + d - e - f - g + l, 10);
     }
-    $('#dg').datagrid("getPanel").panel("setTitle", "<span style='margin-left:76.4%'></span>总和：<label id='paylab'>" + countpay +"</label>"); 
+    $('#dg').datagrid("getPanel").panel("setTitle", "<span style='margin-left:76.4%'></span>总金额：<label id='paylab'>" + countpay + "</label>");
 }
 
-//创建发放表
-opt.save = function () {
+//创建发放表/归档发放表(status：0 未审核  2 归档)
+opt.save = function (status) {
     var name = $('#tempname').val();
     if (name == '' || name == undefined) {
         $.messager.alert('提示', '请输入发放表名称');
@@ -234,44 +286,42 @@ opt.save = function () {
         $.messager.alert('提示', '发放金额应大于0');
         return;
     }
-    $.messager.confirm('提示窗', '请核实发放表正确性，发放后不可更改，是否发放？', function (event) {
-        if (event) {
-            var month = $('#datebox').datebox('getValue');
-            $('#dg').datagrid('loading');
-            $('#dg').datagrid('endEdit', editIndex);
-            editIndex = undefined;
-            var tasks = $("#dg").datagrid("getRows");
-            var cmpId = $('#cmpname').combobox('getValue');
-
-            var parms = {
-                list: tasks,
-                cmpid: cmpId,
-                tname: name,
-                time: month,
-                count: paycount
-            };
-            $.ajax({
-                url: "../Pay/SavePayDetail",
-                type: "post",
-                contentType: "application/json",
-                dataType: "json",
-                data: JSON.stringify(parms),
-                success: function (data) {
-                    if (data.success == true) {
-                        $.messager.alert('提示', '已成功保存');
-                    }
-                    else {
-                        $.messager.alert('提示', data.message);
-                        $('#dg').datagrid('loaded');
-                    }
-                },
-                error: function () {
-                    $.messager.alert('提示', '保存失败');
-                    $('#dg').datagrid('loaded');
-                }
-            });
+    var month = $('#datebox').datebox('getValue');
+    $('#dg').datagrid('loading');
+    $('#dg').datagrid('endEdit', editIndex);
+    editIndex = undefined;
+    var tasks = $("#dg").datagrid("getRows");
+    var cmpId = $('#cmpname').combobox('getValue');
+    var parms = {
+        list: tasks,
+        cmpid: cmpId,
+        tname: name,
+        time: month,
+        count: paycount,
+        stus: status
+    };
+    var Url;
+    if (status == 2) { Url = "../Pay/OnFilePay"; }
+    else { Url = "../Pay/SavePayDetail"; }
+    $.ajax({
+        url: Url,
+        type: "post",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(parms),
+        success: function (data) {
+            $.messager.alert('提示', data);
+            if (status == 2) {
+                $("#savebtn").attr('disabled', true);
+                $("#filebtn").attr('disabled', true);
+            }
+            $('#dg').datagrid('loaded');
+        },
+        error: function () {
+            $.messager.alert('提示', '保存失败');
+            $('#dg').datagrid('loaded');
         }
-    })
+    });
 }
 
 opt.add = function () {
@@ -352,4 +402,46 @@ function myformatter(date) {
     //获取月份
     var m = date.getMonth() + 1;
     return y + '-' + m;
+}
+
+//归档操作
+opt.onfile = function () {
+    $.messager.confirm('提示窗', '该操作将扣除相应余额，不可恢复，是否提交归档？', function (event) {
+        if (event) {
+            opt.save(2);
+        }
+    })
+}
+
+//更新发放表信息
+opt.update = function () {
+    var paycount = $('#paylab').html();
+    if (paycount <= 0) {
+        $.messager.alert('提示', '发放金额应大于0');
+        return;
+    }
+    $('#dg').datagrid('loading');
+    $('#dg').datagrid('endEdit', editIndex);
+    editIndex = undefined;
+    var tasks = $("#dg").datagrid("getRows");
+    var payId = $("#hideview").val();
+    var parms = {
+        list: tasks,
+        id: payId
+    };
+    $.ajax({
+        url: '../Pay/UpdatePayDetail',
+        type: "post",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(parms),
+        success: function (data) {
+            $.messager.alert('提示', data);
+            $('#dg').datagrid('loaded');
+        },
+        error: function () {
+            $.messager.alert('提示', '保存失败');
+            $('#dg').datagrid('loaded');
+        }
+    });
 }

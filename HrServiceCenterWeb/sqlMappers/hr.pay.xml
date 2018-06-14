@@ -14,7 +14,7 @@
     where t.PAY_TITLE like '%${value}%'
   </select>
 
-  <select id="findPayDetail">
+  <select id="findPayDefaultDetail">
     select e.PERSON_ID PersonId,
     e.PERSON_NAME PersonName,
     CAST(0 as decimal(18,0)) as BasicWage,
@@ -34,17 +34,53 @@
     from HR_EMPLOYEE e where e.COMPANY_ID=${value}
   </select>
 
-  <insert id="insertPayTable" parameterType="PayList">
+  <insert id="insertPayTable" parameterType="PayMent">
     <selectKey keyProperty="PayId" order="INSERTING" >
       select @PayId=@@IDENTITY
     </selectKey>
     insert into HR_SALARY_PAY
     (TEMPLATE_ID,COMPANY_ID,PAY_TITLE,PAY_MONTH,CREATOR,CREATE_TIME,STATUS)
-    values(#{TemplateId},#{CompanyId},#{PayTitle},#{PayMonth},#{CreatorId},#{CreateTime},1)
+    values(#{TemplateId},#{CompanyId},#{PayTitle},#{PayMonth},#{CreatorId},#{CreateTime},#{Status})
   </insert>
   
   <insert id="insertPayTableDetail" parameterType="PayValueInfo">
     insert into HR_SALARY_PAY_VALUE(PAY_ID,ITEM_ID,PERSON_ID,PAY_VALUE)
     values(#{PayId},#{ItemId},#{PersonId},#{PayValue})
   </insert>
+
+  <!--发放表主表详情-->
+  <select id="findPayByPayId" >
+    select t.PAY_ID PayId,
+    t.PAY_TITLE PayTitle,
+    t.COMPANY_ID CompanyId,
+    t.PAY_MONTH PayMonth,
+    t.STATUS Status
+    from HR_SALARY_PAY t
+    where t.PAY_ID=${value}
+  </select>
+
+  <!--发放表详细表详情-->
+  <select id="findPayDetailByPayId" >
+    select t.PAY_ID PayId,
+    t.ITEM_ID ItemId,
+    t.PERSON_ID PersonId  ,
+    t.PAY_VALUE PayValue from HR_SALARY_PAY_VALUE t
+    where t.PAY_ID=${value}
+  </select>
+  
+  <!--新建发放表重复校验-->
+  <select id="findPay" parameterType="PayMent">
+    select t.PAY_ID PayId from HR_SALARY_PAY t
+    where t.COMPANY_ID=#{CompanyId} and t.PAY_MONTH=#{PayMonth}
+  </select>
+  
+  <!--删除发放表主表-->
+  <delete id="deletePay">
+    delete from HR_SALARY_PAY where PAY_ID=#{value}
+  </delete>
+
+  <!--删除发放表详细表-->
+  <delete id="deletePayDetail">
+    delete from HR_SALARY_PAY_VALUE where PAY_ID=#{value}
+  </delete>
 </mapper>
