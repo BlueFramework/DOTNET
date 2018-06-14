@@ -75,4 +75,9 @@
     select t.TEMPLATE_ID TemplateId,t.ITEM_ID ItemId from HR_SALARY_TEMPLATE_ITEM t
     inner join HR_SALARY_TEMPLATE l on t.TEMPLATE_ID=l.TEMPLATE_ID and l.COMPANY_ID=${value}
   </select>
+
+  <select id="findTemplateByCompanyId">
+    select t.TEMPLATE_ID TemplateId from HR_SALARY_TEMPLATE t
+    where t.COMPANY_ID=${value}
+  </select>
 </mapper>

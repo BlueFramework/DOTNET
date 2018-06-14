@@ -23,5 +23,7 @@ namespace HrServiceCenterWeb.Models
         public int ItemId { get; set; }
 
         public decimal ItemValue { get; set; }
+
+        public string ImportColumnName { get; set; }
     }
 }

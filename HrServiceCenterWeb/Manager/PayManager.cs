@@ -32,6 +32,18 @@ namespace HrServiceCenterWeb.Manager
         }
 
         /// <summary>
+        /// 根据公司ID找发放模版
+        /// </summary>
+        /// <param name="id">公司ID</param>
+        /// <returns></returns>
+        public Models.TemplateInfo GetTemplateByCompanyId(int id)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            Models.TemplateInfo temp = context.Selete<Models.TemplateInfo>("hr.template.findTemplateByCompanyId", id);
+            return temp;
+        }
+
+        /// <summary>
         /// 获取模版树结构
         /// </summary>
         /// <returns></returns>
@@ -238,50 +250,78 @@ namespace HrServiceCenterWeb.Manager
             }
         }
 
+        /// <summary>
+        /// 保险导入
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="fileName"></param>
+        /// <param name="outmsg"></param>
+        /// <returns></returns>
         public bool Import(DataTable dt, string fileName, ref string outmsg)
         {
             Dictionary<string, int> cardIds = getItemCardId();
             Dictionary<string, int> titles = getItemTitle();
-
+            Dictionary<string, int> thirddic = getThirdItem();
             using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
             {
                 try
                 {
                     context.BeginTransaction();
-
                     //判断是否已经入库
                     List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsuranceByTitle", fileName);
                     if (list.Count > 0)
                     {
-                        outmsg += "文件：" + fileName + "已上传；";
-                        return true;
+                        outmsg += "文件：" + fileName + "已上传！<br />";
+                        return false;
                     }
-
+                    //入库导入主表
                     InsuranceInfo ii = new InsuranceInfo();
                     ii.Title = fileName;
                     ii.CreatorId = UserContext.CurrentUser.UserId;
                     ii.CreateTime = DateTime.Now.ToShortDateString();
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
-
                     foreach (DataRow row in dt.Rows)
                     {
-                        if (cardIds.ContainsKey(row["身份证号码"].ToString()) && titles.ContainsKey(row["险种"].ToString()))
+                        //入库导入详细表
+                        InsuranceDetailInfo idi = new InsuranceDetailInfo();
+                        idi.ImportId = ii.ImportId;
+                        idi.PayMonth = row["账户月度"].ToString();
+                        idi.ItemValue = decimal.Parse(row["缴存值"].ToString());
+                        idi.ImportColumnName = row["险种"].ToString();
+                        if (cardIds.ContainsKey(row["身份证号码"].ToString()))
                         {
-                            InsuranceDetailInfo idi = new InsuranceDetailInfo();
-                            idi.ImportId = ii.ImportId;
                             idi.PersonId = cardIds[row["身份证号码"].ToString()];
-                            idi.PayMonth = row["账户月度"].ToString();
-                            idi.ItemId = titles[row["险种"].ToString()];
-                            idi.ItemValue = decimal.Parse(row["缴存值"].ToString());
-                            context.Save<InsuranceDetailInfo>("hr.insurance.insertInsuranceDetail", idi);
                         }
+                        else
+                        {
+                            //未找到人员，忽略该行
+                            outmsg += "第" + dt.Rows.IndexOf(row) + "行人员未知！<br />";
+                            dt.Rows.Remove(row);
+                            continue;
+                        }
+                        if (titles.ContainsKey(row["险种"].ToString()))
+                        {
+                            idi.ItemId = titles[row["险种"].ToString()];
+                        }
+                        else if (thirddic.ContainsKey(row["险种"].ToString()))
+                        {
+                            idi.ItemId = thirddic[row["险种"].ToString()];
+                        }
+                        else
+                        {
+                            //值错误，不入库
+                            outmsg += "第" + dt.Rows.IndexOf(row) + "行险种不匹配！<br />";
+                            context.Rollback();
+                            return false;
+                        }
+                        context.Save<InsuranceDetailInfo>("hr.insurance.insertInsuranceDetail", idi);
                     }
                     context.Commit();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    outmsg += "服务器内部错误，请联系管理员；";
+                    outmsg += "服务器内部错误，请联系管理员！<br />";
                     context.Rollback();
                     return false;
                 }
@@ -311,6 +351,33 @@ namespace HrServiceCenterWeb.Manager
             {
                 if (!dic.ContainsKey(si.Name))
                     dic.Add(si.Name, si.ItemId);
+            }
+            return dic;
+        }
+
+        /// <summary>
+        /// 匹配非数据库保险列表
+        /// 用XML配置
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, int> getThirdItem()
+        {
+            Dictionary<string, int> dic = new Dictionary<string, int>();
+            XmlDocument doc = new XmlDocument();
+            string path = System.AppDomain.CurrentDomain.BaseDirectory + "Setting/Insurance/InsuranceConfig.xml";
+            doc.Load(path);
+            XmlNode menus = doc.SelectSingleNode("Root");
+            XmlNodeList xn = menus.ChildNodes;
+            foreach (XmlNode xmlNode in xn)
+            {
+                XmlElement xe = (XmlElement)xmlNode;
+                XmlNodeList nodes = xmlNode.ChildNodes;
+                foreach (XmlNode node in nodes)
+                {
+                    if (node.NodeType != XmlNodeType.Element) continue;
+                    XmlElement nd = (XmlElement)node;
+                    dic.Add(nd.GetAttribute("name"), int.Parse(xe.GetAttribute("code")));
+                }
             }
             return dic;
         }
@@ -417,7 +484,7 @@ namespace HrServiceCenterWeb.Manager
             return dic;
         }
 
-        public bool SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time,string count,ref string msg)
+        public bool SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count, ref string msg)
         {
             using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
             {
@@ -431,7 +498,7 @@ namespace HrServiceCenterWeb.Manager
                     pl.TemplateId = temp.TemplateId;
                     pl.PayTitle = tname;
                     pl.PayMonth = time;
-                    pl.CreatorId= UserContext.CurrentUser.UserId;
+                    pl.CreatorId = UserContext.CurrentUser.UserId;
                     pl.CreateTime = DateTime.Now.ToShortDateString();
                     context.Save<PayList>("hr.pay.insertPayTable", pl);
 
@@ -490,7 +557,7 @@ namespace HrServiceCenterWeb.Manager
                     foreach (XmlNode node in child)
                     {
                         XmlElement nd = (XmlElement)node;
-                        dic.Add( nd.GetAttribute("fieldName"), int.Parse(nd.GetAttribute("code")));
+                        dic.Add(nd.GetAttribute("fieldName"), int.Parse(nd.GetAttribute("code")));
                     }
                 }
             }

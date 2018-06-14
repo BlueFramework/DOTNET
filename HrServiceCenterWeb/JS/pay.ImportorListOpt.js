@@ -5,6 +5,9 @@ function init() {
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
     opt.query();
+    $('#upload').filebox({
+
+    })
 }
 
 

@@ -93,6 +93,15 @@ namespace HrServiceCenterWeb.Controllers
 
         public ActionResult SaveTemplateMsg(int id, string temps)
         {
+            string msg = string.Empty;
+            //查询公司模版是否已经存在
+            Models.TemplateInfo ti = new Models.TemplateInfo();
+            ti = new Manager.PayManager().GetTemplateByCompanyId(id);
+            if (ti.TemplateId != 0)
+            {
+                msg = "该公司已有模版";
+                return Json(msg);
+            }
             int[] tempArr = null;
             if (!string.IsNullOrEmpty(temps))
             {
@@ -104,7 +113,6 @@ namespace HrServiceCenterWeb.Controllers
                     tempArr[i] = Convert.ToInt32(strArr[i]);
                 }
             }
-            string msg = string.Empty;
             if (new Manager.PayManager().SaveTemplateMsg(id, tempArr))
             {
                 msg = "保存成功";
@@ -184,20 +192,23 @@ namespace HrServiceCenterWeb.Controllers
                             break;
                         case ".xls":
                             success = false;
+                            outmsg = "文件：" + fileName + "的文件格式接口待开发！<br />";
                             break;
                         default:
                             success = false;
-                            outmsg += "文件：" + fileName + "格式不支持；";
+                            outmsg += "文件：" + fileName + "格式不支持！<br />";
                             break;
                     }
                 }
             }
             else
             {
-                outmsg += "未获取到文件，请重试；";
+                outmsg += "未获取到文件，请重试！<br />";
             }
-            if (string.IsNullOrEmpty(outmsg))
-                outmsg = "上传成功！";
+            if (success)
+                outmsg = "上传成功！<br />" + outmsg;
+            else
+                outmsg = "上传失败！<br />" + outmsg;
             return Json(outmsg);
         }
 
@@ -275,7 +286,7 @@ namespace HrServiceCenterWeb.Controllers
                     }
                 }
             }
-            list = list.Where(i => i.IsLastStage == false && i.Subnode.Count > 0|| i.IsLastStage == true && i.Subnode.Count == 0).ToList();
+            list = list.Where(i => i.IsLastStage == false && i.Subnode.Count > 0 || i.IsLastStage == true && i.Subnode.Count == 0).ToList();
             JsonResult jsonResult = Json(list);
             return jsonResult;
         }
@@ -330,10 +341,10 @@ namespace HrServiceCenterWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult SavePayDetail(List<PayDetailInfo> list,int cmpid,string tname,string time,string count)
+        public ActionResult SavePayDetail(List<PayDetailInfo> list, int cmpid, string tname, string time, string count)
         {
             string msg = string.Empty;
-            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time,count, ref msg))
+            if (new Manager.PayManager().SavePayDetail(list, cmpid, tname, time, count, ref msg))
             {
                 msg = "发放成功";
             }

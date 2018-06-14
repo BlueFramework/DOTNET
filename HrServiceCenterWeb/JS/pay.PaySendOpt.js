@@ -1,7 +1,7 @@
 ﻿var opt = window.NameSpace || {};
 
 function init() {
-    var height = $('.container-layout').height() - 300;
+    var height = $('.container-layout').height() - 310;
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
     opt.loadCmp();
@@ -27,6 +27,7 @@ opt.loadTable = function () {
         data: { "id": cmpId },
         success: function (data) {
             $('#dg').datagrid({
+                title: ' ',
                 url: '../Pay/GetPayDetail?id=' + cmpId,
                 columns: getCfg(data),
                 onClickCell: onClickCell,
@@ -213,23 +214,28 @@ opt.loadCountLab = function () {
         var l = eaRows[num].ServiceWage == undefined ? 0 : parseFloat(eaRows[num].ServiceWage);
         countpay += opt.formatFloat(a + b + c + d - e - f - g + l, 10);
     }
-    $("#paylab").text(countpay);
+    $('#dg').datagrid("getPanel").panel("setTitle", "<span style='margin-left:76.4%'></span>总和：<label id='paylab'>" + countpay +"</label>"); 
 }
 
 //创建发放表
 opt.save = function () {
+    var name = $('#tempname').val();
+    if (name == '' || name == undefined) {
+        $.messager.alert('提示', '请输入发放表名称');
+        return;
+    }
+    var row = $('#dg').datagrid('getRows');
+    if (row == undefined || row.length == 0) {
+        $.messager.alert('提示', '发放表为空');
+        return;
+    }
+    var paycount = $('#paylab').html();
+    if (paycount <= 0) {
+        $.messager.alert('提示', '发放金额应大于0');
+        return;
+    }
     $.messager.confirm('提示窗', '请核实发放表正确性，发放后不可更改，是否发放？', function (event) {
         if (event) {
-            var name = $('#tempname').val();
-            if (name == '' || name == undefined) {
-                $.messager.alert('提示', '请输入发放表名称');
-                return;
-            }
-            var paycount = $('#paylab').html();
-            if (paycount <= 0) {
-                $.messager.alert('提示', '发放金额应大于0');
-                return;
-            }
             var month = $('#datebox').datebox('getValue');
             $('#dg').datagrid('loading');
             $('#dg').datagrid('endEdit', editIndex);

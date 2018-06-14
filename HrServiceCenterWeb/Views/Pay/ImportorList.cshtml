@@ -46,7 +46,7 @@
     <div id="inputwindow" class="easyui-window" title="社保导入" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:150px;">
         <div style="margin:0 auto;text-align:center;line-height:100px;">
             <form id="inputform" method="post" enctype="multipart/form-data">
-                <input id="upload" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...'" style="width: 250px" />
+                <input id="upload" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...',accept:'application/vnd.ms-excel,text/csv'" style="width: 250px" />
                 <input type="submit" class="btn btn-success" onclick="opt.import(); return false;" title="导入保险" style="margin-left:10px;" />
             </form>
         </div>
