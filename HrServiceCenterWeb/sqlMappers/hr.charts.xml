@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="hr.chart">
+  <select id="employeeCount" >
+    select c.NAME dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
+    inner join HR_COMPANY c on c.COMPANY_ID=e.COMPANY_ID
+    group by c.NAME
+  </select>
+  <select id="positionCount" >
+    select p.POSITION_NAME dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
+    inner join HR_POSITION p on p.POSITION_ID=e.POSITION_ID
+    group by p.POSITION_NAME
+  </select>
+  <select id="degreeCount" >
+    select b.OBJECT_TEXT dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
+    inner JOIN T_S_BASECODE b on b.CATEGORYID=2 and b.OBJECT_VALUE=e.DEGREE
+    group by b.OBJECT_TEXT
+  </select>
+</mapper>

@@ -1,0 +1,2 @@
+E:\GIT\BlueFramework\BlueFramework.XGrid\obj\Debug\BlueFramework.XGrid.csprojResolveAssemblyReference.cache
+E:\GIT\BlueFramework\BlueFramework.XGrid\obj\Debug\BlueFramework.XGrid.csproj.CoreCompileInputs.cache

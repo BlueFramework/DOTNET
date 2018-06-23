@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5A4B51C5-9541-4D07-9725-96C1037D2E08}</ProjectGuid>
+    <ProjectGuid>{B0E8CD4B-617B-4740-9FDF-740B8825482A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BlueFramework.Common</RootNamespace>
-    <AssemblyName>BlueFramework.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>BlueFramework.XGrid</RootNamespace>
+    <AssemblyName>BlueFramework.XGrid</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,25 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\RefComponet\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Code\DOTNET\HE\RefComponet\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI">
-      <HintPath>..\RefComponet\NPOI 2.0\NPOI.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OOXML">
-      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OOXML.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OpenXml4Net">
-      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OpenXml4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OpenXmlFormats">
-      <HintPath>..\RefComponet\NPOI 2.0\NPOI.OpenXmlFormats.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,20 +40,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationUtils.cs" />
-    <Compile Include="CSV\CsvFileParser.cs" />
-    <Compile Include="CSV\CsvPagesParser.cs" />
-    <Compile Include="CSV\CsvPaggingEventArg.cs" />
-    <Compile Include="Excel\ExcelFactory.cs" />
-    <Compile Include="Excel\IExcel.cs" />
-    <Compile Include="Excel\POIExcel.cs" />
-    <Compile Include="Http\HttpWebRequestUtil.cs" />
-    <Compile Include="Logger\ILogger.cs" />
-    <Compile Include="Logger\Log4Wrapper.cs" />
-    <Compile Include="Logger\LoggerFactory.cs" />
-    <Compile Include="ObjectHelper.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="DataAccess\ConvergeSqlMaker.cs" />
+    <Compile Include="DataAccess\ISqlMaker.cs" />
+    <Compile Include="DataAccess\QuerySqlMaker.cs" />
+    <Compile Include="DataAccess\SqlMakeAdapter.cs" />
+    <Compile Include="Models\ConditionColumn.cs" />
+    <Compile Include="Models\ConvergeColumn.cs" />
+    <Compile Include="XGrid.cs" />
+    <Compile Include="Config\TemplateConfig.cs" />
+    <Compile Include="DataAccess\QueryAccess.cs" />
+    <Compile Include="Models\Column.cs" />
+    <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\SortColumn.cs" />
+    <Compile Include="Models\Template.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlueFramework.Common\BlueFramework.Common.csproj">
+      <Project>{5a4b51c5-9541-4d07-9725-96c1037d2e08}</Project>
+      <Name>BlueFramework.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BlueFramework.Data\BlueFramework.Data.csproj">
+      <Project>{5c80dd3e-f333-4a17-a33c-64aa99d4720b}</Project>
+      <Name>BlueFramework.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -51,18 +51,27 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\RefComponet\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -143,15 +152,44 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\CounterController.cs" />
+    <Compile Include="Controllers\PayController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseCodeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="DataAccess\EmployeeAccess.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Lib\RequestModule.cs" />
+    <Compile Include="Manager\BaseCodeProvider.cs" />
     <Compile Include="Manager\EmployeeManager.cs" />
+    <Compile Include="Manager\PayManager.cs" />
+    <Compile Include="Manager\ReportManager.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\BaseCodeInfo.cs" />
+    <Compile Include="Models\CompanyAccountRecordInfo.cs" />
+    <Compile Include="Models\CompanyAccountInfo.cs" />
+    <Compile Include="Models\CompanyInfo.cs" />
+    <Compile Include="Models\CompanyPositionSetInfo.cs" />
+    <Compile Include="Models\CounterVO.cs" />
+    <Compile Include="Models\CounterBO.cs" />
+    <Compile Include="Models\EmployeeInfo.cs" />
+    <Compile Include="Models\InsuranceDetailInfo.cs" />
+    <Compile Include="Models\InsuranceInfo.cs" />
+    <Compile Include="Models\PayDetailInfo.cs" />
+    <Compile Include="Models\PayMent.cs" />
+    <Compile Include="Models\PayTableConfig.cs" />
+    <Compile Include="Models\PayValueInfo.cs" />
+    <Compile Include="Models\PositionInfo.cs" />
+    <Compile Include="Models\SalaryItemInfo.cs" />
+    <Compile Include="Models\TemplateDetailInfo.cs" />
+    <Compile Include="Models\TemplateInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +272,19 @@
     <Content Include="Global.asax" />
     <Content Include="images\HR_LOGO.png" />
     <Content Include="images\HR_TITLE.png" />
+    <Content Include="images\loading.gif" />
     <Content Include="JS\bootstrap.min.js" />
+    <Content Include="JS\employee.employeePageOpt.js" />
+    <Content Include="JS\pay.ImportorDetailOpt.js" />
+    <Content Include="JS\pay.PayOpt.js" />
+    <Content Include="JS\pay.ImportorListOpt.js" />
+    <Content Include="JS\pay.PaySendOpt.js" />
+    <Content Include="JS\pay.TemplateEditOpt.js" />
+    <Content Include="JS\pay.TemplateListOpt.js" />
+    <Content Include="JS\demo.demoOpt .js" />
+    <Content Include="JS\employee.employeeListOpt.js" />
+    <Content Include="JS\company.CompanyPageOpt.js" />
+    <Content Include="JS\GroupingOpt.js" />
     <Content Include="JS\holder.min.js" />
     <Content Include="JS\ie-emulation-modes-warning.js" />
     <Content Include="JS\ie10-viewport-bug-workaround.js" />
@@ -283,7 +333,10 @@
     <Content Include="JS\jquery.validate.unobtrusive.min.js" />
     <Content Include="JS\json2.js" />
     <Content Include="JS\modernizr-2.5.3.js" />
+    <Content Include="JS\RoleManageOpt.js" />
     <Content Include="JS\share.js" />
+    <Content Include="JS\company.CompanyListOpt.js" />
+    <Content Include="JS\UserManageOpt.js" />
     <Content Include="Library\blogRepeater\default.css" />
     <Content Include="Library\blogRepeater\demo.htm" />
     <Content Include="Library\blogRepeater\images\against_1.png" />
@@ -860,6 +913,27 @@
     <Content Include="Library\jquery-marcopolo\package.json" />
     <Content Include="Library\jquery-marcopolo\README.md" />
     <Content Include="Library\vector-master\README.md" />
+    <Content Include="Setting\Insurance\InsuranceConfig.xml" />
+    <Content Include="Setting\Menu\MenuConfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Setting\Pay\PayTableConfig.xml" />
+    <Content Include="sqlMappers\hr.employee.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="sqlMappers\hr.insurance.xml" />
+    <Content Include="sqlMappers\hr.pay.xml" />
+    <Content Include="sqlMappers\hr.position.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="sqlMappers\hr.company.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="sqlMappers\hr.basecode.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="sqlMappers\hr.charts.xml" />
+    <Content Include="sqlMappers\hr.template.xml" />
     <Content Include="sqlMappers\test.user.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -872,6 +946,22 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_EmpleLayout.cshtml" />
     <Content Include="Web.config" />
+    <Content Include="Views\Shared\Menu.cshtml" />
+    <Content Include="Views\System\UserManage.cshtml" />
+    <Content Include="Views\System\RoleGrouping.cshtml" />
+    <Content Include="Views\System\RoleManage.cshtml" />
+    <Content Include="Views\Company\CompanyList.cshtml" />
+    <Content Include="Views\Company\CompanyPage.cshtml" />
+    <Content Include="Views\Employee\EmployeeList.cshtml" />
+    <Content Include="Views\Employee\EmployeePage.cshtml" />
+    <Content Include="Log4net.config" />
+    <Content Include="Views\Pay\TemplateList.cshtml" />
+    <Content Include="Views\Pay\TemplateEditor.cshtml" />
+    <Content Include="Views\Pay\ImportorList.cshtml" />
+    <Content Include="Views\Pay\ImportorEditor.cshtml" />
+    <Content Include="Views\Pay\PayList.cshtml" />
+    <Content Include="Views\Pay\PayEditor.cshtml" />
+    <Content Include="Views\Pay\ImportorDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

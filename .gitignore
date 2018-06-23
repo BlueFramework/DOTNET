@@ -16,3 +16,4 @@
 /NUnit.TestFramework/bin/Debug
 /NUnit.TestFramework/obj/Debug
 /packages
+/HrServiceCenterWeb/log4net
