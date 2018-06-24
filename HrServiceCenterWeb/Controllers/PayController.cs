@@ -244,7 +244,7 @@ namespace HrServiceCenterWeb.Controllers
         //VIEW：/Pay/QueryPayList
         public ActionResult QueryPayList(string query)
         {
-            List<PayMent> list = new Manager.PayManager().QueryPayList(query);
+            List<Payment> list = new Manager.PayManager().QueryPayList(query);
             JsonResult jsonResult = Json(list);
             return jsonResult;
         }
@@ -261,7 +261,7 @@ namespace HrServiceCenterWeb.Controllers
         //VIEW: Pay/GetPayDetailByPayId
         public ActionResult GetPayDetailByPayId(int id)
         {
-            PayMent pay = new Manager.PayManager().GetPayDetailByPayId(id);
+            Payment pay = new Manager.PayManager().GetPayDetailByPayId(id);
             return Json(pay);
         }
 

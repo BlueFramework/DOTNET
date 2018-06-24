@@ -8,7 +8,7 @@ namespace HrServiceCenterWeb.Models
     /// <summary>
     /// 发放列表实体
     /// </summary>
-    public class PayMent
+    public class Payment
     {
         public int PayId { get; set; }
 

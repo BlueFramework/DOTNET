@@ -387,10 +387,10 @@ namespace HrServiceCenterWeb.Manager
             return list;
         }
 
-        public List<PayMent> QueryPayList(string query)
+        public List<Payment> QueryPayList(string query)
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
-            List<PayMent> list = context.SelectList<PayMent>("hr.pay.findPayList", query);
+            List<Payment> list = context.SelectList<Payment>("hr.pay.findPayList", query);
             return list;
         }
 
@@ -399,10 +399,10 @@ namespace HrServiceCenterWeb.Manager
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public PayMent GetPayDetailByPayId(int id)
+        public Payment GetPayDetailByPayId(int id)
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
-            PayMent list = context.Selete<PayMent>("hr.pay.findPayByPayId", id);
+            Payment list = context.Selete<Payment>("hr.pay.findPayByPayId", id);
             return list;
         }
 
@@ -544,7 +544,7 @@ namespace HrServiceCenterWeb.Manager
                 {
                     context.BeginTransaction();
                     Models.TemplateInfo temp = context.Selete<Models.TemplateInfo>("hr.template.findTemplateIdByCompanyId", cmpid);
-                    PayMent pl = new PayMent();
+                    Payment pl = new Payment();
                     pl.CompanyId = cmpid;
                     pl.TemplateId = temp.TemplateId;
                     pl.PayTitle = tname;
@@ -554,14 +554,14 @@ namespace HrServiceCenterWeb.Manager
                     pl.Status = status;
                     if (status == 0)//新建发放表重复校验
                     {
-                        PayMent payinfo = context.SelectListByTemplate<PayMent>("hr.pay.findPay", pl)[0];
+                        Payment payinfo = context.SelectListByTemplate<Payment>("hr.pay.findPay", pl)[0];
                         if (payinfo.PayId != 0)
                         {
                             msg += "该公司该月份已创建发放表！<br />";
                             context.Rollback();
                             return false;
                         }
-                        context.Save<PayMent>("hr.pay.insertPayTable", pl);
+                        context.Save<Payment>("hr.pay.insertPayTable", pl);
                     }
                     Dictionary<string, int> dic = GetIdConfigDic();
                     foreach (PayDetailInfo info in list)
@@ -687,7 +687,7 @@ namespace HrServiceCenterWeb.Manager
                 {
                     context.BeginTransaction();
 
-                    PayMent payinfo = context.Selete<PayMent>("hr.pay.findPayByPayId", id);
+                    Payment payinfo = context.Selete<Payment>("hr.pay.findPayByPayId", id);
                     if (payinfo.Status == 2)
                     {
                         msg += "该发放表已归档，不能删除！";

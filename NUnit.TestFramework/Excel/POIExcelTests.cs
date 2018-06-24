@@ -58,6 +58,17 @@ namespace BlueFramework.Common.Excel.Tests
         }
 
         [Test()]
+        public void WriteMoreDataTypeTest()
+        {
+            string file = AppDomain.CurrentDomain.BaseDirectory + "/ExcelTests/t3.xlsx";
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = excel.Read(file);
+            DataTable dt = ds.Tables[0];
+
+            Assert.IsNotNull(ds);
+        }
+
+        [Test()]
         public void WriteXlsxTest()
         {
 
