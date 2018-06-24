@@ -34,7 +34,7 @@
     from HR_EMPLOYEE e where e.COMPANY_ID=${value}
   </select>
 
-  <insert id="insertPayTable" parameterType="PayMent">
+  <insert id="insertPayTable" parameterType="Payment">
     <selectKey keyProperty="PayId" order="INSERTING" >
       select @PayId=@@IDENTITY
     </selectKey>
