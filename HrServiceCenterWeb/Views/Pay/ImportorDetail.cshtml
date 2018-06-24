@@ -19,11 +19,12 @@
 			        pageSize:10,pageList:[10,20,30,40,50,100]">
             <thead>
                 <tr>
-                    <th data-options="field:'ImportId',width:100">ID</th>
-                    <th data-options="field:'PersonName',width:300">人员名称</th>
-                    <th data-options="field:'PayMonth',width:120">投保日期</th>
+                    <th data-options="field:'ImportId',width:100,hidden:'true'">ID</th>
                     <th data-options="field:'ItemName',width:120">险种</th>
-                    <th data-options="field:'ItemValue',width:120">投保金额</th>
+                    <th data-options="field:'PersonName',width:120">人员名称</th>
+                    <th data-options="field:'PayMonth',width:120">缴存日期</th>
+                    <th data-options="field:'PersonPayValue',width:120">个人缴存</th>
+                    <th data-options="field:'CompanyPayValue',width:120">单位缴存</th>
                 </tr>
             </thead>
         </table>

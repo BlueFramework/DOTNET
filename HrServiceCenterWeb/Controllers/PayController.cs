@@ -8,6 +8,7 @@ using System.IO;
 using System.Data;
 using BlueFramework.Common.CSV;
 using System.Xml;
+using BlueFramework.Common.Excel;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -181,24 +182,29 @@ namespace HrServiceCenterWeb.Controllers
                 {
                     HttpPostedFile file1 = files[i];
                     Stream stream = file1.InputStream;
+                    DataTable dt = new DataTable();
                     string fileName = System.IO.Path.GetFileNameWithoutExtension(file1.FileName);
                     string fileType = System.IO.Path.GetExtension(file1.FileName).ToLower();
                     switch (fileType)
                     {
                         case ".csv":
                             CsvFileParser cfp = new CsvFileParser();
-                            DataTable dt = cfp.TryParse(stream, out outmsg);
-                            success = new Manager.PayManager().Import(dt, fileName, ref outmsg);
+                            dt = cfp.TryParse(stream, out outmsg);
                             break;
                         case ".xls":
+                        case ".xlsx":
                             success = false;
-                            outmsg = "文件：" + fileName + "的文件格式接口待开发！<br />";
+                            //outmsg = "文件：" + fileName + "的文件格式接口待开发！<br />";
+                            IExcel excel = ExcelFactory.CreateDefault();
+                            DataSet ds = excel.Read(stream);
+                            dt = ds.Tables[0];
                             break;
                         default:
                             success = false;
                             outmsg += "文件：" + fileName + "格式不支持！<br />";
                             break;
                     }
+                    success = new Manager.PayManager().Import(dt, fileName, ref outmsg);
                 }
             }
             else

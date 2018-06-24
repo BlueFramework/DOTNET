@@ -22,7 +22,15 @@ namespace HrServiceCenterWeb.Models
 
         public int ItemId { get; set; }
 
-        public decimal ItemValue { get; set; }
+        /// <summary>
+        /// 个人缴存
+        /// </summary>
+        public decimal PersonPayValue { get; set; }
+
+        /// <summary>
+        /// 单位缴存
+        /// </summary>
+        public decimal CompanyPayValue { get; set; }
 
         public string ImportColumnName { get; set; }
     }

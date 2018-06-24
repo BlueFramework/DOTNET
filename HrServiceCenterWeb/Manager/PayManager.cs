@@ -261,7 +261,7 @@ namespace HrServiceCenterWeb.Manager
         {
             Dictionary<string, int> cardIds = getItemCardId();
             Dictionary<string, int> titles = getItemTitle();
-            Dictionary<string, int> thirddic = getThirdItem();
+            //Dictionary<string, int> thirddic = getThirdItem();
             using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
             {
                 try
@@ -285,8 +285,10 @@ namespace HrServiceCenterWeb.Manager
                         //入库导入详细表
                         InsuranceDetailInfo idi = new InsuranceDetailInfo();
                         idi.ImportId = ii.ImportId;
-                        idi.PayMonth = row["账户月度"].ToString();
-                        idi.ItemValue = decimal.Parse(row["缴存值"].ToString());
+                        idi.PayMonth = row["计划月度"].ToString();
+                        idi.PersonName = row["个人姓名"].ToString();
+                        idi.PersonPayValue = decimal.Parse(row["个人缴存"].ToString());
+                        idi.CompanyPayValue= decimal.Parse(row["单位缴存"].ToString());
                         idi.ImportColumnName = row["险种"].ToString();
                         if (cardIds.ContainsKey(row["身份证号码"].ToString()))
                         {
@@ -302,10 +304,6 @@ namespace HrServiceCenterWeb.Manager
                         if (titles.ContainsKey(row["险种"].ToString()))
                         {
                             idi.ItemId = titles[row["险种"].ToString()];
-                        }
-                        else if (thirddic.ContainsKey(row["险种"].ToString()))
-                        {
-                            idi.ItemId = thirddic[row["险种"].ToString()];
                         }
                         else
                         {
@@ -495,7 +493,7 @@ namespace HrServiceCenterWeb.Manager
                     Dictionary<string, decimal> sdic = new Dictionary<string, decimal>();
                     if (ItemConfigDic.ContainsKey(info.ItemId))
                     {
-                        sdic.Add(ItemConfigDic[info.ItemId], info.ItemValue);
+                        sdic.Add(ItemConfigDic[info.ItemId], info.PersonPayValue);
                         dic.Add(info.PersonId, sdic);
                     }
                 }
@@ -503,7 +501,7 @@ namespace HrServiceCenterWeb.Manager
                 {
                     if (ItemConfigDic.ContainsKey(info.ItemId))
                     {
-                        dic[info.PersonId].Add(ItemConfigDic[info.ItemId], info.ItemValue);
+                        dic[info.PersonId].Add(ItemConfigDic[info.ItemId], info.PersonPayValue);
                     }
                 }
             }
