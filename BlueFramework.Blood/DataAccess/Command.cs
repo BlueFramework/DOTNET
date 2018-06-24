@@ -8,6 +8,7 @@ using System.Data.Common;
 using BlueFramework.Blood.Config;
 using BlueFramework.Data;
 using BlueFramework.Common.Logger;
+using BlueFramework.Blood.EntityFramework;
 
 namespace BlueFramework.Blood.DataAccess
 {
@@ -71,16 +72,33 @@ namespace BlueFramework.Blood.DataAccess
             }
             // freach properties
             List<T> objects = new List<T>();
+            List<PropertyBehavior> behaviors = null;
+            if (dt.Rows.Count > 0)
+            {
+                behaviors = BehaviorUtils.GetBehaviors(dt.Rows[0], properties);
+            }
             foreach (DataRow dr in dt.Rows)
             {
                 T o = System.Activator.CreateInstance<T>();
-                foreach (PropertyInfo pi in properties)
+                foreach(PropertyBehavior behavior in behaviors)
                 {
-                    bool isNull  = dr[pi.Name] is System.DBNull;
+                    bool isNull = dr[behavior.Property.Name] is System.DBNull;
                     if (!isNull)
                     {
-                        pi.SetValue(o, dr[pi.Name]);
+                        switch (behavior.Behavior)
+                        {
+                            case BehaviorType.IntToBoolean:
+                                if((int)dr[behavior.Property.Name]==0)
+                                    behavior.Property.SetValue(o,false );
+                                else
+                                    behavior.Property.SetValue(o, true);
+                                break;
+                            default:
+                                behavior.Property.SetValue(o, dr[behavior.Property.Name]);
+                                break;
+                        }
                     }
+
                 }
                 objects.Add(o);
             }

@@ -22,8 +22,31 @@ opt.autoName = function () {
     $('#tempname').val(name);
 }
 
-//查询发放列表
-opt.query = function () {
+opt.createPayment = function () {
+    var o = HR.Form.getValues('formPayment');
+    var url = '../Payment/CreatePayment';
+    HR.Loader.show("loading...");
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(o),
+        success: function (result) {
+            if (result.success) {
+                HR.Loader.hide();
+                dataId = result.data;
+            }
+            else {
+                $.messager.alert('提示', '保存失败！');
+            }
+
+        },
+        error: function () {
+            $.messager.alert('提示', '查询出错！');
+        }
+    });
+
 }
 
 
