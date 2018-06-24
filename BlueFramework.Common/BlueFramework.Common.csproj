@@ -64,8 +64,16 @@
     <Compile Include="CSV\CsvPagesParser.cs" />
     <Compile Include="CSV\CsvPaggingEventArg.cs" />
     <Compile Include="Excel\ExcelFactory.cs" />
+    <Compile Include="Excel\ExcellType.cs" />
+    <Compile Include="Excel\POIStream.cs" />
+    <Compile Include="Excel\TCell.cs" />
+    <Compile Include="Excel\TemplateConfig.cs" />
+    <Compile Include="Excel\THead.cs" />
     <Compile Include="Excel\IExcel.cs" />
     <Compile Include="Excel\POIExcel.cs" />
+    <Compile Include="Excel\TRow.cs" />
+    <Compile Include="Excel\TSheet.cs" />
+    <Compile Include="Excel\TTemplate.cs" />
     <Compile Include="Http\HttpWebRequestUtil.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Log4Wrapper.cs" />
