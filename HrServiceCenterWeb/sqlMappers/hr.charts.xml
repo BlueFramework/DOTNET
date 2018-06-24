@@ -1,18 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <mapper namespace="hr.chart">
-  <select id="employeeCount" >
-    select c.NAME dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
-    inner join HR_COMPANY c on c.COMPANY_ID=e.COMPANY_ID
-    group by c.NAME
+<!--岗位分布饼图-->
+  <select id="positionCount">
+    select p.POSITION_NAME name,count(e.POSITION_ID) value
+    from HR_POSITION p
+    left join HR_EMPLOYEE e on e.POSITION_ID=p.POSITION_ID
+    group by e.POSITION_ID,p.POSITION_ID,p.POSITION_NAME
   </select>
-  <select id="positionCount" >
-    select p.POSITION_NAME dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
-    inner join HR_POSITION p on p.POSITION_ID=e.POSITION_ID
-    group by p.POSITION_NAME
-  </select>
+  <!--学历分布饼图-->
   <select id="degreeCount" >
-    select b.OBJECT_TEXT dataAxis,count(e.PERSON_ID) data from HR_EMPLOYEE e
-    inner JOIN T_S_BASECODE b on b.CATEGORYID=2 and b.OBJECT_VALUE=e.DEGREE
-    group by b.OBJECT_TEXT
+    select b.OBJECT_TEXT name,count(e.DEGREE) value
+    from T_S_BASECODE b
+    left join HR_EMPLOYEE e on  b.OBJECT_VALUE=e.DEGREE
+    where b.PARENTID=4
+    group by e.DEGREE,b.OBJECT_VALUE,b.OBJECT_TEXT
+  </select>
+<!--人员统计柱状图-->
+  <select id="employeeCount">
+    select s.NAME DataAxis, t.[COUNT] Data from
+    (select c.COMPANY_ID,count(e.COMPANY_ID) [COUNT]
+    from HR_COMPANY c
+    left join HR_EMPLOYEE e on c.COMPANY_ID=e.COMPANY_ID
+    group by e.COMPANY_ID,c.COMPANY_ID) t
+    inner join HR_COMPANY s on t.COMPANY_ID=s.COMPANY_ID
+  </select>
+  <!--保险部分折线图-->
+  <select id="insuranceCount">
+    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
+    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
+    where a.PAY_ID=b.PAY_ID
+    and left(b.PAY_MONTH,4)=year(getdate())
+    and a.ITEM_ID=299
+    group by b.PAY_MONTH
+  </select>
+  <!--应发工资部分折线图-->
+  <select id="shouldPayCount">
+    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
+    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
+    where a.PAY_ID=b.PAY_ID
+    and left(b.PAY_MONTH,4)=year(getdate())
+    and a.ITEM_ID=199
+    group by b.PAY_MONTH
+  </select>
+  <!--工资总额部分折线图-->
+  <select id="truePayCount">
+    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
+    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
+    where a.PAY_ID=b.PAY_ID
+    and left(b.PAY_MONTH,4)=year(getdate())
+    and a.ITEM_ID=3
+    group by b.PAY_MONTH
   </select>
 </mapper>

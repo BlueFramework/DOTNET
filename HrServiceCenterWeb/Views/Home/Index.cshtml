@@ -2,6 +2,7 @@
     ViewBag.Title = "Home Page";
 }
 <script src="~/Library/echarts/js/echarts.min.js"></script>
+<script src="~/Library/echarts/theme/infographic.js"></script>
 <div class="container">
     <div id="employeeCounter" style="width: 100%;height:300px;" class="row"></div>
     <div class="row">
@@ -17,18 +18,18 @@
 </div>
 
 <script type="text/javascript">
-        function getMax(list) {
-            var max = 0;
-            for (var i = 0; i < list.length; i++) {
-                if (max < list[i])
-                    max = list[i];
-            }
-            return max;
+    function getMax(list) {
+        var max = 0;
+        for (var i = 0; i < list.length; i++) {
+            if (max < list[i])
+                max = list[i];
         }
+        return max;
+    }
 
     function loadCompanyCounterChart(dataSource) {
 
-        var myChart = echarts.init(document.getElementById('employeeCounter'));
+        var myChart = echarts.init(document.getElementById('employeeCounter'), 'infographic');
 
         var dataAxis = dataSource.DataAxis;
         var data = dataSource.Data;
@@ -134,7 +135,7 @@
 
     }
 
-        function loadEmployeePositionCounter(dataSource) {
+    function loadPositionCounter(dataSource) {
         option = {
             title: {
                 text: '岗位分布',
@@ -144,18 +145,13 @@
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
-            
+
             series: [
                 {
                     name: '岗位分布',
                     type: 'pie',
-                    data: [
-                        { value: 335, name: '一类' },
-                        { value: 310, name: '二类' },
-                        { value: 234, name: '三类' },
-                        { value: 135, name: '四类' },
-                        { value: 1548, name: '五类' }
-                    ],
+                    radius: '50%',
+                    data: dataSource,
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
@@ -167,16 +163,15 @@
             ]
         };
 
-        var myChart = echarts.init(document.getElementById('employeePositionCounter'));
+        var myChart = echarts.init(document.getElementById('employeePositionCounter'), 'infographic');
         myChart.setOption(option);
 
     }
 
-    function loadDegreePositionCounter() {
+    function loadDegreePositionCounter(dataSource) {
         option = {
             title: {
                 text: '学历分布',
-                subtext: '纯属虚构',
                 x: 'center'
             },
             tooltip: {
@@ -188,13 +183,8 @@
                 {
                     name: '岗位分布',
                     type: 'pie',
-                    data: [
-                        { value: 335, name: '一类' },
-                        { value: 310, name: '二类' },
-                        { value: 234, name: '三类' },
-                        { value: 135, name: '四类' },
-                        { value: 1548, name: '五类' }
-                    ],
+                    radius: '50%',
+                    data: dataSource,
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
@@ -206,33 +196,52 @@
             ]
         };
 
-        var myChart = echarts.init(document.getElementById('employeeDegreeCounter'));
+        var myChart = echarts.init(document.getElementById('employeeDegreeCounter'), 'infographic');
         myChart.setOption(option);
 
     }
 
-    function loadPayChart() {
+    function loadPayChart(dataSource) {
+        datetime = new Date();
+        nowYear = datetime.getFullYear();
         option = {
             title: {
-                text: 'Confidence Band',
-                subtext: 'Example in MetricsGraphics.js',
+                text: nowYear+'年度发放趋势',
                 left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: [dataSource.data[0].name, dataSource.data[1].name, dataSource.data[2].name],
+                y: 'bottom',
             },
             xAxis: {
                 type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: dataSource.xaxis
             },
             yAxis: {
                 type: 'value'
             },
             series: [{
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                data: dataSource.data[0].data,
+                name: dataSource.data[0].name,
                 type: 'line'
-            }]
+            },
+            {
+                data: dataSource.data[1].data,
+                name: dataSource.data[1].name,
+                type: 'line'
+            }, {
+                data: dataSource.data[2].data,
+                name: dataSource.data[2].name,
+                type: 'line'
+            }
+            ]
         };
 
 
-        var myChart = echarts.init(document.getElementById('payChart'));
+        var myChart = echarts.init(document.getElementById('payChart'), 'infographic');
         myChart.setOption(option);
 
     }
@@ -256,7 +265,31 @@
             type: "GET",
             dataType: "json",
             success: function (data) {
-                loadEmployeePositionCounter(data);
+                loadPositionCounter(data);
+            },
+            error: function () {
+                $.messager.alert('提示', '查询出错！');
+            }
+        });
+
+        $.ajax({
+            url: "../Counter/GetDegreeCounts",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                loadDegreePositionCounter(data);
+            },
+            error: function () {
+                $.messager.alert('提示', '查询出错！');
+            }
+        });
+
+        $.ajax({
+            url: "../Counter/GetPayCounts",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                loadPayChart(data);
             },
             error: function () {
                 $.messager.alert('提示', '查询出错！');
@@ -264,8 +297,8 @@
         });
 
         //loadEmployeePositionCounter();
-        loadDegreePositionCounter();
-        loadPayChart();
+        //loadDegreePositionCounter();
+        //loadPayChart();
     }
 
 </script>
