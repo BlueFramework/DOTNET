@@ -14,29 +14,29 @@
     </div>
     <div style="margin:20px 0;"></div>
     <div>
-        <form class="form-horizontal" id="formCompany">
+        <form class="form-horizontal" id="formPayment">
 
             <div class="form-group">
                 <label class="col-sm-1 control-label">发放月份</label>
                 <div class="col-sm-10">
-                    <input id="datebox" editable="false" name="attYearMonth" class="easyui-datebox" style="height:30px;width:150px" />
+                    <input id="datebox" editable="false"  class="easyui-datebox" form-field-name="PayMonth" form-control-type="datebox"  style="height:30px;width:150px" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-1 control-label">公司名称</label>
                 <div class="col-sm-10">
-                    <input id="cmpname" class="easyui-combobox" form-field-name="CompanyName" form-control-type="textbox" style="height:30px;width:50%" data-options="{url:'@Url.Content("~/Company/GetCompanyList?query=")',valueField: 'CompanyId',textField: 'Name',required:true,onSelect:function(){opt.autoName();}}"/>
+                    <input id="cmpname" class="easyui-combobox" form-field-name="CompanyId" form-control-type="combobox" style="height:30px;width:50%" data-options="{url:'@Url.Content("~/Company/GetCompanyList?query=")',valueField: 'CompanyId',textField: 'Name',required:true,onSelect:function(){opt.autoName();}}"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-1 control-label">发放名称</label>
                 <div class="col-sm-10">
-                    <input type="text" id="tempname" form-field-name="CompanyName" style="height:30px;width:50%" class="form-control panelseach-text" data-options="required:true">
+                    <input type="text" id="tempname" form-field-name="PayTitle" style="height:30px;width:50%" class="form-control panelseach-text" data-options="required:true">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-10">
-                    <button id="btnCreate" class="btn btn-primary" onclick="opt.loadTable();return false;">创建发放表</button>
+                    <button id="btnCreate" class="btn btn-primary" onclick="opt.createPayment();return false;">创建发放表</button>
                     <button id="btnSave" class="btn btn-success" onclick="return false;">保存发放数据</button>
                     <button id="btnExport" class="btn btn-success" onclick="return false;">导出数据</button>
                     <button id="btnImport" class="btn btn-success" onclick="return false;">导入数据</button>

@@ -550,7 +550,7 @@ namespace HrServiceCenterWeb.Manager
                     pl.PayTitle = tname;
                     pl.PayMonth = time;
                     pl.CreatorId = UserContext.CurrentUser.UserId;
-                    pl.CreateTime = DateTime.Now.ToShortDateString();
+                    pl.CreateTime = DateTime.Now;
                     pl.Status = status;
                     if (status == 0)//新建发放表重复校验
                     {

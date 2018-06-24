@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="hr.payment">
+  <!-- 查询默认模板  -->
+  <select id="findDefaultTemplate" >
+    select
+    t.TEMPLATE_ID TemplateId,
+    t.TEMPLATE_NAME TemplateName
+    from HR_SALARY_TEMPLATE t where t.IS_GLOBAL=1
+  </select>
+  <!-- 查询待发放项目 -->
+  <select id="findTemplateItems" >
+    select t1.ITEM_EIDTABLE Editable,t.ITEM_ID ItemId,t.Parent_ID ParentId, t.ITEM_TITLE ItemCaption,t.ISLEAF
+    from HR_SALARY_TEMPLATE_ITEM t1
+    inner join HR_SALARY_ITEM t on t.ITEM_ID=t1.ITEM_ID
+    where t1.TEMPLATE_ID=#{value}
+    order by t.ITEM_CODE
+  </select>
+  <!-- 查询公司人员 -->
+  <select id="findCompanyPersons" >
+    select t.PERSON_ID objectId,t.CARD_ID ObjectCode,t.PERSON_NAME ObjectName
+    from HR_EMPLOYEE t
+    where t.COMPANY_ID=#{value}
+  </select>
+  <!-- 查询发放对象保险值 -->
+  <select id="findCompanyPersonsValue" >
+    select t1.PERSON_ID PersonId,t1.ITEM_ID ItemId,sum(t1.ITEM_VALUE) PayValue
+    from HR_EMPLOYEE t
+    INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}'
+    GROUP BY t1.PERSON_ID,t1.ITEM_ID
+    union
+    select t1.PERSON_ID PersonId,4 ItemId,sum(t1.ITEM_CMP_VALUE) PayValue
+    from HR_EMPLOYEE t
+    INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (201,202,203,204,205)
+    GROUP BY t1.PERSON_ID
+    union
+    select t1.PERSON_ID PersonId,5 ItemId,sum(t1.ITEM_CMP_VALUE) PayValue
+    from HR_EMPLOYEE t
+    INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (206)
+    GROUP BY t1.PERSON_ID
+  </select>
+  <!-- 查询发放表项目-->
+  <!-- 查询发放表对象-->
+  <!-- 查询发放表发放值-->
+  
+  <!-- insert payment -->
+  <insert id="insertPayment" parameterType="Payment">
+    <selectKey keyProperty="PayId" order="INSERTING" >
+      select @PayId=@@IDENTITY
+    </selectKey>
+    insert into HR_SALARY_PAY
+    (TEMPLATE_ID,COMPANY_ID,PAY_TITLE,PAY_MONTH,CREATOR,CREATE_TIME,STATUS)
+    values(#{TemplateId},#{CompanyId},#{PayTitle},#{PayMonth},#{CreatorId},#{CreateTime},#{Status})
+  </insert>
+  <insert id="insertPayment.detail" parameterType="PayValueInfo">
+    insert into HR_SALARY_PAY_VALUE(PAY_ID,ITEM_ID,PERSON_ID,PAY_VALUE)
+    values(#{PayId},#{ItemId},#{PersonId},#{PayValue})
+  </insert>
+  <insert id="insertPayment.items" parameterType="PayItemDO">
+    insert into HR_SALARY_PAY_ITEM(PAY_ID,ITEM_ID,ITEM_EIDTABLE) values(#{PaymentId},#{ItemId},#{Editable})
+  </insert>
+</mapper>

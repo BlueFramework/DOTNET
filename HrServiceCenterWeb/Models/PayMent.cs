@@ -28,7 +28,7 @@ namespace HrServiceCenterWeb.Models
 
         public string CreatorName { get; set; }
 
-        public string CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 审核状态0 未审核  2归档

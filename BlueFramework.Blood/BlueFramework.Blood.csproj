@@ -53,6 +53,9 @@
     <Compile Include="DataAccess\CommandParameter.cs" />
     <Compile Include="EntityContext.cs" />
     <Compile Include="EntityFramework\BaseObject.cs" />
+    <Compile Include="EntityFramework\BehaviorType.cs" />
+    <Compile Include="EntityFramework\BehaviorUtils.cs" />
+    <Compile Include="EntityFramework\PropertyBehavior.cs" />
     <Compile Include="EntityFramework\ObjectCollection.cs" />
     <Compile Include="EntityFramework\ObjectProvider.cs" />
     <Compile Include="LogHelper.cs" />
