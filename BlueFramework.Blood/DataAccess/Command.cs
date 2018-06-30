@@ -93,6 +93,10 @@ namespace BlueFramework.Blood.DataAccess
                                 else
                                     behavior.Property.SetValue(o, true);
                                 break;
+                            case BehaviorType.StringToDate:
+                                DateTime dateTime = DateTime.Parse(dr[behavior.Property.Name].ToString());
+                                behavior.Property.SetValue(o, dateTime);
+                                break;
                             default:
                                 behavior.Property.SetValue(o, dr[behavior.Property.Name]);
                                 break;

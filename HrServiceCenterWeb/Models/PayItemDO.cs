@@ -13,7 +13,7 @@ namespace HrServiceCenterWeb.Models
         public int ParentId { get; set; }
         public string ItemCaption { get; set; }
         public string ItemName { get; set; }
-        public bool Editable { get; set; }
+        public int Editable { get; set; }
         public bool IsLeaf { get; set; }
     }
 }

@@ -21,6 +21,14 @@ namespace BlueFramework.Common.Excel
         DataSet Read(Stream stream);
 
         /// <summary>
+        /// read <see cref="DataSet"/> from stream excel after rownum
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="rownum"></param>
+        /// <returns></returns>
+        DataSet Read(Stream stream, int rownum);
+
+        /// <summary>
         /// read <see cref="System.Data.DataSet"/> from excel file
         /// </summary>
         /// <param name="filePath"></param>

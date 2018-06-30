@@ -9,6 +9,7 @@ namespace HrServiceCenterWeb.Models
     {
         public int PersonId { get; set; }
         public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public int PositionId { get; set; }
         public string PersonName { get; set; }
         public string CardId { get; set; }

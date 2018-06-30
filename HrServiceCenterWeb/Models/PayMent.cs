@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data;
+using System.Collections;
 
 namespace HrServiceCenterWeb.Models
 {
@@ -34,5 +36,13 @@ namespace HrServiceCenterWeb.Models
         /// 审核状态0 未审核  2归档
         /// </summary>
         public int Status { get; set; }
+
+        public List<PayItemDO> Items { get; set; }
+
+        public List<PayObjectDO> Objects { get; set; }
+
+        public DataTable DataSource { get; set; }
+
+        public PayDetailVO Sheet { get; set; }
     }
 }

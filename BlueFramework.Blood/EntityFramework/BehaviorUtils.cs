@@ -25,7 +25,7 @@ namespace BlueFramework.Blood.EntityFramework
                         behavior.Behavior = BehaviorType.IntToBoolean;
                         break;
                     case "System.DateTime":
-                        behavior.Behavior = BehaviorType.DateToString;
+                        behavior.Behavior = BehaviorType.StringToDate;
                         break;
                 }
             }

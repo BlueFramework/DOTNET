@@ -7,7 +7,7 @@
     t.PAY_TITLE PayTitle,
     c.NAME CompanyName,
     t.PAY_MONTH PayMonth,
-    CONVERT(varchar,t.CREATE_TIME,120) CreateTime,
+    t.CREATE_TIME CreateTime,
     u.TRUENAME CreatorName from HR_SALARY_PAY t
     left join HR_COMPANY c on t.COMPANY_ID=c.COMPANY_ID
     left join T_S_USER u on t.CREATOR=u.USERID

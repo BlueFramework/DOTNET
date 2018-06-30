@@ -68,11 +68,16 @@ namespace BlueFramework.Common.Excel
 
         public DataSet Read(Stream stream)
         {
+            return Read(stream,1);
+        }
+
+        public DataSet Read(Stream stream, int rownum)
+        {
             LoadStream(stream);
             var ds = new DataSet();
             foreach (var sheetName in this.sheetNames)
             {
-                DataTable dt = Read(sheetName, 1);
+                DataTable dt = Read(sheetName, rownum);
                 ds.Tables.Add(dt);
             }
             return ds;
@@ -289,6 +294,21 @@ namespace BlueFramework.Common.Excel
                     cell.SetCellValue(o.ToString());
                 }
             }
+            // set column
+            setColumnWidth(sheet, tCells);
+        }
+
+        private void setColumnWidth(ISheet sheet, List<TCell> tCells)
+        {
+            sheet.DefaultColumnWidth = 8;
+            foreach(TCell cell in tCells)
+            {
+                if(cell.Width>0)
+                {
+                    sheet.SetColumnWidth(cell.ColumnIndex, cell.Width);
+                }
+            }
+
         }
 
         private void creatCellRanges(ISheet sheet, List<TCell> tCells)
