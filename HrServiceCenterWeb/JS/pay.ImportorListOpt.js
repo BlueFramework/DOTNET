@@ -77,6 +77,24 @@ opt.querydetail = function (id) {
 
 //上传文件
 opt.import = function () {
+    $('#winUpload').upload({
+        multiple: false,
+        params: {},
+        ext: 'xlsx,xls',
+        url: '../Pay/Import',
+        onAfterUpload: function (result) {
+            if (result.success === true) {
+                self.location.reload();
+            }
+            else {
+                alert(result.data);
+            }
+        }
+    });
+
+    $('#winUpload').upload('show');
+}
+opt.import_1 = function () {
     $('#inputform').form('submit', {
         url: '../Pay/ImportorEditor',
         success: function (result) {

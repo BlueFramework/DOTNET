@@ -42,10 +42,13 @@ function init() {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            opt.loadPayChart(data);
+            if (data.success)
+                opt.loadPayChart(data.series);
+            else
+                return;
         },
         error: function () {
-            $.messager.alert('提示', '查询出错！');
+            $.messager.alert('提示', '加载发放信息出错！');
         }
     });
 
@@ -237,7 +240,8 @@ opt.loadDegreePositionCounter = function (dataSource) {
 
 }
 
-opt.loadPayChart = function (dataSource) {
+opt.loadPayChart = function (series) {
+    debugger
     datetime = new Date();
     nowYear = datetime.getFullYear();
     option = {
@@ -249,28 +253,28 @@ opt.loadPayChart = function (dataSource) {
             trigger: 'axis'
         },
         legend: {
-            data: [dataSource.data[0].name, dataSource.data[1].name, dataSource.data[2].name],
+            data: [series[0].Title, series[1].Title, series[2].Title],
             y: 'bottom',
         },
         xAxis: {
             type: 'category',
-            data: dataSource.xaxis
+            data: series[0].DataAxis
         },
         yAxis: {
             type: 'value'
         },
         series: [{
-            data: dataSource.data[0].data,
-            name: dataSource.data[0].name,
+            data: series[0].Data,
+            name: series[0].Title,
             type: 'line'
         },
         {
-            data: dataSource.data[1].data,
-            name: dataSource.data[1].name,
+            data: series[1].Data,
+            name: series[1].Title,
             type: 'line'
         }, {
-            data: dataSource.data[2].data,
-            name: dataSource.data[2].name,
+            data: series[2].Data,
+            name: series[2].Title,
             type: 'line'
         }
         ]

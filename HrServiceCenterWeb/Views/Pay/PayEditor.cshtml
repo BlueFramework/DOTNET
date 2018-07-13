@@ -39,10 +39,10 @@
             <div class="form-group">
                 <div class="col-sm-10">
                     <button id="btnCreate" class="btn btn-primary" onclick="opt.createPayment();return false;">创建发放表</button>
-                    <button id="btnSave" class="btn btn-success" onclick="return false;">保存发放数据</button>
+                    <button id="btnSave" class="btn btn-success" onclick="opt.save();return false;">保存发放数据</button>
                     <button id="btnExport" class="btn btn-success" onclick="opt.export();return false;">导出数据</button>
                     <button id="btnImport" class="btn btn-success" onclick="opt.import();return false;">导入数据</button>
-                    <button id="btnSubmit" class="btn btn-warning" onclick="opt.onfile();return false;">提交归档</button>
+                    <button id="btnSubmit" class="btn btn-warning" onclick="opt.submitPayment();return false;">提交扣款</button>
                 </div>
             </div>
         </form>

@@ -18,11 +18,75 @@ opt.init_Buttons = function () {
         $('#btnCreate').attr('disabled', true);
     }
 }
+opt.disable = function () {
+    $('#btnSave').attr('disabled', true);
+    $('#btnExport').attr('disabled', true);
+    $('#btnImport').attr('disabled', true);
+    $('#btnSubmit').attr('disabled', true);
+}
 opt.autoName = function () {
     var date = $('#datebox').datebox('getText');
     var cmp = $('#cmpname').combobox('getText');
     var name = cmp + date + '工资表';
     $('#tempname').val(name);
+}
+
+opt.save = function () {
+    var o = HR.Form.getValues('formPayment');
+    o.PayId = dataId;
+    var url = '../Payment/SavePayment';
+    HR.Loader.show("loading...");
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(o),
+        success: function (result) {
+            HR.Loader.hide();
+            $.messager.show({
+                title: '提示',
+                msg: '保存成功.',
+                timeout: 2000,
+                showType: 'slide'
+            });
+        },
+        error: function () {
+            $.messager.alert('提示', '保存失败！');
+        }
+    });
+}
+
+opt.submitPayment = function () {
+    $.messager.confirm('提示窗', '提交扣款后则无法修改，确定要提交扣款？', function (event) {
+        if (event) {
+            var url = '../Payment/SubmitPayment?paymentId=' + dataId;
+            HR.Loader.show("loading...");
+            $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: null,
+                success: function (result) {
+                    HR.Loader.hide();
+                    $.messager.alert('提示', result.message);
+                    if (result.success) {
+                        opt.disable();
+                    }
+                },
+                error: function () {
+                    HR.Loader.hide();
+                    $.messager.alert('提示', '保存失败！');
+                }
+            });
+        }
+        else {
+            return;
+        }
+    });
+
+
 }
 
 opt.createPayment = function () {
@@ -36,8 +100,8 @@ opt.createPayment = function () {
         dataType: "json",
         data: JSON.stringify(o),
         success: function (result) {
+            HR.Loader.hide();
             if (result.success) {
-                HR.Loader.hide();
                 dataId = result.data;
                 self.location = "../Pay/PayEditor?id=" + dataId;
             }
@@ -47,7 +111,7 @@ opt.createPayment = function () {
 
         },
         error: function () {
-            $.messager.alert('提示', '查询出错！');
+            $.messager.alert('提示', '创建发放表出错！');
         }
     });
 
@@ -64,11 +128,14 @@ opt.loadPayment = function () {
         data: null,
         success: function (payment) {
             HR.Loader.hide();
+            if (payment.Status > 0)
+                opt.disable();
             HR.Form.setValues('formPayment',payment);
             opt.createGrid(payment.Items, payment.Sheet);
         },
         error: function () {
-            $.messager.alert('提示', '查询出错！');
+            HR.Loader.hide();
+            $.messager.alert('提示', '生成发放表出错！');
         }
     });
 }
@@ -153,9 +220,11 @@ opt.import = function () {
     $('#winUpload').upload('show');
 }
 
+    /*
 $.fn.datebox.defaults.formatter = function (date) {
     var y = date.getFullYear();
     var m = date.getMonth() + 1;
     var d = date.getDate();
-    return y + '-' + m;
+    return y + '-' + m + '-1';
 }
+    */

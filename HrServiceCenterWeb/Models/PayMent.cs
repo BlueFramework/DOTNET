@@ -37,6 +37,11 @@ namespace HrServiceCenterWeb.Models
         /// </summary>
         public int Status { get; set; }
 
+        /// <summary>
+        /// 工资发放金额
+        /// </summary>
+        public decimal Total { get; set; }
+
         public List<PayItemDO> Items { get; set; }
 
         public List<PayObjectDO> Objects { get; set; }

@@ -24,7 +24,7 @@ namespace HrServiceCenterWeb.Models
         public string ContactsPhone { get; set; }
         public string Specialty { get; set; }
         public string School { get; set; }
-        public string Creator { get; set; }
+        public int Creator { get; set; }
         public string CreateTime { get; set; }
         public int State { get; set; }
     }

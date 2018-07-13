@@ -188,8 +188,13 @@ namespace HrServiceCenterWeb.Manager
             bool pass;
             using (EntityContext context = Session.CreateContext())
             {
-                if(employeeInfo.PersonId==0)
+                if (employeeInfo.PersonId == 0)
+                {
+                    employeeInfo.CreateTime = DateTime.Now.ToString();
+                    employeeInfo.Creator = BlueFramework.User.UserContext.CurrentUser.UserId;
                     pass = context.Save<EmployeeInfo>("hr.employee.insertEmployee", employeeInfo);
+
+                }
                 else
                     pass = context.Save<EmployeeInfo>("hr.employee.updateEmployee", employeeInfo);
             }

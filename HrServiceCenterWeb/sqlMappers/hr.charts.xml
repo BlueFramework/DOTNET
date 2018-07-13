@@ -26,29 +26,26 @@
   </select>
   <!--保险部分折线图-->
   <select id="insuranceCount">
-    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
-    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
-    where a.PAY_ID=b.PAY_ID
-    and left(b.PAY_MONTH,4)=year(getdate())
-    and a.ITEM_ID=299
+    select b.PAY_MONTH DataAxis,sum(a.PAY_VALUE) Data
+    from HR_SALARY_PAY_VALUE a
+    INNER JOIN HR_SALARY_PAY b on a.PAY_ID=b.PAY_ID
+    where a.ITEM_ID in (4) and b.PAY_MONTH>=CONVERT(varchar(100),dateadd(MONTH,-13,GETDATE()), 23)
     group by b.PAY_MONTH
   </select>
   <!--应发工资部分折线图-->
   <select id="shouldPayCount">
-    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
-    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
-    where a.PAY_ID=b.PAY_ID
-    and left(b.PAY_MONTH,4)=year(getdate())
-    and a.ITEM_ID=199
+    select b.PAY_MONTH DataAxis,sum(a.PAY_VALUE) Data
+    from HR_SALARY_PAY_VALUE a
+    INNER JOIN HR_SALARY_PAY b on a.PAY_ID=b.PAY_ID
+    where a.ITEM_ID in (101,102,103,104,105,106,107,108,109,110,111) and b.PAY_MONTH>=CONVERT(varchar(100),dateadd(MONTH,-13,GETDATE()), 23)
     group by b.PAY_MONTH
   </select>
   <!--工资总额部分折线图-->
   <select id="truePayCount">
-    select right(b.PAY_MONTH,2) name,sum(a.PAY_VALUE) moneyValue
-    from HR_SALARY_PAY_VALUE a,HR_SALARY_PAY b
-    where a.PAY_ID=b.PAY_ID
-    and left(b.PAY_MONTH,4)=year(getdate())
-    and a.ITEM_ID=3
+    select b.PAY_MONTH DataAxis,sum(a.PAY_VALUE) Data
+    from HR_SALARY_PAY_VALUE a
+    INNER JOIN HR_SALARY_PAY b on a.PAY_ID=b.PAY_ID
+    where a.ITEM_ID in (4,5,101,102,103,104,105,106,107,108,109,110,111) and b.PAY_MONTH>=CONVERT(varchar(100),dateadd(MONTH,-13,GETDATE()), 23)
     group by b.PAY_MONTH
   </select>
 </mapper>

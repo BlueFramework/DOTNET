@@ -45,7 +45,7 @@
 
   <!--发放表主表详情-->
   <select id="findPayment" >
-    select t.PAY_ID PayId,t.PAY_TITLE PayTitle,t.COMPANY_ID CompanyId,t.PAY_MONTH PayMonth, t.STATUS Status
+    select t.PAY_ID PayId,t.PAY_TITLE PayTitle,t.COMPANY_ID CompanyId,t.PAY_MONTH PayMonth, t.STATUS Status,t.CREATE_TIME CreateTime
     from HR_SALARY_PAY t
     where t.PAY_ID=#{value}
   </select>
@@ -91,4 +91,18 @@
   <insert id="insertPayment.object" parameterType="PayObjectDO">
     insert into HR_SALARY_PAY_OBJECT(PAY_ID,PERSON_ID) values(#{PaymentId},#{ObjectId})
   </insert>
+  <!--删除发放表-->
+  <delete id="deletePay">
+    delete from HR_SALARY_PAY_VALUE where PAY_ID=${value};
+    delete from HR_SALARY_PAY_ITEM where PAY_ID=${value};
+    delete from HR_SALARY_PAY_OBJECT where PAY_ID=${value};
+    delete from HR_SALARY_PAY where PAY_ID=${value};
+  </delete>
+  <!-- 保存发放表基本信息 -->
+  <update id="savePayment">
+    update HR_SALARY_PAY set PAY_TITLE=#{PayTitle} where PAY_ID=#{PayId};
+  </update>
+  <update id="submitPayment">
+    update HR_SALARY_PAY set STATUS=#{Status} where PAY_ID=#{PayId};
+  </update>
 </mapper>

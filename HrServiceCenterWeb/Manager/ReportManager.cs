@@ -45,31 +45,66 @@ namespace HrServiceCenterWeb.Manager
         /// 获取保险，应发工资，实发工资统计折线图数据
         /// </summary>
         /// <returns></returns>
-        public List<object> GetLineChartData()
+        public List<Models.CounterVO> GetLineChartData()
         {
-            List<object> objlist = new List<object>();
+            List<Models.CounterVO> series = new List<Models.CounterVO>();
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
-            List<Models.CountetBase> insuranceList = context.SelectList<Models.CountetBase>("hr.chart.insuranceCount", null);
-            var insuranceobj = new {
-                data = getMonthData(insuranceList),
-                name = "保险部分"
-            };
-            objlist.Add(insuranceobj);
-            List<Models.CountetBase> shouldPayList = context.SelectList<Models.CountetBase>("hr.chart.shouldPayCount", null);
-            var shouldPayobj = new
+            List<Models.CounterBO> insuranceList = context.SelectList<Models.CounterBO>("hr.chart.insuranceCount", null);
+            List<Models.CounterBO> shouldPayList = context.SelectList<Models.CounterBO>("hr.chart.shouldPayCount", null);
+            List<Models.CounterBO> truePayList = context.SelectList<Models.CounterBO>("hr.chart.truePayCount", null);
+
+            Dictionary<string, DateTime> months = new Dictionary<string, DateTime>();
+            DateTime startDate = DateTime.Parse( DateTime.Now.ToString("yyyy-MM-01") );
+            int i = 0;
+            for(i = -12; i <=0; i++)
             {
-                data = getMonthData(shouldPayList),
-                name = "工资部分"
-            };
-            objlist.Add(shouldPayobj);
-            List<Models.CountetBase> truePayList = context.SelectList<Models.CountetBase>("hr.chart.truePayCount", null);
-            var truePayobj = new
+                DateTime date = startDate.AddMonths(i);
+                string month = date.ToString("yyyyMM");
+                months.Add(month, date);
+            }
+
+            Models.CounterVO s1 = new Models.CounterVO();
+            Models.CounterVO s2 = new Models.CounterVO();
+            Models.CounterVO s3 = new Models.CounterVO();
+            s1.DataAxis = s2.DataAxis = s3.DataAxis = months.Keys.ToArray();
+            s1.Data = new decimal[13]; s1.Title = "保险部分";
+            s2.Data = new decimal[13]; s2.Title = "工资部分";
+            s3.Data = new decimal[13]; s3.Title = "费用总额";
+
+            i = 0;
+            foreach (string x in months.Keys)
             {
-                data = getMonthData(truePayList),
-                name = "工资总额"
-            };
-            objlist.Add(truePayobj);
-            return objlist;
+                string month = months[x].ToString("yyyy-MM-dd");
+                foreach (Models.CounterBO o in insuranceList)
+                {
+                    if (o.DataAxis == month)
+                    {
+                        s1.Data[i] = o.Data;
+                        break;
+                    }
+                }
+                foreach (Models.CounterBO o in shouldPayList)
+                {
+                    if (o.DataAxis == month)
+                    {
+                        s2.Data[i] = o.Data;
+                        break;
+                    }
+                }
+                foreach (Models.CounterBO o in truePayList)
+                {
+                    if (o.DataAxis == month)
+                    {
+                        s3.Data[i] = o.Data;
+                        break;
+                    }
+                }
+                i++;
+            }
+            series.Add(s1);
+            series.Add(s2);
+            series.Add(s3);
+            return series;
         }
 
         private decimal[] getMonthData(List<Models.CountetBase> list)

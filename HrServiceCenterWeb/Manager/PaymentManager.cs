@@ -13,6 +13,56 @@ namespace HrServiceCenterWeb.Manager
 {
     public class PaymentManager
     {
+        public bool UpdatePayment(Payment payment)
+        {
+            EntityContext context = Session.CreateContext();
+            bool pass = context.Save<Payment>("hr.payment.savePayment", payment);
+            return pass;
+        }
+
+        public bool SubmitPayment(int paymentId,out string message)
+        {
+            Payment payment = LoadPayment(paymentId);
+            payment.Status = 2;
+
+            using(EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    CompanyInfo companyInfo = context.Selete<CompanyInfo>("hr.company.findCompanyById", payment.CompanyId);
+
+                    CompanyAccountRecordInfo accountRecordInfo = new CompanyAccountRecordInfo();
+                    accountRecordInfo.CompanyId = payment.CompanyId;
+                    accountRecordInfo.AccountId = companyInfo.AccountId;
+                    accountRecordInfo.AccountBalance = companyInfo.AccountBalance;
+                    accountRecordInfo.Money = payment.Total;
+                    accountRecordInfo.CreateTime = DateTime.Now;
+
+                    context.BeginTransaction();
+                    CompanyAccountInfo accountInfo = new CompanyAccountInfo()
+                    {
+                        CompanyId = accountRecordInfo.CompanyId,
+                        AccountId = accountRecordInfo.AccountId,
+                        AccountBalance = accountRecordInfo.AccountBalance - accountRecordInfo.Money
+                    };
+                    context.Save<CompanyAccountInfo>("hr.company.updateCompanyAccount", accountInfo);
+                    context.Save<CompanyAccountRecordInfo>("hr.company.insertCompanyAccountDetail", accountRecordInfo);
+                    context.Save<Payment>("hr.payment.submitPayment", payment);
+                    context.Commit();
+
+                    message = string.Format("本次从单位账户扣款{0}元，账户余额{1}元。", payment.Total, accountInfo.AccountBalance);
+
+                    return true;
+                }
+                catch(Exception e)
+                {
+                    message = e.Message;
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
         public void CreatePayment(Payment payment)
         {
             EntityContext context = Session.CreateContext();
@@ -65,6 +115,7 @@ namespace HrServiceCenterWeb.Manager
         {
             EntityContext context = Session.CreateContext();
             Payment payment = context.Selete<Payment>("hr.payment.findPayment", paymentId) ;
+            //payment.PayMonth = DateTime.Parse(payment.PayMonth).ToString("yyyy-M-d");
             List<PayItemDO> items = context.SelectList<PayItemDO>("hr.payment.findPaymentItems", paymentId);
             List<PayObjectDO> objects = context.SelectList<PayObjectDO>("hr.payment.findPaymentPersons", paymentId);
             List<PayValueInfo> payValues = context.SelectList<PayValueInfo>("hr.payment.findPaymentValue", paymentId);
@@ -99,7 +150,10 @@ namespace HrServiceCenterWeb.Manager
             {
                 DataRow dr = rows[pv.PersonId];
                 string columnName = "f_" + pv.ItemId;
-                dr[columnName] = pv.PayValue;
+                if (dt.Columns.Contains(columnName))
+                {
+                    dr[columnName] = pv.PayValue;
+                }
             }
  
             // TODO:calculate by formula but this is fix code now
@@ -121,8 +175,6 @@ namespace HrServiceCenterWeb.Manager
                     decimal.Parse(dr["f_201"].ToString()) +
                     decimal.Parse(dr["f_202"].ToString()) +
                     decimal.Parse(dr["f_203"].ToString()) +
-                    decimal.Parse(dr["f_204"].ToString()) +
-                    decimal.Parse(dr["f_205"].ToString()) +
                     decimal.Parse(dr["f_206"].ToString());
                 dr["f_3"] =
                     decimal.Parse(dr["f_199"].ToString()) -
@@ -132,6 +184,10 @@ namespace HrServiceCenterWeb.Manager
                     decimal.Parse(dr["f_4"].ToString()) +
                     decimal.Parse(dr["f_5"].ToString()) +
                     decimal.Parse(dr["f_6"].ToString());
+                payment.Total +=
+                    decimal.Parse(dr["f_199"].ToString()) +
+                    decimal.Parse(dr["f_4"].ToString()) +
+                    decimal.Parse(dr["f_5"].ToString());
             }
             #endregion
 

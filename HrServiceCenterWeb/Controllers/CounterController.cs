@@ -60,11 +60,11 @@ namespace HrServiceCenterWeb.Controllers
         public ActionResult GetPayCounts()
         {
             ReportManager manager = new ReportManager();
-            List<object> list = manager.GetLineChartData();
-            string[] month = new string[] { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
-            var dataSource = new {
-                xaxis= month,
-                data= list
+            List<CounterVO> list = manager.GetLineChartData();
+            var dataSource = new
+            {
+                success = list.Count>=3?true:false,
+                series = list
             };
             JsonResult json = Json(dataSource);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
@@ -74,7 +74,7 @@ namespace HrServiceCenterWeb.Controllers
         private CounterVO fillCounter(List<CounterBO> list)
         {
             CounterVO vo = new CounterVO();
-            vo.Data = new int[list.Count];
+            vo.Data = new decimal[list.Count];
             vo.DataAxis = new string[list.Count];
             for(int i = 0; i < list.Count; i++)
             {

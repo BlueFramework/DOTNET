@@ -21,6 +21,7 @@ namespace HrServiceCenterWeb.Controllers
         {
             payment.CreateTime = DateTime.Now;
             payment.CreatorId = BlueFramework.User.UserContext.CurrentUser.UserId;
+            payment.PayMonth = DateTime.Parse(payment.PayMonth).ToString("yyyy-MM-01");
 
             PaymentManager pm = new PaymentManager();
             pm.CreatePayment(payment);
@@ -45,7 +46,29 @@ namespace HrServiceCenterWeb.Controllers
 
         public ActionResult SavePayment(Payment payment)
         {
-            return null;
+            payment.CreateTime = DateTime.Now; //容错处理
+            bool pass = new PaymentManager().UpdatePayment(payment);
+
+            Object result = new
+            {
+                success = pass
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        public ActionResult SubmitPayment(int paymentId)
+        {
+            string message = string.Empty;
+            bool pass = new PaymentManager().SubmitPayment(paymentId,out message);
+
+            Object result = new
+            {
+                success = pass,
+                message = message
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
         }
 
         public ActionResult Export(int payId)

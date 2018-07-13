@@ -65,8 +65,8 @@ opt.save = function () {
         dataType: "json",
         data: JSON.stringify(o),
         success: function (result) {
+            HR.Loader.hide();
             if (result.success) {
-                HR.Loader.hide();
                 dataId = result.data;
             }
             else {

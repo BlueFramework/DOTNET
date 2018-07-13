@@ -169,6 +169,37 @@ namespace HrServiceCenterWeb.Controllers
             return Json(msg);
         }
 
+        // 导入
+        public ActionResult Import()
+        {
+            if (Request.Files.Count == 0)
+            {
+                Object o = new
+                {
+                    success = false,
+                    data = "上传失败，请选择需要上传的EXCEL"
+                };
+                JsonResult r = Json(o, JsonRequestBehavior.AllowGet);
+                return r;
+
+            }
+
+            string message = string.Empty;
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(Request.Files[0].FileName);
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = excel.Read(Request.Files[0].InputStream);
+            DataTable dt = ds.Tables[0];
+
+            bool pass = new Manager.PayManager().Import(dt, fileName, ref message);
+            Object result = new
+            {
+                success = pass,
+                data = message
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
         // 导入保险
         // VIEW: /Pay/ImportorEditor
         public ActionResult ImportorEditor()
@@ -409,7 +440,7 @@ namespace HrServiceCenterWeb.Controllers
             }
             else
             {
-                msg = "删除失败！<br />" + msg;
+                msg = "删除失败！" + msg;
             }
             return Json(msg);
         }

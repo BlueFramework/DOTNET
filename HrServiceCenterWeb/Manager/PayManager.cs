@@ -271,7 +271,7 @@ namespace HrServiceCenterWeb.Manager
                     List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsuranceByTitle", fileName);
                     if (list.Count > 0)
                     {
-                        outmsg += "文件：" + fileName + "已上传！<br />";
+                        outmsg += "文件：" + fileName + "已上传！";
                         return false;
                     }
                     //入库导入主表
@@ -297,7 +297,7 @@ namespace HrServiceCenterWeb.Manager
                         else
                         {
                             //未找到人员，忽略该行
-                            outmsg += "第" + dt.Rows.IndexOf(row) + "行人员未知！<br />";
+                            outmsg += "第" + dt.Rows.IndexOf(row) + "行人员未知！";
                             dt.Rows.Remove(row);
                             continue;
                         }
@@ -308,7 +308,7 @@ namespace HrServiceCenterWeb.Manager
                         else
                         {
                             //值错误，不入库
-                            outmsg += "第" + dt.Rows.IndexOf(row) + "行险种不匹配！<br />";
+                            outmsg += "第" + dt.Rows.IndexOf(row) + "行险种不匹配！";
                             context.Rollback();
                             return false;
                         }
@@ -319,7 +319,7 @@ namespace HrServiceCenterWeb.Manager
                 }
                 catch (Exception ex)
                 {
-                    outmsg += "服务器内部错误，请联系管理员！<br />";
+                    outmsg += "服务器内部错误，请联系管理员！";
                     context.Rollback();
                     return false;
                 }
@@ -693,14 +693,13 @@ namespace HrServiceCenterWeb.Manager
                         msg += "该发放表已归档，不能删除！";
                         return false;
                     }
-                    context.Delete("hr.pay.deletePayDetail", id);
-
-                    context.Delete("hr.pay.deletePay", id);
+                    context.Delete("hr.payment.deletePay", id);
                     context.Commit();
                     return true;
                 }
                 catch (Exception ex)
                 {
+                    msg = ex.Message;
                     context.Rollback();
                     return false;
                 }

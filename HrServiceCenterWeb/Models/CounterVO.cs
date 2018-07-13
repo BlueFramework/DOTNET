@@ -9,6 +9,8 @@ namespace HrServiceCenterWeb.Models
     {
         public string[] DataAxis { get; set; }
 
-        public int[] Data { get; set; }
+        public decimal[] Data { get; set; }
+
+        public string Title { get; set; }
     }
 }
