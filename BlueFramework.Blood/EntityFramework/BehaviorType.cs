@@ -11,6 +11,7 @@ namespace BlueFramework.Blood.EntityFramework
         Default = 1,
         IntToBoolean = 2,
         DateToString = 3,
-        StringToDate =4
+        StringToDate =4,
+        StringToDecimal = 5
     }
 }

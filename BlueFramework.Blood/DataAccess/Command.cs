@@ -97,6 +97,9 @@ namespace BlueFramework.Blood.DataAccess
                                 DateTime dateTime = DateTime.Parse(dr[behavior.Property.Name].ToString());
                                 behavior.Property.SetValue(o, dateTime);
                                 break;
+                            case BehaviorType.StringToDecimal:
+                                behavior.Property.SetValue(o, decimal.Parse( dr[behavior.Property.Name].ToString()));
+                                break;
                             default:
                                 behavior.Property.SetValue(o, dr[behavior.Property.Name]);
                                 break;
@@ -178,7 +181,11 @@ namespace BlueFramework.Blood.DataAccess
             for (int i = 0; i < properties.Length; i++)
             {
                 PropertyInfo property = properties[i];
-                CommandParameter parameter = new CommandParameter(property.Name, property.GetValue(o), property.PropertyType);
+                CommandParameter parameter = null;
+                if ( property.PropertyType.Namespace != "System" )
+                    parameter = new CommandParameter(property.Name,null, property.PropertyType);
+                else
+                    parameter = new CommandParameter(property.Name, property.GetValue(o), property.PropertyType);
                 parameters[i] = parameter;
             }
             return parameters;

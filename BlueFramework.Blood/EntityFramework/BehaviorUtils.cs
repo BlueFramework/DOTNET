@@ -27,6 +27,9 @@ namespace BlueFramework.Blood.EntityFramework
                     case "System.DateTime":
                         behavior.Behavior = BehaviorType.StringToDate;
                         break;
+                    case "System.Decimal":
+                        behavior.Behavior = BehaviorType.StringToDecimal;
+                        break;
                 }
             }
 
