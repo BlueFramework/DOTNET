@@ -222,10 +222,17 @@ namespace HrServiceCenterWeb.Manager
             }
         }
 
-        public List<InsuranceInfo> QueryImportorList(string query)
+        public List<InsuranceInfo> QueryImportorInsuranceList(string query)
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
             List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsurance", query);
+            return list;
+        }
+
+        public List<InsuranceInfo> QueryImportorPaymentList(string query)
+        {
+            EntityContext context = BlueFramework.Blood.Session.CreateContext();
+            List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findPayments", query);
             return list;
         }
 
@@ -242,7 +249,7 @@ namespace HrServiceCenterWeb.Manager
                     context.Commit();
                     return true;
                 }
-                catch (Exception ex)
+                catch
                 {
                     context.Rollback();
                     return false;
@@ -257,7 +264,7 @@ namespace HrServiceCenterWeb.Manager
         /// <param name="fileName"></param>
         /// <param name="outmsg"></param>
         /// <returns></returns>
-        public bool Import(DataTable dt, string fileName, ref string outmsg)
+        public bool ImportInsurance(DataTable dt, string fileName, ref string outmsg)
         {
             Dictionary<string, int> cardIds = getItemCardId();
             Dictionary<string, int> titles = getItemTitle();
@@ -279,9 +286,12 @@ namespace HrServiceCenterWeb.Manager
                     ii.Title = fileName;
                     ii.CreatorId = UserContext.CurrentUser.UserId;
                     ii.CreateTime = DateTime.Now.ToShortDateString();
+                    ii.ImportType = 1;
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
+                    int rowIndex = 0;
                     foreach (DataRow row in dt.Rows)
                     {
+                        rowIndex++;
                         //入库导入详细表
                         InsuranceDetailInfo idi = new InsuranceDetailInfo();
                         idi.ImportId = ii.ImportId;
@@ -290,15 +300,15 @@ namespace HrServiceCenterWeb.Manager
                         idi.PersonPayValue = decimal.Parse(row["个人缴存"].ToString());
                         idi.CompanyPayValue= decimal.Parse(row["单位缴存"].ToString());
                         idi.ImportColumnName = row["险种"].ToString();
-                        if (cardIds.ContainsKey(row["身份证号码"].ToString()))
+                        string cardId = row["身份证号码"].ToString().ToLower();
+                        if (cardIds.ContainsKey(cardId))
                         {
-                            idi.PersonId = cardIds[row["身份证号码"].ToString()];
+                            idi.PersonId = cardIds[cardId];
                         }
                         else
                         {
                             //未找到人员，忽略该行
-                            outmsg += "第" + dt.Rows.IndexOf(row) + "行人员未知！";
-                            dt.Rows.Remove(row);
+                            outmsg += string.Format("第{0}行 {1} 人员的身份证号码未匹配到， ",rowIndex, idi.PersonName ); 
                             continue;
                         }
                         if (titles.ContainsKey(row["险种"].ToString()))
@@ -327,6 +337,84 @@ namespace HrServiceCenterWeb.Manager
         }
 
 
+        public bool ImportPaymentData(DataTable dt, string fileName, ref string outmsg)
+        {
+            Dictionary<string, int> cardIds = getItemCardId();
+            Dictionary<string, int> titles = getItemTitle();
+            Dictionary<int, int> keyValues = new Dictionary<int, int>();
+            #region 项目匹配
+            for(int i = 0; i < dt.Columns.Count; i++)
+            {
+                DataColumn column = dt.Columns[i];
+                if (titles.ContainsKey(column.ColumnName))
+                    keyValues.Add(i, titles[column.ColumnName]);
+            }
+            #endregion
+
+            using (EntityContext context = BlueFramework.Blood.Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    //判断是否已经入库
+                    List<InsuranceInfo> list = context.SelectList<InsuranceInfo>("hr.insurance.findInsuranceByTitle", fileName);
+                    if (list.Count > 0)
+                    {
+                        outmsg += "文件：" + fileName + "已上传！";
+                        return false;
+                    }
+                    //入库导入主表
+                    InsuranceInfo ii = new InsuranceInfo();
+                    ii.Title = fileName;
+                    ii.CreatorId = UserContext.CurrentUser.UserId;
+                    ii.CreateTime = DateTime.Now.ToShortDateString();
+                    ii.ImportType = 2;
+                    context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
+                    int rowIndex = 0;
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        rowIndex++;
+                        //入库导入详细表
+                        InsuranceDetailInfo idi = new InsuranceDetailInfo();
+                        idi.ImportId = ii.ImportId;
+                        idi.PayMonth = row["发放年月"].ToString();
+                        idi.PersonName = row["姓名"].ToString();
+                        idi.ImportType = 2;
+                        string cardId = row["身份证"].ToString().ToLower();
+                        #region 身份证判断
+                        if (cardIds.ContainsKey(cardId))
+                        {
+                            idi.PersonId = cardIds[cardId];
+                        }
+                        else
+                        {
+                            //未找到人员，忽略该行
+                            outmsg += string.Format("第{0}行 {1} 人员的身份证号码未匹配到， ", rowIndex, idi.PersonName);
+                            continue;
+                        }
+                        #endregion
+                        foreach(var columnindex in keyValues.Keys)
+                        {
+                            InsuranceDetailInfo item = idi.Clone();
+                            item.ItemId = keyValues[columnindex];
+                            item.PersonPayValue = decimal.Parse(row[columnindex].ToString());
+                            item.ImportColumnName = dt.Columns[columnindex].Caption;
+                            context.Save<InsuranceDetailInfo>("hr.insurance.insertInsuranceDetail", item);
+                        }
+                    }
+                    context.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    outmsg += "保存失败，"+ex.Message;
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
+
         private Dictionary<string, int> getItemCardId()
         {
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
@@ -334,8 +422,8 @@ namespace HrServiceCenterWeb.Manager
             Dictionary<string, int> dic = new Dictionary<string, int>();
             foreach (EmployeeInfo ei in list)
             {
-                if (!dic.ContainsKey(ei.CardId))
-                    dic.Add(ei.CardId, ei.PersonId);
+                if (!dic.ContainsKey(ei.CardId.ToLower()))
+                    dic.Add(ei.CardId.ToLower(), ei.PersonId);
             }
             return dic;
         }
@@ -345,6 +433,11 @@ namespace HrServiceCenterWeb.Manager
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
             List<SalaryItemInfo> list = context.SelectList<SalaryItemInfo>("hr.template.findSalaryItemTitle", null);
             Dictionary<string, int> dic = new Dictionary<string, int>();
+            dic.Add("工伤保险", 204);
+            dic.Add("生育保险", 205);
+            dic.Add("失业保险", 202);
+            dic.Add("基本养老", 201);
+
             foreach (SalaryItemInfo si in list)
             {
                 if (!dic.ContainsKey(si.Name))

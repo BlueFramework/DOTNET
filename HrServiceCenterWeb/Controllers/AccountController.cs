@@ -57,5 +57,30 @@ namespace HrServiceCenterWeb.Controllers
             UserContext.Logout();
             return RedirectToAction("Login", "Account");
         }
+
+        public ActionResult UserPage()
+        {
+            //LoginModel user = new LoginModel();
+            //user.UserName = UserContext.CurrentUser.UserName;
+            this.lgmodel.UserName = UserContext.CurrentUser.UserName;
+            return View(lgmodel);
+        }
+
+        [HttpPost]
+        public ActionResult UserPage(LoginModel model)
+        {
+            if (model.Password == "******" || string.IsNullOrEmpty(model.Password))
+            {
+                return View(model);
+            }
+            else
+            {
+                UserManager userManager = new UserManager();
+                int userId = UserContext.CurrentUser.UserId;
+                userManager.ModifyPassword(userId, model.Password);
+                return LogOff();
+            }
+
+        }
     }
 }

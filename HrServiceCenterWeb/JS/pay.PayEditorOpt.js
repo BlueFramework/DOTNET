@@ -203,7 +203,7 @@ opt.export = function () {
 opt.import = function () {
     if (dataId === 0) return false;
     $('#winUpload').upload({
-        multiple: true,
+        multiple: false,
         params: { payId: dataId},
         ext: 'xlsx',
         url: '../Payment/Import?payId='+dataId,

@@ -4,11 +4,10 @@ using System.Linq;
 using HrServiceCenterWeb.Models;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Configuration;
-using BlueFramework.User;
-using BlueFramework.User.Models;
 using HrServiceCenterWeb.Manager;
+using BlueFramework.Common.Excel;
+using System.Data;
+using BlueFramework.Common;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -131,5 +130,73 @@ namespace HrServiceCenterWeb.Controllers
             return jsonResult;
         }
 
+        public ActionResult Export()
+        {
+
+            List<CompanyInfo> list = new Manager.EmployeeManager().GetCompanies(string.Empty);
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataTable dataTable = Converts.ListToDataTable<CompanyInfo>(list);
+            dataTable.Columns["Name"].Caption = "单位名称";
+            dataTable.Columns["Code"].Caption = "组织机构代码";
+            dataTable.Columns["Representative"].Caption = "法人";
+            dataTable.Columns["AccountBalance"].Caption = "账户余额";
+            dataTable.Columns.Remove("CompanyId");
+            dataTable.Columns.Remove("AccountId");
+            dataTable.Columns.Remove("Positions");
+            dataTable.Columns.Remove("Remark");
+            DataSet dataSet = new DataSet();
+            dataSet.Tables.Add(dataTable);
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            excel.Write(stream, dataSet, ExcelExtendType.XLSX);
+            stream.AllowClose = true;
+            byte[] buffer = new byte[stream.Length];
+            stream.Position = 0;
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Dispose();
+
+            HttpResponse context = System.Web.HttpContext.Current.Response;
+            try
+            {
+                context.ContentType = "application/ms-excel";
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode("单位信息", System.Text.Encoding.UTF8)));
+                context.BinaryWrite(buffer);
+                context.Flush();
+                context.End();
+            }
+            catch (Exception ex)
+            {
+                context.ContentType = "text/plain";
+                context.Write(ex.Message);
+            }
+            return null;
+        }
+
+        public ActionResult Import()
+        {
+            if (Request.Files.Count == 0)
+            {
+                Object failResult = new
+                {
+                    success = false,
+                    data = ""
+                };
+                JsonResult failJsonResult = Json(failResult, JsonRequestBehavior.AllowGet);
+                return failJsonResult;
+            }
+
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = excel.Read(Request.Files[0].InputStream);
+            DataTable dt = ds.Tables[0];
+            string message;
+            bool pass = new EmployeeManager().ImportRecharges(dt,out message);
+            Object result = new
+            {
+                success = pass,
+                data = message
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
     }
 }

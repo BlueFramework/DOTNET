@@ -5,6 +5,7 @@ using System.Web;
 using System.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data.Common;
 using HrServiceCenterWeb.Models;
 using BlueFramework.Blood;
 using BlueFramework.Blood.DataAccess;
@@ -13,6 +14,8 @@ namespace HrServiceCenterWeb.Manager
 {
     public class PaymentManager
     {
+        private const decimal MANAGE_PAYVALUE = 100;
+
         public bool UpdatePayment(Payment payment)
         {
             EntityContext context = Session.CreateContext();
@@ -75,7 +78,18 @@ namespace HrServiceCenterWeb.Manager
                 new CommandParameter("PayMonth",DateTime.Parse(payment.PayMonth).ToString("yyyyMM") )
             };
             List<PayValueInfo> payValues = context.SelectList<PayValueInfo>("hr.payment.findCompanyPersonsValue", parameters);
-
+            #region 派遣服务费
+            foreach (PayObjectDO o in objects)
+            {
+                PayValueInfo payValue = new PayValueInfo()
+                {
+                    ItemId = 6,
+                    PersonId = o.ObjectId,
+                    PayValue = MANAGE_PAYVALUE
+                };
+                payValues.Add(payValue);
+            }
+            #endregion
             using (context)
             {
                 try
@@ -274,6 +288,38 @@ namespace HrServiceCenterWeb.Manager
                 return true;
             else
                 return false;
+        }
+
+        public DataSet ExportBankPayment(string payMonth)
+        {
+            payMonth = DateTime.Parse(payMonth).ToString("yyyy-MM-dd");
+            string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "/Setting/sql/hr.sql.xml";
+            string sql = BlueFramework.Common.XmlUtils.GetInnerText(filePath, "hr.payBank");
+            BlueFramework.Data.DatabaseProviderFactory factory = new BlueFramework.Data.DatabaseProviderFactory();
+            BlueFramework.Data.Database db = factory.CreateDefault();
+            DbCommand command = db.GetSqlStringCommand(sql);
+            db.AddInParameter(command, "payMonth", DbType.String, payMonth);
+            //DataTable dt = db.ExecuteDataSet(command).Tables[0];
+            DataSet ds = db.ExecuteDataSet(command);
+            DataTable dt = ds.Tables[0];
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                dt.Rows[i][0] = i + 1;
+            }
+            return ds;
+        }
+
+        public DataSet ExportDetail(string payMonth)
+        {
+            payMonth = DateTime.Parse(payMonth).ToString("yyyy-MM-dd");
+            string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "/Setting/sql/hr.sql.xml";
+            string sql = BlueFramework.Common.XmlUtils.GetInnerText(filePath, "hr.paydetail");
+            BlueFramework.Data.DatabaseProviderFactory factory = new BlueFramework.Data.DatabaseProviderFactory();
+            BlueFramework.Data.Database db = factory.CreateDefault();
+            DbCommand command = db.GetSqlStringCommand(sql);
+            db.AddInParameter(command, "payMonth", DbType.String, payMonth);
+            DataSet ds = db.ExecuteDataSet(command);
+            return ds;
         }
     }
 }

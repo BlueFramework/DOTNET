@@ -146,11 +146,23 @@ namespace HrServiceCenterWeb.Controllers
             return View();
         }
 
+        public ActionResult ImportorPayList()
+        {
+            return View();
+        }
+
         //查询保险导入列表
         //VIEW: /Pay/QueryImportorList
         public ActionResult QueryImportorList(string query)
         {
-            List<InsuranceInfo> list = new Manager.PayManager().QueryImportorList(query);
+            List<InsuranceInfo> list = new Manager.PayManager().QueryImportorInsuranceList(query);
+            JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        public ActionResult QueryImportorPayList(string query)
+        {
+            List<InsuranceInfo> list = new Manager.PayManager().QueryImportorPaymentList(query);
             JsonResult jsonResult = Json(list);
             return jsonResult;
         }
@@ -190,7 +202,37 @@ namespace HrServiceCenterWeb.Controllers
             DataSet ds = excel.Read(Request.Files[0].InputStream);
             DataTable dt = ds.Tables[0];
 
-            bool pass = new Manager.PayManager().Import(dt, fileName, ref message);
+            bool pass = new Manager.PayManager().ImportInsurance(dt, fileName, ref message);
+            Object result = new
+            {
+                success = pass,
+                data = message
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        public ActionResult ImportPay()
+        {
+            if (Request.Files.Count == 0)
+            {
+                Object o = new
+                {
+                    success = false,
+                    data = "上传失败，请选择需要上传的EXCEL"
+                };
+                JsonResult r = Json(o, JsonRequestBehavior.AllowGet);
+                return r;
+
+            }
+
+            string message = string.Empty;
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(Request.Files[0].FileName);
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = excel.Read(Request.Files[0].InputStream);
+            DataTable dt = ds.Tables[0];
+
+            bool pass = new Manager.PayManager().ImportPaymentData(dt, fileName, ref message);
             Object result = new
             {
                 success = pass,
@@ -202,6 +244,7 @@ namespace HrServiceCenterWeb.Controllers
 
         // 导入保险
         // VIEW: /Pay/ImportorEditor
+        [Obsolete]
         public ActionResult ImportorEditor()
         {
             HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
@@ -235,7 +278,7 @@ namespace HrServiceCenterWeb.Controllers
                             outmsg += "文件：" + fileName + "格式不支持！<br />";
                             break;
                     }
-                    success = new Manager.PayManager().Import(dt, fileName, ref outmsg);
+                    success = new Manager.PayManager().ImportInsurance(dt, fileName, ref outmsg);
                 }
             }
             else
@@ -457,6 +500,12 @@ namespace HrServiceCenterWeb.Controllers
                 msg = "更新失败！";
             }
             return Json(msg);
+        }
+
+        // 银行发放
+        public ActionResult BankPayment()
+        {
+            return View();
         }
     }
 }

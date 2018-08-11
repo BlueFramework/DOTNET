@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data;
 using BlueFramework.Blood;
 using HrServiceCenterWeb.Models;
 
@@ -64,6 +65,8 @@ namespace HrServiceCenterWeb.Manager
             return companyInfo;
         }
 
+
+
         public bool SaveRecharge(CompanyAccountRecordInfo accountRecordInfo)
         {
             bool pass = true;
@@ -87,6 +90,36 @@ namespace HrServiceCenterWeb.Manager
                 }
                 catch
                 {
+                    context.Rollback();
+                    pass = false;
+                }
+            }
+            return pass;
+        }
+
+        public bool ImportRecharges(DataTable dataTable, out string message)
+        {
+            bool pass = true;
+            message = string.Empty;
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    context.BeginTransaction();
+                    foreach(DataRow row in dataTable.Rows)
+                    {
+                        var o = new CompanyAccountBO
+                        {
+                            Money = decimal.Parse(row["账户余额"].ToString()),
+                            CompanyName= row["单位名称"].ToString()
+                        };
+                        context.Save<CompanyAccountBO>("hr.company.updateCompanyBalanceByCompayName", o);
+                    }
+                    context.Commit();
+                }
+                catch(Exception e)
+                {
+                    message = e.Message;
                     context.Rollback();
                     pass = false;
                 }

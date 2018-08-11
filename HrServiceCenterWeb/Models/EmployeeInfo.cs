@@ -15,6 +15,7 @@ namespace HrServiceCenterWeb.Models
         public string CardId { get; set; }
         public string Sex { get; set; }
         public string Birthday { get; set; }
+        public string JoinWorkTime { get; set; }
         public int Degree { get; set; }
         public string Polity { get; set; }
         public string Nation { get; set; }
@@ -27,5 +28,13 @@ namespace HrServiceCenterWeb.Models
         public int Creator { get; set; }
         public string CreateTime { get; set; }
         public int State { get; set; }
+
+        public string StateCaption { get; set; }
+
+        public string LeaveTime { get; set; }
+
+        public string PersonCode { get; set; }
+        public string BankName { get; set; }
+        public string BankCard { get; set; }
     }
 }

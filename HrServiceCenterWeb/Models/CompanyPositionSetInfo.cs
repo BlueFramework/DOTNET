@@ -9,5 +9,11 @@ namespace HrServiceCenterWeb.Models
     {
         public int CompanyId { get; set; }
         public int PlanCount { get; set; }
+
+        public string UseType { get; set; }
+
+        public string Remark { get; set; }
+
+        public int RealCount { get; set; }
     }
 }

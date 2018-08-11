@@ -155,7 +155,7 @@ namespace HrServiceCenterWeb.Controllers
             try
             {
                 context.ContentType = "application/ms-excel";
-                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode("工资表", System.Text.Encoding.UTF8)));
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode(payment.PayTitle, System.Text.Encoding.UTF8)));
                 context.BinaryWrite(buffer);
                 context.Flush();
                 context.End();
@@ -193,6 +193,68 @@ namespace HrServiceCenterWeb.Controllers
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
+        }
+
+        public ActionResult ExportBank(string payMonth)
+        {
+            IExcel excel = ExcelFactory.CreateDefault();
+            PaymentManager payment = new PaymentManager();
+            DataSet ds =  payment.ExportBankPayment(payMonth);
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            excel.Write(stream, ds, ExcelExtendType.XLSX);
+            stream.AllowClose = true;
+            byte[] buffer = new byte[stream.Length];
+            stream.Position = 0;
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Close();
+
+            HttpResponse context = System.Web.HttpContext.Current.Response;
+            try
+            {
+                context.ContentType = "application/ms-excel";
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode(payMonth+"网上银行代发", System.Text.Encoding.UTF8)));
+                context.BinaryWrite(buffer);
+                context.Flush();
+                context.End();
+            }
+            catch (Exception ex)
+            {
+                context.ContentType = "text/plain";
+                context.Write(ex.Message);
+            }
+            return null;
+        }
+
+        public ActionResult ExportPayDetail(string payMonth)
+        {
+            IExcel excel = ExcelFactory.CreateDefault();
+            PaymentManager payment = new PaymentManager();
+            DataSet ds = payment.ExportDetail(payMonth);
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            excel.Write(stream, ds, ExcelExtendType.XLSX);
+            stream.AllowClose = true;
+            byte[] buffer = new byte[stream.Length];
+            stream.Position = 0;
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Close();
+
+            HttpResponse context = System.Web.HttpContext.Current.Response;
+            try
+            {
+                context.ContentType = "application/ms-excel";
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode(payMonth +  "个税信息", System.Text.Encoding.UTF8)));
+                context.BinaryWrite(buffer);
+                context.Flush();
+                context.End();
+            }
+            catch (Exception ex)
+            {
+                context.ContentType = "text/plain";
+                context.Write(ex.Message);
+            }
+            return null;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace BlueFramework.User
         public UserInfo GetUser(string userName)
         {
             UserAccess userDao = new UserAccess();
-            return userDao.GetUserByName(userName);
+            return userDao.GetUser(userName);
         }
 
         public bool ValidatePassword(string userName, string password)
@@ -39,8 +39,10 @@ namespace BlueFramework.User
             UserAccess userDao = new UserAccess();
             UserInfo user = userDao.GetUserByName(userName);
             if (user.Password == password)
-            { }
-            return true;
+            {
+                return true;
+            }
+            return false;
         }
 
         public List<OrgnizationInfo> GetOrgnizations()
@@ -120,13 +122,6 @@ namespace BlueFramework.User
         {
             SysAccess sa = new SysAccess();
             UserInfo ui = ua.GetUser(userName);
-            if (ui.UserName != "")
-            {
-                //ui.Roles = dataAccess.GetRoles(ui.UserId);
-                ////ui.AreaName = sysAccess.GetAreaname(ui.GroupId);
-                //ui.MenuRights = dataAccess.GetMenuRights(ui.UserId);
-                //ui.DataRights = dataAccess.GetDataRights(ui.UserId);
-            }
             return ui;
         }
 

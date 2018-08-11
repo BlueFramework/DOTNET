@@ -134,6 +134,7 @@ opt.addPosition = function () {
     $('#cmbPosition').combobox('setValue', '');
 }
 opt.selectPosition = function (position) {
+    return;
     this.positions.forEach(function (p, index) {
         if (p.PositionId == position.PositionId) {
             HR.Form.setValues('frmPosition', p);
@@ -142,11 +143,8 @@ opt.selectPosition = function (position) {
     });
 }
 opt.savePosition = function () {
-    var param = {
-        CompanyId: dataId,
-        PositionId: $('#cmbPosition').combobox('getValue'),
-        PlanCount: $('#txtPositionCount').textbox('getValue')
-    };
+    var param = HR.Form.getValues('frmPosition');
+    param.CompanyId = dataId;
     var url = '../Company/SavePosition';
     HR.Loader.show();
     $.ajax({

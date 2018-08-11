@@ -4,14 +4,19 @@ function init() {
     var height = $('.container-layout').height() - 180;
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
+
+    $('#dg').datagrid('enableFilter');
+
     opt.query();
 }
 
 
 //查询用户列表
+opt.selectCompanyId = 0;
 opt.query = function () {
-    var url =  '../Employee/GetEmployeeList';
-    var params = { companyId:0 };
+    var url = '../Employee/GetEmployeeList';
+
+    var params = { companyId: opt.selectCompanyId };
     $('#dg').datagrid('loading');
     $.ajax({
         url: url,
@@ -30,6 +35,7 @@ opt.query = function () {
 }
 
 opt.selectCompany = function (company) {
+    opt.selectCompanyId = company.CompanyId;
     opt.query();
 }
 

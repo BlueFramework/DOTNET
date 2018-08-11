@@ -12,6 +12,8 @@ namespace HrServiceCenterWeb.Models
     {
         public int ImportId { get; set; }
 
+        public int ImportType { get; set; }
+
         public string Title { get; set; }
 
         public int CreatorId { get; set; }

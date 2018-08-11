@@ -13,7 +13,7 @@ function init() {
 
 //查询列表
 opt.query = function () {
-    var url = '../Pay/QueryImportorList';
+    var url = '../Pay/QueryImportorPayList';
     var params = { query: $('#txtQuery').val() };
     $('#dg').datagrid('loading');
     $.ajax({
@@ -37,7 +37,7 @@ opt.query = function () {
 opt.delete = function (id) {
     var row = $('#dg').datagrid('getSelected');
 
-    if (row == null) {
+    if (row === null) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
@@ -66,7 +66,7 @@ opt.delete = function (id) {
 opt.querydetail = function () {
     // TODO 
     var row = $('#dg').datagrid('getSelected');
-    if (row == null) {
+    if (row === null) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
@@ -81,7 +81,7 @@ opt.import = function () {
         multiple: false,
         params: {},
         ext: 'xlsx,xls',
-        url: '../Pay/Import',
+        url: '../Pay/ImportPay',
         onAfterUpload: function (result) {
             if (result.success === true) {
                 self.location.reload();
@@ -93,7 +93,7 @@ opt.import = function () {
     });
 
     if (!($('#importInformation').length > 0)){
-        var txtContent = '<div id="importInformation" style="padding-left:20px;color:red;"> * 请按此格式规范文件名称：年月+险种名称（2018年7月工伤缴费表）<br/> </div>';
+        var txtContent = '<div id="importInformation" style="padding-left:20px;color:red;"> * 请按此格式规范文件名称：年月+工资表名称（2018年7月工资表）<br/> </div>';
         $('#winUpload').upload('addElement', txtContent);
     }
 

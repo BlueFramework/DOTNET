@@ -33,5 +33,14 @@ namespace HrServiceCenterWeb.Models
         public decimal CompanyPayValue { get; set; }
 
         public string ImportColumnName { get; set; }
+
+        public InsuranceDetailInfo Clone()
+        {
+            InsuranceDetailInfo o = new InsuranceDetailInfo();
+            o.ImportId = this.ImportId;
+            o.PayMonth = this.PayMonth;
+            o.PersonId = this.PersonId;
+            return o;
+        }
     }
 }

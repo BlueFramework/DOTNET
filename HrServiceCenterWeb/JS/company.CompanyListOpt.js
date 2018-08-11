@@ -71,3 +71,40 @@ opt.edit = function (id) {
     var url = '../Company/CompanyPage?id=' + id;
     self.location = url;
 }
+
+opt.import = function () {
+
+}
+
+opt.export = function () {
+    var url = "../Company/Export";
+    var params = {};
+
+    HR.DownFile(url, params);
+}
+
+opt.import = function () {
+    $('#winUpload').upload({
+        multiple: false,
+        params: {},
+        ext: 'xlsx',
+        url: '../Company/Import',
+        onAfterUpload: function (result) {
+            if (result.success === true) {
+                self.location.href = '../Company/CompanyList';
+            }
+            else {
+                alert(result.data);
+            }
+        }
+    });
+
+    $('#winUpload').upload('show');
+}
+
+
+function grid_ondblclick(index, field, value) {
+
+    var id = value.CompanyId;
+    opt.edit(id);
+}

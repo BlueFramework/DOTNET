@@ -184,7 +184,39 @@ namespace BlueFramework.User.DataAccess
 
         public UserInfo GetUser(string userName)
         {
-            return null;
+            UserInfo user = GetUserByName(userName);
+            string sql = @"select r.NAME,r.ROLEID from T_S_USERROLE t 
+            inner join T_S_ROLE r on r.ROLEID=t.ROLEID
+            where t.USERID="+user.UserId;
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database database = dbFactory.CreateDefault();
+            DataTable dataTable = database.ExecuteDataSet(CommandType.Text, sql).Tables[0];
+
+            user.Roles = new List<RoleInfo>();
+            foreach(DataRow row in dataTable.Rows)
+            {
+                RoleInfo role = new RoleInfo()
+                {
+                    RoleId = int.Parse(row["ROLEID"].ToString()),
+                    RoleName = row["NAME"].ToString()
+                };
+                user.Roles.Add(role);
+            }
+
+            sql = @"select DISTINCT m.MENUID
+            from T_S_USERROLE t 
+            inner join T_S_ROLE r on r.ROLEID=t.ROLEID
+            inner join T_S_MENURIGHT m on m.ROLEID=t.ROLEID
+            where t.USERID="+user.UserId;
+            dataTable = database.ExecuteDataSet(CommandType.Text, sql).Tables[0];
+            user.MenuRights = new List<int>();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int menuId = int.Parse(row["MENUID"].ToString());
+                user.MenuRights.Add(menuId);
+            }
+
+            return user;
         }
 
         public bool InitPwd(int userID, string pwd)
