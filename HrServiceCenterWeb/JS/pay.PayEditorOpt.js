@@ -24,11 +24,12 @@ opt.disable = function () {
     $('#btnImport').attr('disabled', true);
     $('#btnSubmit').attr('disabled', true);
 }
-opt.autoName = function () {
+opt.autoName = function (company) {
     var date = $('#datebox').datebox('getText');
     var cmp = $('#cmpname').combobox('getText');
     var name = cmp + date + '工资表';
     $('#tempname').val(name);
+    $('#cmpMoney').html('当前余额：' + company.AccountBalance+'元');
 }
 
 opt.save = function () {
@@ -132,6 +133,13 @@ opt.loadPayment = function () {
                 opt.disable();
             HR.Form.setValues('formPayment',payment);
             opt.createGrid(payment.Items, payment.Sheet);
+            // 查询公司余额 
+            var companys = $('#cmpname').combobox('getData');
+            companys.forEach(function (o, index) {
+                if (o.CompanyId === payment.CompanyId) {
+                    $('#cmpMoney').html('当前余额：' + o.AccountBalance + '元');
+                }
+            });
         },
         error: function () {
             HR.Loader.hide();

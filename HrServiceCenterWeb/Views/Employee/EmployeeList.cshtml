@@ -3,9 +3,15 @@
     ViewBag.Title = "人员档案";
 }
 <script src="~/JS/employee.employeeListOpt.js"></script>
+<script src="~/Library/easyui/datagrid-filter.js"></script>
 <script>
     var dataId = '@ViewBag.CompanyId';
 </script>
+<style>
+    .icon-filter {
+        background: url('../images/filter.png') no-repeat center center;
+    }
+</style>
 <div class="container container-layout">
     <div class="page-header">
         <h3>基础信息.<small>&nbsp;人员信息</small></h3>
@@ -34,25 +40,26 @@
 
     </div>
     <!-- 数据列表 -->
-    <div id="dgContainer"  style="margin:20px 0;">
+    <div id="dgContainer" style="margin:20px 0;">
         <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:100%"
                data-options="idField:'PersonId',
 			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,loadFilter:pagerFilter,
 			        autoRowHeight:true,
-			        pagination:true,
+			        pagination:true,filterBtnIconCls:'icon-filter',
 			        pageSize:10,pageList:[10,20,30,40,50,100]">
             <thead>
                 <tr>
                     <th data-options="field:'PersonName',width:80">姓名</th>
                     <th data-options="field:'CompanyName',width:150">单位</th>
                     <th data-options="field:'CardId',width:80">身份证</th>
-                    <th data-options="field:'Sex',width:80">性别</th>
+                    <th data-options="field:'Sex',width:50">性别</th>
                     <th data-options="field:'Birthday',width:80">出生日期</th>
                     <th data-options="field:'DegreeName',width:80">学历</th>
                     <th data-options="field:'Specialty',width:80">专业</th>
-                    <th data-options="field:'Nation',width:80">民族</th>
-                    <th data-options="field:'Phone',width:80">联系方式</th>
+                    <th data-options="field:'Nation',width:50">民族</th>
+                    <th data-options="field:'Phone',width:150">联系方式</th>
                     <th data-options="field:'Address',width:80">地址</th>
+                    <th data-options="field:'StateCaption',width:80">状态</th>
 
                 </tr>
             </thead>

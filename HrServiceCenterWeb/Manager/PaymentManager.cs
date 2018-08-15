@@ -201,7 +201,8 @@ namespace HrServiceCenterWeb.Manager
                 payment.Total +=
                     decimal.Parse(dr["f_199"].ToString()) +
                     decimal.Parse(dr["f_4"].ToString()) +
-                    decimal.Parse(dr["f_5"].ToString());
+                    decimal.Parse(dr["f_5"].ToString()) +
+                    decimal.Parse(dr["f_6"].ToString());
             }
             #endregion
 

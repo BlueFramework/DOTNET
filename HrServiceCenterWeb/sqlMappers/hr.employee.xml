@@ -3,8 +3,9 @@
   <!-- 返回排序后所有的基础编码数据  -->
   <select id="findEmployees" >
     select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
-    t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,
-    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT DegreeName
+    t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,
+    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT DegreeName,PERSON_CODE PersonCode,BANK_NAME BankName,BANK_CARD BankCard,LEAVE_TIME LeaveTime,
+    case isnull(t.state,0) when 0 then '在职'  when 1 then '离职' end StateCaption,t.State
     from HR_EMPLOYEE t
     INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
     INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
@@ -14,7 +15,7 @@
   <select id="findEmployee" >
     select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
     t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,
-    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT
+    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT,PERSON_CODE PersonCode,BANK_NAME BankName,BANK_CARD BankCard,JOINWORK_TIME JoinWorkTime,LEAVE_TIME LeaveTime
     from HR_EMPLOYEE t
     INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
     INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
@@ -26,14 +27,18 @@
       <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
       select @PersonId=@@IDENTITY
     </selectKey>
-    insert into HR_EMPLOYEE(COMPANY_ID,POSITION_ID,PERSON_NAME,CARD_ID,SEX,BIRTHDAY,DEGREE,POLITY,NATION,PHONE,ADDRESS,CONTACTS_PERSON,CONTACTS_PHONE,SPECIALTY,SCHOOL,CREATOR,CREATE_TIME,STATE)
+    insert into HR_EMPLOYEE(COMPANY_ID,POSITION_ID,PERSON_NAME,CARD_ID,SEX,BIRTHDAY,DEGREE,POLITY,NATION,PHONE,ADDRESS,CONTACTS_PERSON,CONTACTS_PHONE,SPECIALTY,SCHOOL,CREATOR,CREATE_TIME,
+    PERSON_CODE,BANK_NAME,BANK_CARD,JOINWORK_TIME,
+    STATE)
     values(#{CompanyId},#{PositionId},#{PersonName},#{CardId},#{Sex},#{Birthday},#{Degree},#{Polity},#{Nation}
-    ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{State})
+    ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{PersonCode},#{BankName},#{BankCard},#{JoinWorkTime},
+    #{State})
   </insert>
   <update id="updateEmployee">
     update HR_EMPLOYEE set COMPANY_ID=#{CompanyId},POSITION_ID=#{PositionId},PERSON_NAME=#{PersonName},CARD_ID=#{CardId},SEX=#{Sex}
     ,BIRTHDAY=#{Birthday},DEGREE=#{Degree},POLITY=#{Polity},NATION=#{Nation},PHONE=#{Phone},ADDRESS=#{Address}
-    ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},STATE=#{State}
+    ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},JOINWORK_TIME=#{JoinWorkTime},
+    PERSON_CODE=#{PersonCode},BANK_NAME=#{BankName},BANK_CARD=#{BankCard},State=#{State},LEAVE_TIME=#{LeaveTime}
     where PERSON_ID=#{PersonId}
   </update>
   <delete id="deleteEmployee">

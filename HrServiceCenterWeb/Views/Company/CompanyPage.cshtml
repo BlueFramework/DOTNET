@@ -8,7 +8,7 @@
 </script>
 <div class="container container-layout">
     <div class="page-header">
-        <h3>基础信息.<small>&nbsp;<a href="~/Company/CompanyList">公司信息列表</a></small>.<small>&nbsp;公司信息</small></h3>
+        <h3>基础信息.<small>&nbsp;<a href="~/Company/CompanyList">基本信息</a></small>.<small>&nbsp;用工单位信息</small></h3>
     </div>
 
     <!-- 档案信息 -->
@@ -22,13 +22,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">组织结构编码</label>
+                <label class="col-sm-2 control-label">统一社会信用代码</label>
                 <div class="col-sm-9">
                     <input class="easyui-textbox" form-field-name="code" form-control-type="textbox" data-options="prompt:'输入组织结构编码.',validType:'length[3,50]'" style="height:30px;width:100%" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">企业法人</label>
+                <label class="col-sm-2 control-label">法定代表人</label>
                 <div class="col-sm-9">
                     <input class="easyui-textbox" form-field-name="Representative" form-control-type="textbox" data-options="prompt:'输入法人姓名.',validType:'length[3,50]'" style="height:30px;width:100%" />
                 </div>
@@ -74,13 +74,11 @@
                 <thead>
                     <tr>
                         <th data-options="field:'PositionId',width:50">ID</th>
-                        <th data-options="field:'PositionName',width:100">岗位类型</th>
-                        <th data-options="field:'BaseSalary',width:80">基本工资</th>
-                        <th data-options="field:'AssistSalary',width:80">辅助工资</th>
-                        <th data-options="field:'ConsolationFee',width:80">慰问费</th>
-                        <th data-options="field:'Insurance',width:80">社保/年</th>
-                        <th data-options="field:'AccumulationFund',width:80">公积金/年</th>
+                        <th data-options="field:'PositionName',width:100">岗位</th>
                         <th data-options="field:'PlanCount',width:80">编制人数</th>
+                        <th data-options="field:'RealCount',width:80">实际人数</th>
+                        <th data-options="field:'UseType',width:80">用工方式</th>
+                        <th data-options="field:'Remark',width:80">备注</th>
                     </tr>
                 </thead>
             </table>
@@ -121,32 +119,16 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-sm-2">编制数量</div>
-            <div class="col-sm-4"><input type="text" id="txtPositionCount" class="easyui-numberbox" value="0" data-options="min:0,precision:0"></div>
+            <div class="col-sm-2">用工控制数</div>
+            <div class="col-sm-4"><input type="text" id="txtPositionCount" class="easyui-numberbox" form-field-name="PlanCount" value="0" data-options="min:0,precision:0"></div>
         </div>
         <div class="form-group">
-            <div class="col-sm-2">基本工资</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="BaseSalary" /></div>
+            <div class="col-sm-2">用工形式</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" form-field-name="UseType" /></div>
         </div>
         <div class="form-group">
-            <div class="col-sm-2">辅助工资</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="AssistSalary" /></div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2">慰问费</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="ConsolationFee" /></div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2">社保/年</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="Insurance" /></div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2">公积金/年</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="AccumulationFund" /></div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2">岗位描述</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" disabled="true" form-field-name="PositionDesc" /></div>
+            <div class="col-sm-2">备注</div>
+            <div class="col-sm-4"><input type="text" style="width:100%;" form-field-name="Remark" /></div>
         </div>
     </form>
 </div>

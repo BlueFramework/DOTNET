@@ -23,6 +23,7 @@
     left join HR_EMPLOYEE e on c.COMPANY_ID=e.COMPANY_ID
     group by e.COMPANY_ID,c.COMPANY_ID) t
     inner join HR_COMPANY s on t.COMPANY_ID=s.COMPANY_ID
+    order by  t.COUNT desc
   </select>
   <!--保险部分折线图-->
   <select id="insuranceCount">

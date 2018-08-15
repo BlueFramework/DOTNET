@@ -5,7 +5,13 @@
     select t.IMPORT_ID ImportId,t.TITLE Title,u.USERNAME CreatorName,CONVERT(varchar,t.CREATE_TIME,120) CreateTime
     from HR_SALARY_IMPORTOR t
     left join T_S_USER u on t.CREATOR=u.USERID
-    where t.TITLE like '%${value}%'
+    where t.TITLE like '%${value}%' and IMPORT_TYPE=1
+  </select>
+  <select id="findPayments" >
+    select t.IMPORT_ID ImportId,t.TITLE Title,u.USERNAME CreatorName,CONVERT(varchar,t.CREATE_TIME,120) CreateTime
+    from HR_SALARY_IMPORTOR t
+    left join T_S_USER u on t.CREATOR=u.USERID
+    where t.TITLE like '%${value}%' and IMPORT_TYPE=2
   </select>
   <!-- 删除保险列表-->
   <delete id="deleteInsurance">
@@ -24,7 +30,7 @@
       <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
       select @ImportId=@@IDENTITY
     </selectKey>
-    insert into HR_SALARY_IMPORTOR(TITLE,CREATOR,CREATE_TIME) values(#{Title},#{CreatorId},#{CreateTime})
+    insert into HR_SALARY_IMPORTOR(TITLE,CREATOR,CREATE_TIME,IMPORT_TYPE) values(#{Title},#{CreatorId},#{CreateTime},#{ImportType})
   </insert>
   <select id="findInsuranceByTitle" >
     select t.IMPORT_ID ImportId,t.TITLE Title,u.USERNAME CreatorName,CONVERT(varchar,t.CREATE_TIME,120) CreateTime

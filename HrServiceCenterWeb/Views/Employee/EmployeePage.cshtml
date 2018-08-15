@@ -7,15 +7,21 @@
     var dataId = @ViewBag.EmployeeId;
     var CompanyId = @ViewBag.CompanyId;
 </script>
-<div class="container container-layout">
+<div class="container container-background">
     <div class="page-header">
-        <h3>基础信息.<small>&nbsp;<a href="~/Employee/EmployeeList">人员列表</a></small>.<small>&nbsp;人员信息</small></h3>
+        <h3>基本信息.<small>&nbsp;<a href="~/Employee/EmployeeList">派遣信息列表</a></small>.<small>&nbsp;派遣信息</small></h3>
     </div>
 
     <!-- 档案信息 -->
     <div style="margin:20px 0;"></div>
     <div>
         <form class="form-horizontal" id="formEmployee">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">编号</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="PersonCode" form-control-type="textbox" data-options="prompt:'输入人员编号.',required:true,validType:'length[1,50]'" style="height:30px;width:100%" />
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">姓名</label>
                 <div class="col-sm-4">
@@ -43,7 +49,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">性别</label>
                 <div class="col-sm-4">
-                    <select class="easyui-combobox" form-field-name="Sex" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}" >
+                    <select class="easyui-combobox" form-field-name="Sex" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
                         <option value="男">男</option>
                         <option value="女">女</option>
                     </select>
@@ -55,6 +61,25 @@
                     <input class="easyui-datebox" form-field-name="Birthday" form-control-type="datebox" style="width:100%;height:30px;" />
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">参工日期</label>
+                <div class="col-sm-4">
+                    <input class="easyui-datebox" form-field-name="JoinWorkTime" form-control-type="datebox" style="width:100%;height:30px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">银行名称</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="BankName" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">银行卡号</label>
+                <div class="col-sm-4">
+                    <input class="easyui-textbox" form-field-name="BankCard" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="col-sm-2 control-label">学历</label>
                 <div class="col-sm-4">
@@ -86,7 +111,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">电话</label>
+                <label class="col-sm-2 control-label">手机号码</label>
                 <div class="col-sm-4">
                     <input class="easyui-textbox" form-field-name="Phone" form-control-type="textbox" style="height:30px;width:100%" />
                 </div>
@@ -98,15 +123,30 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">联系人</label>
+                <label class="col-sm-2 control-label">紧急联系人</label>
                 <div class="col-sm-4">
                     <input class="easyui-textbox" form-field-name="ContactsPerson" form-control-type="textbox" style="height:30px;width:100%" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">联系人电话</label>
+                <label class="col-sm-2 control-label">紧急联系人电话</label>
                 <div class="col-sm-4">
                     <input class="easyui-textbox" form-field-name="ContactsPhone" form-control-type="textbox" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">在职状态</label>
+                <div class="col-sm-4">
+                    <select class="easyui-combobox" form-field-name="State" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
+                        <option value="0">在职</option>
+                        <option value="1">离职</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">离职日期</label>
+                <div class="col-sm-4">
+                    <input class="easyui-datebox" form-field-name="LeaveTime" form-control-type="datebox" style="width:100%;height:30px;" />
                 </div>
             </div>
             <div class="form-group">

@@ -328,6 +328,7 @@ namespace HrServiceCenterWeb.Controllers
         public ActionResult PayEditor(int id)
         {
             ViewBag.PayId = id;
+            ViewBag.PayDate = System.DateTime.Now.AddMonths(-1).ToString("yyyy-MM-01");
             return View();
         }
 

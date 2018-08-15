@@ -1,14 +1,14 @@
 ﻿
 @{
-    ViewBag.Title = "社保管理";
+    ViewBag.Title = "工资导入";
 }
 <!-- import opt js-->
-<script src="~/JS/pay.ImportorListOpt.js"></script>
+<script src="~/JS/pay.ImportorPayListOpt.js"></script>
 <link href="~/Library/uploadFiles/default.css" rel="stylesheet" />
 <script src="~/Library/uploadFiles/jquery.uploadFiles.js"></script>
 <div class="container container-layout">
     <div class="page-header">
-        <h3>薪酬管理.<small>&nbsp;社保管理</small></h3>
+        <h3>薪酬管理.<small>&nbsp;工资管理</small></h3>
     </div>
     <div id="pnlSearch">
         <div class="row">
@@ -19,11 +19,7 @@
                 <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.query()"><i class="fa fa-search"></i> 快速查询</a>
             </div>
             <div class="col-md-5">
-                <!--
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="$('#inputwindow').window('open')"><i class="fa fa-file-o" aria-hidden="true"></i> 导入社保</a>
-                -->
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.import();"><i class="fa fa-file-o" aria-hidden="true"></i> 导入社保</a>
-                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.querydetail()"><i class="fa fa-file-o" aria-hidden="true"></i> 查看详情</a>
+                <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="opt.import();"><i class="fa fa-file-o" aria-hidden="true"></i> 批量导入</a>
                 <a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="opt.delete()" style="width:80px;"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
             </div>
         </div>
@@ -47,17 +43,6 @@
             </thead>
         </table>
     </div>
-    <!--模态框-->
-    <!--
-    <div id="inputwindow" class="easyui-window" title="社保导入窗口" data-options="modal:true,closed:true" style="width:400px;height:150px;">
-        <div style="margin:0 auto;text-align:center;line-height:100px;">
-            <form id="inputform" method="post" enctype="multipart/form-data">
-                <input id="upload" class="easyui-filebox" name="file1" data-options="prompt:'选择文件...',accept:'application/vnd.ms-excel,text/csv'" style="width: 250px" />
-                <input type="submit" class="btn btn-success" onclick="opt.import(); return false;" title="导入保险" style="margin-left:10px;" />
-            </form>
-        </div>
-    </div>
-    -->
     <div id="winUpload"></div>
 </div>
 

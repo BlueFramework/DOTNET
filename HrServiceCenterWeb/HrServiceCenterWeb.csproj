@@ -161,6 +161,7 @@
     <Compile Include="Controllers\BaseCodeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="DataAccess\EmployeeAccess.cs" />
     <Compile Include="Global.asax.cs">
@@ -170,23 +171,30 @@
     <Compile Include="Manager\BaseCodeProvider.cs" />
     <Compile Include="Manager\EmployeeManager.cs" />
     <Compile Include="Manager\PayManager.cs" />
+    <Compile Include="Manager\PaymentManager.cs" />
     <Compile Include="Manager\ReportManager.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\BaseCodeInfo.cs" />
+    <Compile Include="Models\CompanyAccountBO.cs" />
     <Compile Include="Models\CompanyAccountRecordInfo.cs" />
     <Compile Include="Models\CompanyAccountInfo.cs" />
     <Compile Include="Models\CompanyInfo.cs" />
     <Compile Include="Models\CompanyPositionSetInfo.cs" />
     <Compile Include="Models\CounterVO.cs" />
     <Compile Include="Models\CounterBO.cs" />
+    <Compile Include="Models\CountetBase.cs" />
     <Compile Include="Models\EmployeeInfo.cs" />
     <Compile Include="Models\InsuranceDetailInfo.cs" />
     <Compile Include="Models\InsuranceInfo.cs" />
     <Compile Include="Models\PayDetailInfo.cs" />
-    <Compile Include="Models\PayMent.cs" />
+    <Compile Include="Models\PayDetailVO.cs" />
+    <Compile Include="Models\PayItemDO.cs" />
+    <Compile Include="Models\Payment.cs" />
+    <Compile Include="Models\PayObjectDO.cs" />
     <Compile Include="Models\PayTableConfig.cs" />
     <Compile Include="Models\PayValueInfo.cs" />
     <Compile Include="Models\PositionInfo.cs" />
+    <Compile Include="Models\SalaryCategoryInfo.cs" />
     <Compile Include="Models\SalaryItemInfo.cs" />
     <Compile Include="Models\TemplateDetailInfo.cs" />
     <Compile Include="Models\TemplateInfo.cs" />
@@ -270,12 +278,17 @@
     <Content Include="Content\themes\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="images\filter.png" />
     <Content Include="images\HR_LOGO.png" />
     <Content Include="images\HR_TITLE.png" />
     <Content Include="images\loading.gif" />
     <Content Include="JS\bootstrap.min.js" />
+    <Content Include="JS\chart.HomePage.js" />
     <Content Include="JS\employee.employeePageOpt.js" />
     <Content Include="JS\pay.ImportorDetailOpt.js" />
+    <Content Include="JS\pay.BankOpt.js" />
+    <Content Include="JS\pay.ImportorPayListOpt.js" />
+    <Content Include="JS\pay.PayEditorOpt.js" />
     <Content Include="JS\pay.PayOpt.js" />
     <Content Include="JS\pay.ImportorListOpt.js" />
     <Content Include="JS\pay.PaySendOpt.js" />
@@ -390,6 +403,7 @@
     <Content Include="Library\bootstrapvalidator\js\language\zh_CN.js" />
     <Content Include="Library\bootstrapvalidator\js\language\zh_TW.js" />
     <Content Include="Library\easyui\changelog.txt" />
+    <Content Include="Library\easyui\datagrid-filter.js" />
     <Content Include="Library\easyui\easyloader.js" />
     <Content Include="Library\easyui\jquery.easyui.min.js" />
     <Content Include="Library\easyui\jquery.easyui.mobile.js" />
@@ -913,11 +927,17 @@
     <Content Include="Library\jquery-marcopolo\package.json" />
     <Content Include="Library\jquery-marcopolo\README.md" />
     <Content Include="Library\vector-master\README.md" />
-    <Content Include="Setting\Insurance\InsuranceConfig.xml" />
+    <Content Include="Reports\单位用人统计报表.html" />
     <Content Include="Setting\Menu\MenuConfig.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Setting\Pay\PayTableConfig.xml" />
+    <Content Include="Setting\Sql\hr.sql.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="sqlMappers\hr.payment.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="sqlMappers\hr.employee.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -958,10 +978,13 @@
     <Content Include="Views\Pay\TemplateList.cshtml" />
     <Content Include="Views\Pay\TemplateEditor.cshtml" />
     <Content Include="Views\Pay\ImportorList.cshtml" />
-    <Content Include="Views\Pay\ImportorEditor.cshtml" />
     <Content Include="Views\Pay\PayList.cshtml" />
     <Content Include="Views\Pay\PayEditor.cshtml" />
     <Content Include="Views\Pay\ImportorDetail.cshtml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <Content Include="Views\Pay\BankPayment.cshtml" />
+    <Content Include="Views\Account\UserPage.cshtml" />
+    <Content Include="Views\Pay\ImportorPayList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -971,6 +994,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Lib\Formulas\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -11,8 +11,8 @@
   <Title id="1" caption="首页" title="首页，报表呈现" isroot="true" ic_class="icon icon-home" ul_class="" ic_id="" mob_display="true">
     <Node id="101" caption="首页" url="~/home/index" title ="首页，报表呈现" ic_class="" ic_id="" mob_display="true"/>
   </Title>
-  <Title id="2" caption="信息档案" title="信息档案" isroot="false" ic_class="icon icon-office" ul_class="" ic_id="" mob_display="true">
-    <Node  id="201" caption="公司信息" url="~/Company/CompanyList" title ="单位信息" ic_class="" ic_id="" mob_display="true"/>
+  <Title id="2" caption="基本信息" title="基本信息" isroot="false" ic_class="icon icon-office" ul_class="" ic_id="" mob_display="true">
+    <Node  id="201" caption="用工单位信息" url="~/Company/CompanyList" title ="用工单位信息" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="202" caption="员工信息" url="~/Employee/EmployeeList" title ="员工信息" ic_class="" ic_id="" mob_display="true"/>
   </Title>
   <Title id="3" caption="薪酬管理" title="薪酬管理" isroot="false" ic_class="icon icon-poi" ul_class="" ic_id="drop1" mob_display="true">
@@ -20,8 +20,10 @@
     <Node  id="301" caption="缴存发放项目管理" url="~/~" title ="缴存发放项目管理" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="302" caption="单位模板" url="~/Pay/TemplateList" title ="创建单位的发放项目模板" ic_class="" ic_id="" mob_display="true"/>
     -->
-    <Node  id="303" caption="社保管理" url="~/Pay/ImportorList" title ="导入发放人员的保险数据" ic_class="" ic_id="" mob_display="true"/>
+    <Node  id="303" caption="社保批量导入" url="~/Pay/ImportorList" title ="导入发放人员的保险数据" ic_class="" ic_id="" mob_display="true"/>
+    <Node  id="306" caption="工资批量导入" url="~/Pay/ImportorPayList" title ="导入发放人员的工资数据" ic_class="" ic_id="" mob_display="true"/>
     <Node  id="304" caption="工资管理" url="~/Pay/PayList" title ="通过单位发放模板创建发放表" ic_class="" ic_id="" mob_display="true"/>
+    <Node  id="305" caption="数据中心" url="~/Pay/BankPayment" title ="提供各种数据下载导出" ic_class="" ic_id="" mob_display="true"/>
   </Title>
   <Title  id="4" caption="统计报表" title="统计报表" isroot="false" ic_class="icon icon-pin" ul_class="" ic_id="" mob_display="true">
     <Node  id="401" caption="单位用人统计" url="~/~" title ="单位用人统计" ic_class="" ic_id="" mob_display="true"/>
