@@ -17,3 +17,16 @@
 /NUnit.TestFramework/obj/Debug
 /packages
 /HrServiceCenterWeb/log4net
+/BlueFramework.Common/bin/Release
+/BlueFramework.Common/obj/Release
+/BlueFramework.Blood/bin/Release
+/BlueFramework.Blood/obj/Release
+/BlueFramework.Data/bin/Release
+/BlueFramework.Data/obj/Release
+/BlueFramework.ReportView/bin/Debug
+/BlueFramework.ReportView/obj/Debug
+/BlueFramework.User/bin/Release
+/BlueFramework.User/obj/Release
+/BlueFramework.XGrid/obj/Release
+/Dapper.Test/bin/Debug
+/Dapper.Test

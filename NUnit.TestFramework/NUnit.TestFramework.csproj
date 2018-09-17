@@ -44,7 +44,9 @@
     <Compile Include="Config\ConfigManagentTests.cs" />
     <Compile Include="DataAccess\CommandTests.cs" />
     <Compile Include="DatabaseTests.cs" />
+    <Compile Include="DyncTests.cs" />
     <Compile Include="EntityContextTests.cs" />
+    <Compile Include="Excel\POIExcelTests.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,6 +55,15 @@
     <None Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="ExcelTests\t1.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ExcelTests\t2.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ExcelTests\t3.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -63,6 +74,10 @@
     <ProjectReference Include="..\BlueFramework.Blood\BlueFramework.Blood.csproj">
       <Project>{ee220b36-fa2a-434c-b246-270d9af0e999}</Project>
       <Name>BlueFramework.Blood</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BlueFramework.Common\BlueFramework.Common.csproj">
+      <Project>{5A4B51C5-9541-4D07-9725-96C1037D2E08}</Project>
+      <Name>BlueFramework.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BlueFramework.Data\BlueFramework.Data.csproj">
       <Project>{5C80DD3E-F333-4A17-A33C-64AA99D4720B}</Project>
@@ -78,7 +93,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sqlReports\hr.employee.xml" />
+    <Content Include="sqlReports\hr.employee.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

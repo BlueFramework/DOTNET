@@ -287,6 +287,7 @@
     <Content Include="JS\employee.employeePageOpt.js" />
     <Content Include="JS\pay.ImportorDetailOpt.js" />
     <Content Include="JS\pay.BankOpt.js" />
+    <Content Include="JS\pay.ImportorPayDetailOpt.js" />
     <Content Include="JS\pay.ImportorPayListOpt.js" />
     <Content Include="JS\pay.PayEditorOpt.js" />
     <Content Include="JS\pay.PayOpt.js" />
@@ -941,7 +942,9 @@
     <Content Include="sqlMappers\hr.employee.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="sqlMappers\hr.insurance.xml" />
+    <Content Include="sqlMappers\hr.insurance.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="sqlMappers\hr.pay.xml" />
     <Content Include="sqlMappers\hr.position.xml">
       <SubType>Designer</SubType>
@@ -985,6 +988,7 @@
     <Content Include="Views\Pay\BankPayment.cshtml" />
     <Content Include="Views\Account\UserPage.cshtml" />
     <Content Include="Views\Pay\ImportorPayList.cshtml" />
+    <Content Include="Views\Pay\ImportorPayDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

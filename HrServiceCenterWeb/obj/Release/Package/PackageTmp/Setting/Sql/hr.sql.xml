@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <sql id="hr.payBank">
+    <![CDATA[
+    select 序号=Row_Number()over(partition by e.PERSON_ID order by e.PERSON_ID) , e.BANK_CARD 转入账号, e.PERSON_NAME 转入户名,PAY_VALUE 金额 from HR_EMPLOYEE e 
+            inner join (
+	            select t.PERSON_ID,
+                sum( case t.ITEM_ID 
+								when 201 then t.PAY_VALUE*-1 when 202 then t.PAY_VALUE*-1 when 203 then t.PAY_VALUE*-1 when 206 then t.PAY_VALUE*-1 
+								ELSE t.PAY_VALUE end ) PAY_VALUE  from HR_SALARY_PAY p
+	            inner join HR_SALARY_PAY_VALUE t on t.PAY_ID=p.PAY_ID
+	            where p.STATUS=2 and p.PAY_MONTH=@payMonth and t.ITEM_ID in  (101,102,103,104,105,106,017,108,109,110,111,201,202,203,206)
+	            group by t.PERSON_ID
+            ) v on v.PERSON_ID=e.PERSON_ID
+    ]]>
+  </sql>
+  <sql id="hr.paydetail">
+    <![CDATA[
+    select c.NAME 单位,e.PERSON_NAME 姓名,e.CARD_ID 身份证,e.PHONE 手机,应发工资,养老,失业,医疗,工伤,生育,公积金 from (
+	    select vv.PERSON_ID,sum(应发工资) 应发工资,sum(养老) 养老,sum(失业) 失业,sum(医疗) 医疗,sum(工伤) 工伤,sum(生育) 生育,sum(公积金) 公积金 
+	    from (
+		    select v.PERSON_ID,
+			    case v.ITEM_ID when 0 then v.PAY_VALUE else 0 end 应发工资 ,
+			    case v.ITEM_ID when 201 then v.PAY_VALUE else 0 end 养老 ,
+			    case v.ITEM_ID when 202 then v.PAY_VALUE else 0 end 失业 ,
+			    case v.ITEM_ID when 203 then v.PAY_VALUE else 0 end 医疗 ,
+			    case v.ITEM_ID when 204 then v.PAY_VALUE else 0 end 工伤 ,
+			    case v.ITEM_ID when 205 then v.PAY_VALUE else 0 end 生育 ,
+			    case v.ITEM_ID when 206 then v.PAY_VALUE else 0 end 公积金 
+		    from (
+		    -- 应发工资
+		    select t.PERSON_ID,0 ITEM_ID,sum(t.pay_value) PAY_VALUE from HR_SALARY_PAY_VALUE t 
+		    inner join HR_SALARY_PAY p on p.PAY_ID=t.PAY_ID
+		    where p.PAY_MONTH=@payMonth and t.ITEM_ID in (101,102,103,104,105,106,107,108,109,110,111)
+		    GROUP BY t.PERSON_ID
+		    union 
+		    -- 个人保险
+		    select t.PERSON_ID,t.ITEM_ID,sum(t.pay_value) PAY_VALUE from HR_SALARY_PAY_VALUE t 
+		    inner join HR_SALARY_PAY p on p.PAY_ID=t.PAY_ID
+		    where p.PAY_MONTH=@payMonth and t.ITEM_ID in (201,202,203,204,205,206)
+		    GROUP BY t.PERSON_ID,t.ITEM_ID
+		    ) v
+	    ) vv group by vv.PERSON_ID
+    ) vvv
+    inner join HR_EMPLOYEE e on e.PERSON_ID=vvv.PERSON_ID
+    inner join HR_COMPANY c on c.COMPANY_ID=e.COMPANY_ID
+    ]]>
+  </sql>
+</root>
