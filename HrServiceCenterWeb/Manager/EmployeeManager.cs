@@ -5,6 +5,7 @@ using System.Web;
 using System.Data;
 using BlueFramework.Blood;
 using HrServiceCenterWeb.Models;
+using BlueFramework.Blood.Config;
 
 namespace HrServiceCenterWeb.Manager
 {
@@ -214,6 +215,15 @@ namespace HrServiceCenterWeb.Manager
                 list = context.SelectListByTemplate<EmployeeInfo>("hr.employee.findEmployees", employee);
             }
             return list;
+        }
+
+        public DataSet GetEmployees()
+        {
+            EntityConfig config = ConfigManagent.Configs["hr.employee.exportPersons"];
+            BlueFramework.Data.Database database = new BlueFramework.Data.DatabaseProviderFactory().CreateDefault();
+            string sql = config.Sql;
+            DataSet ds = database.ExecuteDataSet(CommandType.Text, sql);
+            return ds;
         }
 
         public bool SaveEmployee(EmployeeInfo employeeInfo)

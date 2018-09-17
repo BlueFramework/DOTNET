@@ -82,3 +82,9 @@ opt.edit = function (id) {
     var url = '../Employee/EmployeePage?id=' + id;
     self.location = url;
 }
+
+opt.export = function () {
+    var url = '../Employee/ExportPayDetail';
+    var params = { companyId: opt.selectCompanyId };
+    HR.DownFile(url, params);
+}

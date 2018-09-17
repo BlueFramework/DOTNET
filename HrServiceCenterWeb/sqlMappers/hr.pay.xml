@@ -6,12 +6,13 @@
     select t.PAY_ID PayId,
     t.PAY_TITLE PayTitle,
     c.NAME CompanyName,
-    t.PAY_MONTH PayMonth,
+    t.PAY_MONTH PayMonth,t.Status,
     t.CREATE_TIME CreateTime,
     u.TRUENAME CreatorName from HR_SALARY_PAY t
     left join HR_COMPANY c on t.COMPANY_ID=c.COMPANY_ID
     left join T_S_USER u on t.CREATOR=u.USERID
     where t.PAY_TITLE like '%${value}%'
+    order by t.PAY_ID desc
   </select>
 
   <select id="findPayDefaultDetail">

@@ -150,9 +150,9 @@ opt.loadPayment = function () {
 opt.createGrid = function (items, table) {
     var obj = { "total": 2, "rows": table };
     var head1 = [
-        { field: 'PersonId', title: 'ID',rowspan:2,width: 0},
-        { field: 'PersonName', title: '姓名', rowspan:2, width: 80 },
-        { field: 'PersonCode', title: '身份证', rowspan:2, width: 100 }
+        { field: 'PersonId', title: 'ID', rowspan: 2, width: 0 },
+        { field: 'PersonName', title: '姓名', rowspan: 2, width: 60},
+        { field: 'PersonCode', title: '身份证', rowspan: 2, width: 100}
     ];
     var head2 = [];
     for (var i = 0; i < items.length; i++) {
@@ -161,7 +161,7 @@ opt.createGrid = function (items, table) {
         column.field = item.ItemName;
         column.title = item.ItemCaption;
         if (item.ParentId > 0) {
-            column.width = 80;
+            column.width = 50;
             head2.push(column);
         }
         else {
@@ -178,9 +178,11 @@ opt.createGrid = function (items, table) {
         }
 
     }
+    var fixColumns = head1;
     var columns = [head1, head2];
 
     $('#dg').datagrid({
+        frozenColumns: [],
         columns: columns,
         data: table,
         nowrap: false,
@@ -190,8 +192,6 @@ opt.createGrid = function (items, table) {
         autoRowHeight: false,
         fitColumns: false,
         showFooter: true,
-        frozenColumns: [[
-        ]],
         onClickRow: function () {
         },
         onClickCell: function (rowIndex, field, value) {
@@ -228,6 +228,10 @@ opt.import = function () {
     $('#winUpload').upload('show');
 }
 
+opt.fullWindows = function () {
+    $('.container').css('width','100%');
+    $('#dg').datagrid('resize');
+}
     /*
 $.fn.datebox.defaults.formatter = function (date) {
     var y = date.getFullYear();

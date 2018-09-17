@@ -11,6 +11,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Xml;
+using BlueFramework.Data;
+using BlueFramework.Blood.Config;
 
 namespace HrServiceCenterWeb.Manager
 {
@@ -22,6 +24,17 @@ namespace HrServiceCenterWeb.Manager
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
             List<Models.TemplateInfo> list = context.SelectList<Models.TemplateInfo>("hr.template.findTempList", null);
             return list;
+        }
+
+        public DataTable GetImportorDetail(int importId)
+        {
+            EntityConfig config = ConfigManagent.Configs["hr.payment.queryImportorDetail"];
+            DatabaseProviderFactory factory = new DatabaseProviderFactory();
+            Database database = factory.CreateDefault();
+            string sql = config.Sql.Replace("#{value}", importId.ToString());
+            DataSet dataSet = database.ExecuteDataSet(CommandType.Text, sql);
+            return dataSet.Tables[0];
+
         }
 
         public Models.TemplateInfo GetTemplate(int id)
@@ -395,6 +408,8 @@ namespace HrServiceCenterWeb.Manager
                         #endregion
                         foreach(var columnindex in keyValues.Keys)
                         {
+                            if (row[columnindex] == null || string.IsNullOrEmpty(row[columnindex].ToString()))
+                                continue;
                             InsuranceDetailInfo item = idi.Clone();
                             item.ItemId = keyValues[columnindex];
                             item.PersonPayValue = decimal.Parse(row[columnindex].ToString());

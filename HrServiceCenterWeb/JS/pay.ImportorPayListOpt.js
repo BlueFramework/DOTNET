@@ -71,7 +71,7 @@ opt.querydetail = function () {
         return;
     }
     var id = row.ImportId;
-    var url = '../Pay/ImportorDetail?importId=' + id;
+    var url = '../Pay/ImportorPayDetail?importorId=' + id;
     self.location = url;
 }
 

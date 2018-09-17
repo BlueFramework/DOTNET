@@ -13,6 +13,9 @@ namespace HrServiceCenterWeb.Controllers
 {
     public class AccountController : Controller
     {
+        readonly string cookie_name = "UP_TESTANYSIS_NAME";
+        readonly string cookie_password = "UP_TESTANYSIS_PASSWORD";
+        readonly string cookie_remember = "UP_TESTANYSIS_REMEMBER";
 
         LoginModel lgmodel = new LoginModel();
 
@@ -20,6 +23,18 @@ namespace HrServiceCenterWeb.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            bool remember = (BlueFramework.Common.Http.Cookie.GetCookie(cookie_remember) == "1") ? true : false;
+            string userName = string.Empty;
+            string password = string.Empty;
+            if (remember)
+            {
+                userName = BlueFramework.Common.Http.Cookie.GetCookie(cookie_name);
+                password = BlueFramework.Common.Http.Cookie.GetCookie(cookie_password);
+                lgmodel.UserName = userName;
+                lgmodel.Password = password;
+                lgmodel.RememberMe = true;
+            }
+
             ViewBag.ReturnUrl = returnUrl;
             return View(lgmodel);
         }
@@ -34,8 +49,25 @@ namespace HrServiceCenterWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    UserContext.Login(model.UserName, model.Password);
-                    return RedirectToAction("Index", "Home");
+                    bool pass = UserContext.Login(model.UserName, model.Password);
+                    if (pass)
+                    {
+                        if (model.RememberMe)
+                        {
+                            BlueFramework.Common.Http.Cookie.WriteCookie(cookie_remember, "1");
+                            BlueFramework.Common.Http.Cookie.WriteCookie(cookie_name, model.UserName);
+                            BlueFramework.Common.Http.Cookie.WriteCookie(cookie_password, model.Password);
+                        }
+                        else
+                        {
+                            BlueFramework.Common.Http.Cookie.ClearCookie(cookie_remember);
+                            BlueFramework.Common.Http.Cookie.ClearCookie(cookie_name);
+                            BlueFramework.Common.Http.Cookie.ClearCookie(cookie_password);
+                        }
+                        return RedirectToAction("Index", "Home");
+                    }
+                    ModelState.AddModelError("ERROR", "账号和密码不匹配");
+                    return View(lgmodel);
                 }
                 else
                 {

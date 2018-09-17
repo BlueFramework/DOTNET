@@ -1,4 +1,5 @@
-﻿var opt = window.NameSpace || {};
+﻿
+var opt = window.NameSpace || {};
 
 function init() {
     var height = $('.container-layout').height() - 160;
@@ -27,6 +28,16 @@ opt.query = function () {
             $.messager.alert('提示', '查询出错！');
         }
     });
+}
+opt.formatStatus = function (value, row, index) {
+    if (value == 2)
+        return '已扣款';
+    else
+        return '未扣款';
+}
+opt.formatRow = function (index, row) {
+    if(row.Status==2)
+        return 'color:#ff0000';
 }
 
 
@@ -77,4 +88,7 @@ opt.edit = function (id) {
     var id = row.PayId;
     var url = '../Pay/PayEditor?id=' + id;
     self.location = url;
+}
+opt.dbClick = function (index, field, value) {
+    opt.edit();
 }

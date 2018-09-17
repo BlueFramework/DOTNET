@@ -5,9 +5,10 @@ using HrServiceCenterWeb.Models;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Configuration;
+using System.Data;
 using BlueFramework.User;
 using BlueFramework.User.Models;
+using BlueFramework.Common.Excel;
 
 namespace HrServiceCenterWeb.Controllers
 {
@@ -77,6 +78,36 @@ namespace HrServiceCenterWeb.Controllers
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
+        }
+
+        public ActionResult ExportPayDetail(EmployeeInfo employeeInfo)
+        {
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = new Manager.EmployeeManager().GetEmployees();
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            excel.Write(stream, ds, ExcelExtendType.XLSX);
+            stream.AllowClose = true;
+            byte[] buffer = new byte[stream.Length];
+            stream.Position = 0;
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Close();
+
+            HttpResponse context = System.Web.HttpContext.Current.Response;
+            try
+            {
+                context.ContentType = "application/ms-excel";
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode( "人员清单", System.Text.Encoding.UTF8)));
+                context.BinaryWrite(buffer);
+                context.Flush();
+                context.End();
+            }
+            catch (Exception ex)
+            {
+                context.ContentType = "text/plain";
+                context.Write(ex.Message);
+            }
+            return null;
         }
     }
 }

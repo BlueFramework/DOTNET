@@ -150,6 +150,12 @@ namespace HrServiceCenterWeb.Controllers
         {
             return View();
         }
+        // PAY detail
+        public ActionResult ImportorPayDetail(int importorId)
+        {
+            ViewBag.importorId = importorId;
+            return View();
+        }
 
         //查询保险导入列表
         //VIEW: /Pay/QueryImportorList
@@ -164,6 +170,14 @@ namespace HrServiceCenterWeb.Controllers
         {
             List<InsuranceInfo> list = new Manager.PayManager().QueryImportorPaymentList(query);
             JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        public ActionResult ImportorPayDetailTable(int importorId)
+        {
+            DataTable dataTable = new Manager.PayManager().GetImportorDetail(importorId);
+            String json = Newtonsoft.Json.JsonConvert.SerializeObject(dataTable);
+            ContentResult jsonResult = Content(json);
             return jsonResult;
         }
 
@@ -508,5 +522,7 @@ namespace HrServiceCenterWeb.Controllers
         {
             return View();
         }
+
+
     }
 }

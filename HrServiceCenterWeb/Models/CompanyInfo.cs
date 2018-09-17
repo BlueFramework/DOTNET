@@ -11,6 +11,8 @@ namespace HrServiceCenterWeb.Models
 
         public string Name { get; set; }
 
+        public string CompanyType { get; set; }
+
         public string Code { get; set; }
 
         public string Representative { get; set; }
