@@ -11,7 +11,7 @@ using BlueFramework.Common;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class CompanyController : Controller
+    public class CompanyController : BaseController
     {
 
 

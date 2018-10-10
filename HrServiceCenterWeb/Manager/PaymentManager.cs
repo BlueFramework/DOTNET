@@ -122,7 +122,6 @@ namespace HrServiceCenterWeb.Manager
                 }
             }
 
-
         }
 
         public Payment LoadPayment(int paymentId)
@@ -190,19 +189,20 @@ namespace HrServiceCenterWeb.Manager
                     decimal.Parse(dr["f_202"].ToString()) +
                     decimal.Parse(dr["f_203"].ToString()) +
                     decimal.Parse(dr["f_206"].ToString());
-                dr["f_3"] =
-                    decimal.Parse(dr["f_199"].ToString()) -
+                decimal realPayValue = 
+                    decimal.Parse(dr["f_199"].ToString()) - 
                     decimal.Parse(dr["f_299"].ToString());
-                dr["f_7"] =
+                dr["f_3"] = realPayValue<0 ? 0: realPayValue;
+                dr["f_7"] = 
                     decimal.Parse(dr["f_199"].ToString()) +
                     decimal.Parse(dr["f_4"].ToString()) +
-                    decimal.Parse(dr["f_5"].ToString()) +
+                    decimal.Parse(dr["f_5"].ToString())+
                     decimal.Parse(dr["f_6"].ToString());
-                payment.Total +=
+                decimal realPaytotal =
                     decimal.Parse(dr["f_199"].ToString()) +
                     decimal.Parse(dr["f_4"].ToString()) +
                     decimal.Parse(dr["f_5"].ToString());
-                    //decimal.Parse(dr["f_6"].ToString());
+                payment.Total += realPaytotal;
             }
             #endregion
 
@@ -271,6 +271,17 @@ namespace HrServiceCenterWeb.Manager
                 try
                 {
                     context.BeginTransaction();
+                    // 删除可编辑的列数据
+                    foreach(var item in dicItems.Values)
+                    {
+                        PayValueInfo payValue = new PayValueInfo()
+                        {
+                            PayId = paymentId,
+                            ItemId = item.ItemId
+                        };
+                        context.Delete<PayValueInfo>("hr.payment.insertPayment.delete", payValue);
+                    }
+                    // 写入所有数据
                     foreach (PayValueInfo payValue in payValues)
                     {
                         context.Save<PayValueInfo>("hr.payment.insertPayment.detail", payValue);

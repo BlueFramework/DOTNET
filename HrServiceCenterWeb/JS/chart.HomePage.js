@@ -241,7 +241,7 @@ opt.loadDegreePositionCounter = function (dataSource) {
 }
 
 opt.loadPayChart = function (series) {
-    debugger
+    
     datetime = new Date();
     nowYear = datetime.getFullYear();
     option = {
@@ -253,7 +253,7 @@ opt.loadPayChart = function (series) {
             trigger: 'axis'
         },
         legend: {
-            data: [series[0].Title, series[1].Title, series[2].Title],
+            data: [series[0].Title, series[1].Title, series[2].Title, series[3].Title],
             y: 'bottom',
         },
         xAxis: {
@@ -276,7 +276,12 @@ opt.loadPayChart = function (series) {
             data: series[2].Data,
             name: series[2].Title,
             type: 'line'
-        }
+            }
+            , {
+                data: series[3].Data,
+                name: series[3].Title,
+                type: 'line'
+            }
         ]
     };
 

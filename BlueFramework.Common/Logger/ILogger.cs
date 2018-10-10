@@ -33,5 +33,11 @@ namespace BlueFramework.Common.Logger
         /// </summary>
         /// <param name="meeeage"></param>
         void Warn(string meeeage);
+
+        /// <summary>
+        /// write debugger message
+        /// </summary>
+        /// <param name="meeeage"></param>
+        void Debugger(string meeeage);
     }
 }

@@ -11,7 +11,7 @@ using HrServiceCenterWeb.Manager;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class CounterController : Controller
+    public class CounterController : BaseController
     {
         // GET: BaseCode/GetPositions/
         [HttpGet]

@@ -36,7 +36,8 @@ namespace BlueFramework.Common.Logger
         /// <param name="message"></param>
         public void Error(string message)
         {
-
+            log4net.ILog log = log4net.LogManager.GetLogger(this.GetType());
+            log.Error(message);
         }
 
         /// <summary>
@@ -47,6 +48,17 @@ namespace BlueFramework.Common.Logger
         {
             log4net.ILog log = log4net.LogManager.GetLogger(this.GetType());
             log.Warn(message);
+        }
+
+        /// <summary>
+        /// write debugger message
+        /// </summary>
+        /// <param name="meeeage"></param>
+        public void Debugger(string message)
+        {
+            log4net.ILog log = log4net.LogManager.GetLogger(this.GetType());
+            log.Debug(message);
+
         }
     }
 }

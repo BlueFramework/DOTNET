@@ -12,7 +12,7 @@ namespace HrServiceCenterWeb.Controllers
     /// 部分试图控制器
     /// 菜单列表
     /// </summary>
-    public class MenuController : Controller
+    public class MenuController : BaseController
     {
         //当前登录用户得菜单权限列表
         private List<MenuInfo> menuifo;

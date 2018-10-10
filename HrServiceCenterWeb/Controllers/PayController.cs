@@ -12,7 +12,7 @@ using BlueFramework.Common.Excel;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class PayController : Controller
+    public class PayController : BaseController
     {
 
         // 模板列表

@@ -12,7 +12,7 @@ using BlueFramework.Common.Excel;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class EmployeeController : Controller
+    public class EmployeeController : BaseController
     {
         // GET: /Employee/EmployeeList
         public ActionResult EmployeeList()

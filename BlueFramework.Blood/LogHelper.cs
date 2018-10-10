@@ -23,10 +23,10 @@ namespace BlueFramework.Blood
 
         public static void Debugger(string source, string message)
         {
-#if DEBUG
+
             string content = source + "：" + message;
-            LoggerFactory.CreateDefault().Info(content);
-#endif
+            LoggerFactory.CreateDefault().Debugger(content);
+
         }
     }
 }

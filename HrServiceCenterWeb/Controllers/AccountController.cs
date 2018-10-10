@@ -11,7 +11,7 @@ using BlueFramework.User.Models;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         readonly string cookie_name = "UP_TESTANYSIS_NAME";
         readonly string cookie_password = "UP_TESTANYSIS_PASSWORD";

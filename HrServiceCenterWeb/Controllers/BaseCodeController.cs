@@ -6,13 +6,12 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Configuration;
-using HrServiceCenterWeb.Models;
 using HrServiceCenterWeb.Manager;
 
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class BaseCodeController : Controller
+    public class BaseCodeController : BaseController
     {
         // GET: BaseCode/GetSexCodes/
         [HttpGet]

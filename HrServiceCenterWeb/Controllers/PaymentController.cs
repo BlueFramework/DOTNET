@@ -13,7 +13,7 @@ using BlueFramework.Common.Excel;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class PaymentController : Controller
+    public class PaymentController : BaseController
     {
         [HttpPost]
         //  Payment/CreatePayment

@@ -8,7 +8,7 @@ using BlueFramework.User.Models;
 
 namespace HrServiceCenterWeb.Controllers
 {
-    public class SystemController : Controller
+    public class SystemController : BaseController
     {
         //
         // GET: System
