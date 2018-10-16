@@ -2,14 +2,16 @@
 <root>
   <sql id="hr.payBank">
     <![CDATA[
-    select 序号=Row_Number()over(partition by e.PERSON_ID order by e.PERSON_ID) , e.BANK_CARD 转入账号, e.PERSON_NAME 转入户名,PAY_VALUE 金额 from HR_EMPLOYEE e 
+    select 序号=Row_Number()over(partition by e.PERSON_ID order by e.PERSON_ID) , c.Name 单位名称, e.card_id 身份证号, e.BANK_CARD 转入账号, e.PERSON_NAME 转入户名,PAY_VALUE 金额 
+    from HR_EMPLOYEE e 
+    inner join HR_COMPANY c on c.COMPANY_ID=e.COMPANY_ID
             inner join (
 	            select t.PERSON_ID,
                 sum( case t.ITEM_ID 
 								when 201 then t.PAY_VALUE*-1 when 202 then t.PAY_VALUE*-1 when 203 then t.PAY_VALUE*-1 when 206 then t.PAY_VALUE*-1 
 								ELSE t.PAY_VALUE end ) PAY_VALUE  from HR_SALARY_PAY p
 	            inner join HR_SALARY_PAY_VALUE t on t.PAY_ID=p.PAY_ID
-	            where p.STATUS=2 and p.PAY_MONTH=@payMonth and t.ITEM_ID in  (101,102,103,104,105,106,017,108,109,110,111,201,202,203,206)
+	            where p.STATUS=2 and p.PAY_MONTH=@payMonth and t.ITEM_ID in  (101,102,103,104,105,106,107,108,109,110,111,201,202,203,206)
 	            group by t.PERSON_ID
             ) v on v.PERSON_ID=e.PERSON_ID
     ]]>

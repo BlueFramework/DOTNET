@@ -49,4 +49,12 @@
     where a.ITEM_ID in (4,5,101,102,103,104,105,106,107,108,109,110,111) and b.PAY_MONTH>=CONVERT(varchar(100),dateadd(MONTH,-13,GETDATE()), 23)
     group by b.PAY_MONTH
   </select>
+  <!--个人保险部分-->
+  <select id="personPayCount">
+    select b.PAY_MONTH DataAxis,sum(a.PAY_VALUE) Data
+    from HR_SALARY_PAY_VALUE a
+    INNER JOIN HR_SALARY_PAY b on a.PAY_ID=b.PAY_ID
+    where a.ITEM_ID in (201,202,203,206) and b.PAY_MONTH>=CONVERT(varchar(100),dateadd(MONTH,-13,GETDATE()), 23)
+    group by b.PAY_MONTH
+  </select>
 </mapper>

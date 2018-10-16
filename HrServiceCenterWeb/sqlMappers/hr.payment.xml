@@ -19,26 +19,26 @@
   <select id="findCompanyPersons" >
     select t.PERSON_ID objectId,t.CARD_ID ObjectCode,t.PERSON_NAME ObjectName
     from HR_EMPLOYEE t
-    where t.COMPANY_ID=#{value}
+    where t.COMPANY_ID=#{value} and ISNULL(t.State, 0)=0
   </select>
   <!-- 查询发放对象保险值 -->
   <select id="findCompanyPersonsValue" >
     select t1.PERSON_ID PersonId,t1.ITEM_ID ItemId,sum(t1.ITEM_VALUE) PayValue
     from HR_EMPLOYEE t
     INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
-    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}'
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t.State=0 
     GROUP BY t1.PERSON_ID,t1.ITEM_ID
     union
     select t1.PERSON_ID PersonId,4 ItemId,sum(t1.ITEM_CMP_VALUE) PayValue
     from HR_EMPLOYEE t
     INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
-    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (201,202,203,204,205)
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (201,202,203,204,205) and t.State=0
     GROUP BY t1.PERSON_ID
     union
     select t1.PERSON_ID PersonId,5 ItemId,sum(t1.ITEM_CMP_VALUE) PayValue
     from HR_EMPLOYEE t
     INNER JOIN HR_SALARY_IMPORTOR_DATA t1 on t1.PERSON_ID=t.PERSON_ID
-    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (206)
+    where t.COMPANY_ID=${CompanyId} and t1.PAY_MONTH='${PayMonth}' and t1.ITEM_ID in (206) and t.State=0
     GROUP BY t1.PERSON_ID
   </select>
 
@@ -81,6 +81,9 @@
     (TEMPLATE_ID,COMPANY_ID,PAY_TITLE,PAY_MONTH,CREATOR,CREATE_TIME,STATUS)
     values(#{TemplateId},#{CompanyId},#{PayTitle},#{PayMonth},#{CreatorId},#{CreateTime},#{Status})
   </insert>
+  <delete id="insertPayment.delete">
+    delete from HR_SALARY_PAY_VALUE where PAY_ID=#{PayId} and ITEM_ID=#{ItemId};
+  </delete>
   <insert id="insertPayment.detail" parameterType="PayValueInfo">
     insert into HR_SALARY_PAY_VALUE(PAY_ID,ITEM_ID,PERSON_ID,PAY_VALUE)
     values(#{PayId},#{ItemId},#{PersonId},#{PayValue})
@@ -108,7 +111,7 @@
 
   <!-- 查询导入明细-->
   <select id="queryImportorDetail" >
-    select e.PERSON_NAME,
+    select e.PERSON_NAME,e.CARD_ID,e.BANK_CARD,
     sum(f101) f101,sum(f102) f102,sum(f103) f103,sum(f104) f104,sum(f105) f105,sum(f106) f106,
     sum(f107) f107,sum(f108) f108,sum(f109) f109,sum(f110) f110,sum(f111) f111
     from (
@@ -128,7 +131,7 @@
     where t.IMPORT_ID=#{value}
     ) v
     INNER JOIN HR_EMPLOYEE e on e.PERSON_ID=v.PERSON_ID
-    group by e.PERSON_NAME,v.PERSON_ID
+    group by e.PERSON_NAME,v.PERSON_ID,e.CARD_ID,e.BANK_CARD
     order by e.PERSON_NAME
   </select>
 </mapper>

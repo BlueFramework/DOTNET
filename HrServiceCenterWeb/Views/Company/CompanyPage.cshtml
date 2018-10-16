@@ -42,7 +42,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">统一社会信用代码</label>
                 <div class="col-sm-9">
-                    <input class="easyui-textbox" form-field-name="code" form-control-type="textbox" data-options="prompt:'输入组织结构编码.',validType:'length[3,50]'" style="height:30px;width:100%" />
+                    <input class="easyui-textbox" form-field-name="Code" form-control-type="textbox" data-options="prompt:'输入组织结构编码.',validType:'length[3,50]'" style="height:30px;width:100%" />
                 </div>
             </div>
             <div class="form-group">
@@ -95,6 +95,7 @@
                         <th data-options="field:'PositionName',width:100">岗位</th>
                         <th data-options="field:'PlanCount',width:80">编制人数</th>
                         <th data-options="field:'RealCount',width:80">实际人数</th>
+                        <th data-options="field:'LeaveCount',width:80">离职人数</th>
                         <th data-options="field:'UseType',width:80">用工方式</th>
                         <th data-options="field:'Remark',width:80">备注</th>
                     </tr>
@@ -142,7 +143,13 @@
         </div>
         <div class="form-group">
             <div class="col-sm-2">用工形式</div>
-            <div class="col-sm-4"><input type="text" style="width:100%;" form-field-name="UseType" /></div>
+            <div class="col-sm-4">
+                <select class="easyui-combobox" form-field-name="UseType" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
+                    <option value="劳务派遣">劳务派遣</option>
+                    <option value="单位管理">单位管理</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
             <div class="col-sm-2">备注</div>
