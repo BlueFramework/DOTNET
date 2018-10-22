@@ -32,6 +32,10 @@ namespace BlueFramework.Blood.DataAccess
             Type type = o.GetType();
             DataRow row = dt.Rows[0];
             PropertyInfo[] properties = type.GetProperties();
+            if (properties.Length == 0)
+            {
+                return (T)row[0];
+            }
             for (int i = 0; i < properties.Length; i++)
             {
                 PropertyInfo property = properties[i];

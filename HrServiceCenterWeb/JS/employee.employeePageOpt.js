@@ -83,3 +83,14 @@ opt.save = function () {
 opt.exit = function (id) {
     self.location.href = '../Employee/EmployeeList';
 }
+opt.afterChange = function (idString) {
+    if (idString.length < 17) return;
+    var year = idString.substr(6, 4);
+    var date = year + '-' + idString.substr(10, 2) + '-' + idString.substr(12, 2);
+    var sex = idString.substr(16, 1)%2;
+    var retireYear = sex==1?60:50;
+    var retireDate = (retireYear + parseInt(year)) + '-' + idString.substr(10, 2) + '-' + idString.substr(12, 2);
+    $('#dtBirthday').datebox('setValue', date); 
+    $('#dtRetireTime').datebox('setValue', retireDate);
+    $('#cmbSex').combobox("setValue", sex==1?'男':'女')
+}

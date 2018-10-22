@@ -153,6 +153,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CounterController.cs" />
     <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
@@ -351,6 +352,7 @@
     <Content Include="JS\share.js" />
     <Content Include="JS\company.CompanyListOpt.js" />
     <Content Include="JS\UserManageOpt.js" />
+    <Content Include="JS\vue.min.js" />
     <Content Include="Library\blogRepeater\default.css" />
     <Content Include="Library\blogRepeater\demo.htm" />
     <Content Include="Library\blogRepeater\images\against_1.png" />

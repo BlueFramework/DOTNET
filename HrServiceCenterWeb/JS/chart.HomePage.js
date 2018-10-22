@@ -1,6 +1,8 @@
-﻿var opt = window.NameSpace || {};
+﻿
+var opt = window.NameSpace || {};
 
 function init() {
+    /*
     $.ajax({
         url: "../Counter/GetEmployeeCount",
         type: "GET",
@@ -12,7 +14,7 @@ function init() {
             $.messager.alert('提示', '查询出错！');
         }
     });
-
+    */
     $.ajax({
         url: "../Counter/GetPositionCounts",
         type: "GET",
@@ -52,6 +54,39 @@ function init() {
         }
     });
 
+    $.ajax({
+        url: "../Employee/GetContractIsEndEmployeeList",
+        type: "GET",
+        dataType: "json",
+        success: function (source) {
+            new Vue({
+                el: '#app',
+                data: {
+                    persons: source
+                }
+            })
+        },
+        error: function () {
+            $.messager.alert('提示', '加载人员信息出错！');
+        }
+    });
+
+    $.ajax({
+        url: "../Employee/GetRetireIsEndEmployeeList",
+        type: "GET",
+        dataType: "json",
+        success: function (source) {
+            new Vue({
+                el: '#app2',
+                data: {
+                    persons: source
+                }
+            })
+        },
+        error: function () {
+            $.messager.alert('提示', '加载人员信息出错！');
+        }
+    });
     //loadEmployeePositionCounter();
     //loadDegreePositionCounter();
     //loadPayChart();

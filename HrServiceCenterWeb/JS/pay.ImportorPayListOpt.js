@@ -84,7 +84,13 @@ opt.import = function () {
         url: '../Pay/ImportPay',
         onAfterUpload: function (result) {
             if (result.success === true) {
-                self.location.reload();
+                if (result.data != '') {
+                    $.messager.alert('提示消息', result.data, 'warning', function () {
+                        self.location.reload();
+                    });
+                }
+                else
+                    self.location.reload();
             }
             else {
                 alert(result.data);

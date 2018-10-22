@@ -31,6 +31,7 @@ namespace HrServiceCenterWeb.Controllers
                 ViewBag.CompanyId = 0;
             else
                 ViewBag.CompanyId = int.Parse(this.HttpContext.Request.QueryString["companyId"]); 
+            ViewBag.PersonCode = new Manager.EmployeeManager().GetMaxPersonCode();
             return View();
         }
 
@@ -39,6 +40,22 @@ namespace HrServiceCenterWeb.Controllers
         {
             List<EmployeeInfo> list = new Manager.EmployeeManager().GetEmployees(employeeInfo);
             JsonResult jsonResult = Json(list);
+            return jsonResult;
+        }
+
+        public ActionResult GetContractIsEndEmployeeList()
+        {
+            List<EmployeeInfo> list = new Manager.EmployeeManager().GetContractBeEndingEmployees();
+            JsonResult jsonResult = Json(list);
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
+        }
+
+        public ActionResult GetRetireIsEndEmployeeList()
+        {
+            List<EmployeeInfo> list = new Manager.EmployeeManager().GetRetireBeEndingEmployees();
+            JsonResult jsonResult = Json(list);
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jsonResult;
         }
 
@@ -74,7 +91,7 @@ namespace HrServiceCenterWeb.Controllers
             Object result = new
             {
                 success = pass,
-                data = pass ? "删除成功" : "删除失败"
+                data = pass ? "删除成功" : "删除失败，系统限制不允许删除！"
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;

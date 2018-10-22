@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.Test", "Dapper.Test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueFramework.ReportView", "BlueFramework.ReportView\BlueFramework.ReportView.csproj", "{90639196-9034-404E-93BB-3E593F873DEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreApp.Test", "CoreApp.Test\CoreApp.Test.csproj", "{4E00BCEE-7D37-4D9E-AB44-D1D1F20306A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Test", "ConsoleApp.Test\ConsoleApp.Test.csproj", "{0C6C3BAB-FA33-4C83-AF2B-79923B6CF8F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{90639196-9034-404E-93BB-3E593F873DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90639196-9034-404E-93BB-3E593F873DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90639196-9034-404E-93BB-3E593F873DEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E00BCEE-7D37-4D9E-AB44-D1D1F20306A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E00BCEE-7D37-4D9E-AB44-D1D1F20306A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E00BCEE-7D37-4D9E-AB44-D1D1F20306A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E00BCEE-7D37-4D9E-AB44-D1D1F20306A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C6C3BAB-FA33-4C83-AF2B-79923B6CF8F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C6C3BAB-FA33-4C83-AF2B-79923B6CF8F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C6C3BAB-FA33-4C83-AF2B-79923B6CF8F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C6C3BAB-FA33-4C83-AF2B-79923B6CF8F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

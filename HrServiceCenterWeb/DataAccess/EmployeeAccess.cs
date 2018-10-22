@@ -20,5 +20,15 @@ namespace HrServiceCenterWeb.DataAccess
             else
                 return null;
         }
+
+        public int GetMaxPersonCode()
+        {
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory();
+            Database dataBase = dbFactory.CreateDefault();
+            string sql = "select max(person_code) maxCode from HR_EMPLOYEE";
+            object result = dataBase.ExecuteScalar(CommandType.Text, sql);
+            return int.Parse(result.ToString());
+
+        }
     }
 }

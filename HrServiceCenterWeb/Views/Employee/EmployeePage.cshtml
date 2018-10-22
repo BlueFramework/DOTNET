@@ -50,7 +50,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">性别</label>
                 <div class="col-sm-4">
-                    <select class="easyui-combobox" form-field-name="Sex" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
+                    <select class="easyui-combobox" id="cmbSex" form-field-name="Sex" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
                         <option value="男">男</option>
                         <option value="女">女</option>
                     </select>
@@ -148,6 +148,18 @@
                 <label class="col-sm-2 control-label">离职日期</label>
                 <div class="col-sm-4">
                     <input class="easyui-datebox" form-field-name="LeaveTime" form-control-type="datebox" style="width:100%;height:30px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">合同到期日期</label>
+                <div class="col-sm-4">
+                    <input class="easyui-datebox" form-field-name="ContractTime" form-control-type="datebox" style="width:100%;height:30px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">退休日期</label>
+                <div class="col-sm-4">
+                    <input class="easyui-datebox" id="dtRetireTime" form-field-name="RetireTime" form-control-type="datebox" style="width:100%;height:30px;" />
                 </div>
             </div>
             <div class="form-group">

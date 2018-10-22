@@ -4,6 +4,7 @@ function init() {
     var height = $('.container-layout').height() - 160;
     $('#dgContainer').height(height);
     $('#dg').datagrid('resize');
+    $('#dg').datagrid('enableFilter');
     opt.query();
 }
 

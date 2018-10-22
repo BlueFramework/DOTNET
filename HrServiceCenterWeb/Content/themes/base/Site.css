@@ -483,3 +483,19 @@ body {
 	background-image: url( 'images/join_2.png' );
 	cursor:pointer;
 }
+
+/*home*/
+.home_panel {
+    background-color: rgba(205, 230, 205, 0.33);
+    padding:20px;
+}
+.home_panel_title {
+    text-align: center;
+    height: 30px;
+    color:#336699;
+    font-size: 18px;
+}
+.home_panel li{
+    line-height:25px;
+    color:#428bca;
+}
