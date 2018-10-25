@@ -11,6 +11,7 @@ namespace HrServiceCenterWeb.Models
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
         public int PositionId { get; set; }
+        public string PositionName { get; set; }
         public string PersonName { get; set; }
         public string CardId { get; set; }
         public string Sex { get; set; }
@@ -33,8 +34,17 @@ namespace HrServiceCenterWeb.Models
 
         public string LeaveTime { get; set; }
 
-        public string PersonCode { get; set; }
+        public int PersonCode { get; set; }
         public string BankName { get; set; }
         public string BankCard { get; set; }
+
+        public string ContractTime { get; set; }
+        public string RetireTime { get; set; }
+        /// <summary>
+        /// 合同到期天数
+        /// </summary>
+        public int ContractDays { get; set; }
+        public int RetireDays { get; set; }
+
     }
 }

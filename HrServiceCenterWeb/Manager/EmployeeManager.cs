@@ -11,6 +11,23 @@ namespace HrServiceCenterWeb.Manager
 {
     public class EmployeeManager
     {
+        private int ContractWarnningDays
+        {
+            get
+            {
+                string day = System.Configuration.ConfigurationManager.AppSettings.Get("ContractWarningDay");
+                return string.IsNullOrEmpty(day)?30:int.Parse(day);
+            }
+        }
+        private int RetireWarnningDays
+        {
+            get
+            {
+                string day = System.Configuration.ConfigurationManager.AppSettings.Get("RetireWarningDay");
+                return string.IsNullOrEmpty(day) ? 30 : int.Parse(day);
+            }
+        }
+
         public List<PositionInfo> GetPositions()
         {
             EntityContext context = Session.CreateContext();
@@ -66,7 +83,11 @@ namespace HrServiceCenterWeb.Manager
             return companyInfo;
         }
 
-
+        public int GetMaxPersonCode()
+        {
+            int max = new DataAccess.EmployeeAccess().GetMaxPersonCode();
+            return max + 1;
+        }
 
         public bool SaveRecharge(CompanyAccountRecordInfo accountRecordInfo)
         {
@@ -217,6 +238,40 @@ namespace HrServiceCenterWeb.Manager
             return list;
         }
 
+        public List<EmployeeInfo> GetContractBeEndingEmployees()
+        {
+            List<EmployeeInfo> list = null;
+            using (EntityContext context = new EntityContext())
+            {
+
+                string value = System.DateTime.Now.AddDays(ContractWarnningDays).ToString("yyyy-MM-dd");
+                list = context.SelectList<EmployeeInfo>("hr.employee.findContractBeEndingEmployees", value);
+            }
+            foreach(EmployeeInfo employee in list)
+            {
+                DateTime contractDate = DateTime.Parse(employee.ContractTime);
+                employee.ContractDays = int.Parse(Math.Round(contractDate.Subtract(DateTime.Now).TotalDays,0).ToString());
+            }
+            return list;
+        }
+
+        public List<EmployeeInfo> GetRetireBeEndingEmployees()
+        {
+            List<EmployeeInfo> list = null;
+            using (EntityContext context = new EntityContext())
+            {
+
+                string value = System.DateTime.Now.AddDays(RetireWarnningDays).ToString("yyyy-MM-dd");
+                list = context.SelectList<EmployeeInfo>("hr.employee.findRetireBeEndingEmployees", value);
+            }
+            foreach (EmployeeInfo employee in list)
+            {
+                DateTime dateTime = DateTime.Parse(employee.RetireTime);
+                employee.RetireDays = int.Parse(Math.Round(dateTime.Subtract(DateTime.Now).TotalDays, 0).ToString());
+            }
+            return list;
+        }
+
         public DataSet GetEmployees()
         {
             EntityConfig config = ConfigManagent.Configs["hr.employee.exportPersons"];
@@ -250,7 +305,11 @@ namespace HrServiceCenterWeb.Manager
             bool pass;
             using (EntityContext context = Session.CreateContext())
             {
-                pass = context.Delete("hr.employee.deleteEmployee", personId);
+                int result = context.Selete<int>("hr.employee.isUsed", personId);
+                if (result == 1)
+                    pass = false;
+                else
+                    pass = context.Delete("hr.employee.deleteEmployee", personId);
             }
 
             return pass;

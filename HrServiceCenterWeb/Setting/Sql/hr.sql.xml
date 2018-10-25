@@ -2,7 +2,7 @@
 <root>
   <sql id="hr.payBank">
     <![CDATA[
-    select 序号=Row_Number()over(partition by e.PERSON_ID order by e.PERSON_ID) , c.Name 单位名称, e.card_id 身份证号, e.BANK_CARD 转入账号, e.PERSON_NAME 转入户名,PAY_VALUE 金额 
+    select 序号=Row_Number()over(partition by e.PERSON_ID order by e.PERSON_ID) , c.Name 单位名称, e.card_id 身份证号, e.BANK_CARD 转入账号, e.BANK_NAME 银行,e.PERSON_NAME 转入户名,PAY_VALUE 金额 
     from HR_EMPLOYEE e 
     inner join HR_COMPANY c on c.COMPANY_ID=e.COMPANY_ID
             inner join (

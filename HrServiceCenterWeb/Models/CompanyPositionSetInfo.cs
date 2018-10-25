@@ -15,5 +15,6 @@ namespace HrServiceCenterWeb.Models
         public string Remark { get; set; }
 
         public int RealCount { get; set; }
+        public int LeaveCount { get; set; }
     }
 }

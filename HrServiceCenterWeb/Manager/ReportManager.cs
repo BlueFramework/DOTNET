@@ -51,8 +51,9 @@ namespace HrServiceCenterWeb.Manager
             EntityContext context = BlueFramework.Blood.Session.CreateContext();
             List<Models.CounterBO> insuranceList = context.SelectList<Models.CounterBO>("hr.chart.insuranceCount", null);
             List<Models.CounterBO> shouldPayList = context.SelectList<Models.CounterBO>("hr.chart.shouldPayCount", null);
-            List<Models.CounterBO> truePayList = context.SelectList<Models.CounterBO>("hr.chart.truePayCount", null);
             List<Models.CounterBO> personPayList = context.SelectList<Models.CounterBO>("hr.chart.personPayCount", null);
+            List<Models.CounterBO> truePayList = context.SelectList<Models.CounterBO>("hr.chart.truePayCount", null);
+            List<Models.CounterBO> servicePayList = context.SelectList<Models.CounterBO>("hr.chart.servicePayCount", null);
 
             Dictionary<string, DateTime> months = new Dictionary<string, DateTime>();
             DateTime startDate = DateTime.Parse( DateTime.Now.ToString("yyyy-MM-01") );
@@ -68,11 +69,13 @@ namespace HrServiceCenterWeb.Manager
             Models.CounterVO s2 = new Models.CounterVO();
             Models.CounterVO s3 = new Models.CounterVO();
             Models.CounterVO s4 = new Models.CounterVO();
+            Models.CounterVO s5 = new Models.CounterVO();
             s1.DataAxis = s2.DataAxis = s3.DataAxis = months.Keys.ToArray();
-            s1.Data = new decimal[13]; s1.Title = "单位保险部分";
+            s1.Data = new decimal[13]; s1.Title = "单位社保公积金部分";
             s2.Data = new decimal[13]; s2.Title = "单位工资部分";
-            s3.Data = new decimal[13]; s3.Title = "单位费用总额";
-            s4.Data = new decimal[13]; s4.Title = "个人保险部分";
+            s3.Data = new decimal[13]; s3.Title = "个人社保部分";
+            s4.Data = new decimal[13]; s4.Title = "单位+个人费用总额";
+            s5.Data = new decimal[13]; s5.Title = "服务费";
 
             i = 0;
             foreach (string x in months.Keys)
@@ -94,7 +97,7 @@ namespace HrServiceCenterWeb.Manager
                         break;
                     }
                 }
-                foreach (Models.CounterBO o in truePayList)
+                foreach (Models.CounterBO o in personPayList)
                 {
                     if (o.DataAxis == month)
                     {
@@ -102,11 +105,19 @@ namespace HrServiceCenterWeb.Manager
                         break;
                     }
                 }
-                foreach (Models.CounterBO o in personPayList)
+                foreach (Models.CounterBO o in truePayList)
                 {
                     if (o.DataAxis == month)
                     {
                         s4.Data[i] = o.Data;
+                        break;
+                    }
+                }
+                foreach (Models.CounterBO o in servicePayList)
+                {
+                    if (o.DataAxis == month)
+                    {
+                        s5.Data[i] = o.Data;
                         break;
                     }
                 }
@@ -116,6 +127,7 @@ namespace HrServiceCenterWeb.Manager
             series.Add(s2);
             series.Add(s3);
             series.Add(s4);
+            series.Add(s5);
             return series;
         }
 

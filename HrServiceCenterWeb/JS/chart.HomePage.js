@@ -288,7 +288,7 @@ opt.loadPayChart = function (series) {
             trigger: 'axis'
         },
         legend: {
-            data: [series[0].Title, series[1].Title, series[2].Title, series[3].Title],
+            data: [series[0].Title, series[1].Title, series[2].Title, series[3].Title, series[4].Title],
             y: 'bottom',
         },
         xAxis: {
@@ -315,6 +315,11 @@ opt.loadPayChart = function (series) {
             , {
                 data: series[3].Data,
                 name: series[3].Title,
+                type: 'line'
+            }
+            , {
+                data: series[4].Data,
+                name: series[4].Title,
                 type: 'line'
             }
         ]
