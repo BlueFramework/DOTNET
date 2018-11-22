@@ -58,7 +58,8 @@
   <select id="findEmployee" >
     select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
     t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,
-    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT,PERSON_CODE PersonCode,BANK_NAME BankName,BANK_CARD BankCard,JOINWORK_TIME JoinWorkTime,LEAVE_TIME LeaveTime,Contract_Time ContractTime,Retire_Time RetireTime
+    c.NAME CompanyName,p.POSITION_NAME PositionName,b1.OBJECT_TEXT,PERSON_CODE PersonCode,BANK_NAME BankName,BANK_CARD BankCard,JOINWORK_TIME JoinWorkTime,LEAVE_TIME LeaveTime,Contract_Time ContractTime,Retire_Time RetireTime,
+    t.Service_Fee ServiceFee
     from HR_EMPLOYEE t
     INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
     INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
@@ -71,17 +72,18 @@
       select @PersonId=@@IDENTITY
     </selectKey>
     insert into HR_EMPLOYEE(COMPANY_ID,POSITION_ID,PERSON_NAME,CARD_ID,SEX,BIRTHDAY,DEGREE,POLITY,NATION,PHONE,ADDRESS,CONTACTS_PERSON,CONTACTS_PHONE,SPECIALTY,SCHOOL,CREATOR,CREATE_TIME,
-    PERSON_CODE,BANK_NAME,BANK_CARD,JOINWORK_TIME,Contract_Time,Retire_Time,
+    PERSON_CODE,BANK_NAME,BANK_CARD,JOINWORK_TIME,Contract_Time,Retire_Time,Service_Fee,
     STATE)
     values(#{CompanyId},#{PositionId},#{PersonName},#{CardId},#{Sex},#{Birthday},#{Degree},#{Polity},#{Nation}
-    ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{PersonCode},#{BankName},#{BankCard},#{JoinWorkTime},#{ContractTime},#{RetireTime},
+    ,#{Phone},#{Address},#{ContactsPerson},#{ContactsPhone},#{Specialty},#{School},#{Creator},#{CreateTime},#{PersonCode},#{BankName},#{BankCard},#{JoinWorkTime},#{ContractTime},#{RetireTime},#{ServiceFee},
     #{State})
   </insert>
   <update id="updateEmployee">
     update HR_EMPLOYEE set COMPANY_ID=#{CompanyId},POSITION_ID=#{PositionId},PERSON_NAME=#{PersonName},CARD_ID=#{CardId},SEX=#{Sex}
     ,BIRTHDAY=#{Birthday},DEGREE=#{Degree},POLITY=#{Polity},NATION=#{Nation},PHONE=#{Phone},ADDRESS=#{Address}
     ,CONTACTS_PERSON=#{ContactsPerson},CONTACTS_PHONE=#{ContactsPhone},SPECIALTY=#{Specialty},SCHOOL=#{School},JOINWORK_TIME=#{JoinWorkTime},
-    PERSON_CODE=#{PersonCode},BANK_NAME=#{BankName},BANK_CARD=#{BankCard},State=#{State},LEAVE_TIME=#{LeaveTime},Contract_Time=#{ContractTime},Retire_Time=#{RetireTime}
+    PERSON_CODE=#{PersonCode},BANK_NAME=#{BankName},BANK_CARD=#{BankCard},State=#{State},LEAVE_TIME=#{LeaveTime},Contract_Time=#{ContractTime},Retire_Time=#{RetireTime},
+    Service_Fee=#{ServiceFee}
     where PERSON_ID=#{PersonId}
   </update>
 
@@ -95,6 +97,6 @@
   </delete>
   <!-- 获取所有人员的身份证号 -->
   <select id="findEmployeesCardId" >
-    select t.CARD_ID CardId,PERSON_ID PersonId from HR_EMPLOYEE t
+    select t.CARD_ID CardId,t.Person_Name PersonName, PERSON_ID PersonId from HR_EMPLOYEE t
   </select>
 </mapper>

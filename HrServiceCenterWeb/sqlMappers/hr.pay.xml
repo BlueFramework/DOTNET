@@ -12,7 +12,7 @@
     left join HR_COMPANY c on t.COMPANY_ID=c.COMPANY_ID
     left join T_S_USER u on t.CREATOR=u.USERID
     where t.PAY_TITLE like '%${value}%'
-    order by t.PAY_ID desc
+    order by t.STATUS,t.PAY_ID desc
   </select>
 
   <select id="findPayDefaultDetail">

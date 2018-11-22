@@ -1,6 +1,8 @@
-﻿var opt = window.NameSpace || {};
+﻿
+var opt = window.NameSpace || {};
 
 function init() {
+    /*
     $.ajax({
         url: "../Counter/GetEmployeeCount",
         type: "GET",
@@ -12,7 +14,7 @@ function init() {
             $.messager.alert('提示', '查询出错！');
         }
     });
-
+    */
     $.ajax({
         url: "../Counter/GetPositionCounts",
         type: "GET",
@@ -52,6 +54,39 @@ function init() {
         }
     });
 
+    $.ajax({
+        url: "../Employee/GetContractIsEndEmployeeList",
+        type: "GET",
+        dataType: "json",
+        success: function (source) {
+            new Vue({
+                el: '#app',
+                data: {
+                    persons: source
+                }
+            })
+        },
+        error: function () {
+            $.messager.alert('提示', '加载人员信息出错！');
+        }
+    });
+
+    $.ajax({
+        url: "../Employee/GetRetireIsEndEmployeeList",
+        type: "GET",
+        dataType: "json",
+        success: function (source) {
+            new Vue({
+                el: '#app2',
+                data: {
+                    persons: source
+                }
+            })
+        },
+        error: function () {
+            $.messager.alert('提示', '加载人员信息出错！');
+        }
+    });
     //loadEmployeePositionCounter();
     //loadDegreePositionCounter();
     //loadPayChart();
@@ -241,7 +276,7 @@ opt.loadDegreePositionCounter = function (dataSource) {
 }
 
 opt.loadPayChart = function (series) {
-    debugger
+    
     datetime = new Date();
     nowYear = datetime.getFullYear();
     option = {
@@ -253,7 +288,7 @@ opt.loadPayChart = function (series) {
             trigger: 'axis'
         },
         legend: {
-            data: [series[0].Title, series[1].Title, series[2].Title],
+            data: [series[0].Title, series[1].Title, series[2].Title, series[3].Title, series[4].Title],
             y: 'bottom',
         },
         xAxis: {
@@ -276,7 +311,17 @@ opt.loadPayChart = function (series) {
             data: series[2].Data,
             name: series[2].Title,
             type: 'line'
-        }
+            }
+            , {
+                data: series[3].Data,
+                name: series[3].Title,
+                type: 'line'
+            }
+            , {
+                data: series[4].Data,
+                name: series[4].Title,
+                type: 'line'
+            }
         ]
     };
 

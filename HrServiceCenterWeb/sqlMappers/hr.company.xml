@@ -7,10 +7,17 @@
     LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID 
     where t.NAME like '%${value}%'
   </select>
-  <select id="findCompanyById" >
+  <select id="getPayCompanys" >
     select t.COMPANY_ID CompanyId,t.NAME,t.CompanyType, t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(a.ACCOUNT_BALANCE,0) AccountBalance,isnull(a.ACCOUNT_ID,0) AccountId
     from HR_COMPANY t
-    LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID  
+    LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID
+    where t.State=0
+  </select>
+  <select id="findCompanyById" >
+    select t.COMPANY_ID CompanyId,t.NAME,t.CompanyType, t.CODE,t.REMARK,t.REPRESENTATIVE ,isnull(t.State,0) State,
+    isnull(a.ACCOUNT_BALANCE,0) AccountBalance,isnull(a.ACCOUNT_ID,0) AccountId
+    from HR_COMPANY t
+    LEFT JOIN HR_CO_ACCOUNT a on a.COMPANY_ID=t.COMPANY_ID
     where t.COMPANY_ID=#{value}
   </select>
   <select id="findPositions" >
@@ -30,7 +37,7 @@
       <!-- 将插入数据的主键返回，返回到对象中，下列为sqlserver自增主键 -->
       select @CompanyId=@@IDENTITY
     </selectKey>
-    insert into HR_COMPANY(NAME,CompanyType,CODE,REMARK,REPRESENTATIVE,STATE) values(#{Name},#{CompanyType},#{Code},#{Representative},#{Remark},0)
+    insert into HR_COMPANY(NAME,CompanyType,CODE,REMARK,REPRESENTATIVE,STATE) values(#{Name},#{CompanyType},#{Code},#{Representative},#{Remark},#{State})
   </insert>
   <insert id="insertAccount">
     <selectKey keyProperty="AccountId" order="INSERTING" >
@@ -40,7 +47,7 @@
     insert into HR_CO_ACCOUNT(COMPANY_ID,ACCOUNT_BALANCE) values(#{CompanyId},0)
   </insert>
   <update id="updateCompany">
-    update [HR_COMPANY] set  NAME=#{Name},CompanyType=#{CompanyType},Code=#{Code},Representative=#{Representative},Remark=#{Remark} where COMPANY_ID=#{CompanyId}
+    update [HR_COMPANY] set  NAME=#{Name},CompanyType=#{CompanyType},Code=#{Code},Representative=#{Representative},Remark=#{Remark},State=#{State} where COMPANY_ID=#{CompanyId}
   </update>
   
   <!-- 删除公司事务 -->

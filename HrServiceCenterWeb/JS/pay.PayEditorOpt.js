@@ -17,20 +17,21 @@ opt.init_Buttons = function () {
     else {
         $('#btnCreate').attr('disabled', true);
     }
-}
+};
 opt.disable = function () {
     $('#btnSave').attr('disabled', true);
     $('#btnExport').attr('disabled', true);
     $('#btnImport').attr('disabled', true);
     $('#btnSubmit').attr('disabled', true);
-}
+    $('#btnCancel').attr('disabled', false);
+};
 opt.autoName = function (company) {
     var date = $('#datebox').datebox('getText');
     var cmp = $('#cmpname').combobox('getText');
     var name = cmp + date + '工资表';
     $('#tempname').val(name);
-    $('#cmpMoney').html('当前余额：' + company.AccountBalance+'元');
-}
+    $('#cmpMoney').html('当前余额：' + company.AccountBalance + '元');
+};
 
 opt.save = function () {
     var o = HR.Form.getValues('formPayment');
@@ -86,9 +87,7 @@ opt.submitPayment = function () {
             return;
         }
     });
-
-
-}
+};
 
 opt.createPayment = function () {
     var o = HR.Form.getValues('formPayment');
@@ -116,7 +115,7 @@ opt.createPayment = function () {
         }
     });
 
-}
+};
 
 opt.loadPayment = function () {
     var url = '../Payment/LoadPayment?payId=' + dataId;
@@ -151,8 +150,8 @@ opt.createGrid = function (items, table) {
     var obj = { "total": 2, "rows": table };
     var head1 = [
         { field: 'PersonId', title: 'ID', rowspan: 2, width: 0 },
-        { field: 'PersonName', title: '姓名', rowspan: 2, width: 60},
-        { field: 'PersonCode', title: '身份证', rowspan: 2, width: 100}
+        { field: 'PersonName', title: '姓名', rowspan: 2, width: 60 },
+        { field: 'PersonCode', title: '身份证', rowspan: 2, width: 100 }
     ];
     var head2 = [];
     for (var i = 0; i < items.length; i++) {
@@ -173,7 +172,7 @@ opt.createGrid = function (items, table) {
             if (colSpan === 1)
                 column.rowspan = 2;
             else
-                column.colspan = colSpan-1;
+                column.colspan = colSpan - 1;
             head1.push(column);
         }
 
@@ -199,7 +198,7 @@ opt.createGrid = function (items, table) {
         },
         striped: true
     });
-}
+};
 
 opt.export = function () {
     var title = $('#dirTitle').val();
@@ -229,14 +228,46 @@ opt.import = function () {
 }
 
 opt.fullWindows = function () {
-    $('.container').css('width','100%');
+    $('.container').css('width', '100%');
     $('#dg').datagrid('resize');
-}
-    /*
+};
+
+opt.cancle = function () {
+    $.messager.confirm('提示窗', '撤销归档，将退回单位扣款，确定要撤销归档？', function (event) {
+        if (event) {
+            var url = '../Payment/CancelPayment?paymentId=' + dataId;
+            HR.Loader.show("loading...");
+            $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: null,
+                success: function (result) {
+                    HR.Loader.hide();
+                    $.messager.alert('提示', result.message);
+
+                    if (result.success) {
+                        self.location.reload(true);
+                    }
+                },
+                error: function () {
+                    HR.Loader.hide();
+                    $.messager.alert('提示', '保存失败！');
+                }
+            });
+        }
+        else {
+            return;
+        }
+    });
+};
+/*
+ * 
 $.fn.datebox.defaults.formatter = function (date) {
     var y = date.getFullYear();
     var m = date.getMonth() + 1;
     var d = date.getDate();
     return y + '-' + m + '-1';
 }
-    */
+*/

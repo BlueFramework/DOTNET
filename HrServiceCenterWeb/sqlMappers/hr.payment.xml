@@ -17,7 +17,7 @@
   </select>
   <!-- 查询公司人员 -->
   <select id="findCompanyPersons" >
-    select t.PERSON_ID objectId,t.CARD_ID ObjectCode,t.PERSON_NAME ObjectName
+    select t.PERSON_ID objectId,t.CARD_ID ObjectCode,t.PERSON_NAME ObjectName,t.Service_Fee ServiceFee
     from HR_EMPLOYEE t
     where t.COMPANY_ID=#{value} and ISNULL(t.State, 0)=0
   </select>

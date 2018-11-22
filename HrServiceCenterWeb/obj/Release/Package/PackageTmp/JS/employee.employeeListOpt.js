@@ -70,7 +70,10 @@ opt.add = function () {
     var url = '../Employee/EmployeePage?id=0';
     self.location = url;
 }
-
+opt.formatRow = function (index, row) {
+    if (row.State == 1)
+        return 'color:#ffcc00';
+}
 //编辑用户
 opt.edit = function (id) {
     var row = $('#dg').datagrid('getSelected');

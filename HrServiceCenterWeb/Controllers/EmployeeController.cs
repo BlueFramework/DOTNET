@@ -74,6 +74,11 @@ namespace HrServiceCenterWeb.Controllers
         [HttpPost]
         public ActionResult SaveEmployee(EmployeeInfo employeeInfo)
         {
+            // 如果停用，服务费强制改为0
+            if (employeeInfo.State == 0)
+            {
+                employeeInfo.ServiceFee = 0;
+            }
             bool pass = new Manager.EmployeeManager().SaveEmployee(employeeInfo);
             Object result = new
             {

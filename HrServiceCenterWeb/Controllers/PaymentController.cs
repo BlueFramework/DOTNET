@@ -20,7 +20,7 @@ namespace HrServiceCenterWeb.Controllers
         public ActionResult CreatePayment(Payment payment)
         {
             payment.CreateTime = DateTime.Now;
-            payment.CreatorId = BlueFramework.User.UserContext.CurrentUser.UserId;
+            payment.CreatorId = UserContext.CurrentUser.UserId;
             payment.PayMonth = DateTime.Parse(payment.PayMonth).ToString("yyyy-MM-01");
 
             PaymentManager pm = new PaymentManager();
@@ -29,6 +29,55 @@ namespace HrServiceCenterWeb.Controllers
             {
                 success = payment.PayId>0?true:false,
                 data = payment.PayId
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        [HttpPost]
+        //  Payment/CreatePayment
+        public ActionResult BatchCreatePayment(string payDate)
+        {
+            PaymentManager pm = new PaymentManager();
+            EmployeeManager em = new EmployeeManager();
+            DateTime payTime = DateTime.Now;
+            if(!DateTime.TryParse(payDate, out payTime))
+            {
+                JsonResult o = Json(new { success=false,data="发放日期不正确！" }, JsonRequestBehavior.AllowGet);
+                return o;
+            }
+            payDate = payTime.ToString("yyyy-MM-01");
+            List<CompanyInfo> companies = em.GetPayCompanies();
+            string errors = string.Empty;
+            int successCount = 0;
+            int failCount = 0;
+            foreach(CompanyInfo company in companies)
+            {
+                Payment payment = new Payment()
+                {
+                    CreateTime=DateTime.Now,
+                    CreatorId = UserContext.CurrentUser.UserId,
+                    CompanyId = company.CompanyId,
+                    PayTitle = string.Format("{0}{1}工资表",company.Name, payDate),
+                    PayMonth = payDate
+                };
+                try
+                {
+                    pm.CreatePayment(payment);
+                    successCount++;
+                }
+                catch
+                {
+                    errors += company.Name + ",";
+                    failCount++;
+                }
+            }
+            if (!string.IsNullOrEmpty(errors))
+                errors = errors + " 生成失败请手工创建！";
+            Object result = new
+            {
+                success = true,
+                data = string.Format("{0}个单位创建成果，{1}创建失败。{2}", successCount,failCount, errors)
             };
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
@@ -61,6 +110,20 @@ namespace HrServiceCenterWeb.Controllers
         {
             string message = string.Empty;
             bool pass = new PaymentManager().SubmitPayment(paymentId,out message);
+
+            Object result = new
+            {
+                success = pass,
+                message = message
+            };
+            JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
+            return jsonResult;
+        }
+
+        public ActionResult CancelPayment(int paymentId)
+        {
+            string message = string.Empty;
+            bool pass = new PaymentManager().CancelPayment(paymentId, out message);
 
             Object result = new
             {

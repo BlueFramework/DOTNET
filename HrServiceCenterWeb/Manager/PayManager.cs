@@ -302,6 +302,7 @@ namespace HrServiceCenterWeb.Manager
                     ii.ImportType = 1;
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
                     int rowIndex = 0;
+                    int passRows = 0;
                     foreach (DataRow row in dt.Rows)
                     {
                         rowIndex++;
@@ -309,19 +310,20 @@ namespace HrServiceCenterWeb.Manager
                         InsuranceDetailInfo idi = new InsuranceDetailInfo();
                         idi.ImportId = ii.ImportId;
                         idi.PayMonth = row["计划月度"].ToString();
-                        idi.PersonName = row["个人姓名"].ToString();
+                        idi.PersonName = row["个人姓名"].ToString().Trim();
                         idi.PersonPayValue = decimal.Parse(row["个人缴存"].ToString());
                         idi.CompanyPayValue= decimal.Parse(row["单位缴存"].ToString());
                         idi.ImportColumnName = row["险种"].ToString();
-                        string cardId = row["身份证号码"].ToString().ToLower();
+                        string cardId = row["身份证号码"].ToString().ToLower()+"."+idi.PersonName;
                         if (cardIds.ContainsKey(cardId))
                         {
                             idi.PersonId = cardIds[cardId];
+                            passRows++;
                         }
                         else
                         {
                             //未找到人员，忽略该行
-                            outmsg += string.Format("第{0}行 {1} 人员的身份证号码未匹配到， ",rowIndex, idi.PersonName ); 
+                            outmsg += string.Format("第{0}行 {1} 人员的身份证号码和姓名不匹配， ",rowIndex, idi.PersonName ); 
                             continue;
                         }
                         if (titles.ContainsKey(row["险种"].ToString()))
@@ -338,11 +340,12 @@ namespace HrServiceCenterWeb.Manager
                         context.Save<InsuranceDetailInfo>("hr.insurance.insertInsuranceDetail", idi);
                     }
                     context.Commit();
+                    outmsg = string.Format("Excel中一共{0}行，导入成功{1}行。{2}", dt.Rows.Count,passRows, outmsg);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    outmsg += "服务器内部错误，请联系管理员！";
+                    outmsg += "服务器内部错误，请联系管理员："+ex.Message;
                     context.Rollback();
                     return false;
                 }
@@ -384,6 +387,7 @@ namespace HrServiceCenterWeb.Manager
                     ii.ImportType = 2;
                     context.Save<InsuranceInfo>("hr.insurance.insertInsurance", ii);
                     int rowIndex = 0;
+                    int passRows = 0;
                     foreach (DataRow row in dt.Rows)
                     {
                         rowIndex++;
@@ -391,18 +395,19 @@ namespace HrServiceCenterWeb.Manager
                         InsuranceDetailInfo idi = new InsuranceDetailInfo();
                         idi.ImportId = ii.ImportId;
                         idi.PayMonth = row["发放年月"].ToString();
-                        idi.PersonName = row["姓名"].ToString();
+                        idi.PersonName = row["姓名"].ToString().Trim();
                         idi.ImportType = 2;
-                        string cardId = row["身份证"].ToString().ToLower();
+                        string cardId = row["身份证"].ToString().ToLower()+"."+idi.PersonName;
                         #region 身份证判断
                         if (cardIds.ContainsKey(cardId))
                         {
                             idi.PersonId = cardIds[cardId];
+                            passRows++;
                         }
                         else
                         {
                             //未找到人员，忽略该行
-                            outmsg += string.Format("第{0}行 {1} 人员的身份证号码未匹配到， ", rowIndex, idi.PersonName);
+                            outmsg += string.Format("第{0}行{1}人员的身份证号码和姓名不匹配， ", rowIndex, idi.PersonName);
                             continue;
                         }
                         #endregion
@@ -418,6 +423,7 @@ namespace HrServiceCenterWeb.Manager
                         }
                     }
                     context.Commit();
+                    outmsg = string.Format("Excel一共{0}行，导入成功{1}行。{2}", dt.Rows.Count,passRows, outmsg);
                     return true;
                 }
                 catch (Exception ex)
@@ -437,8 +443,9 @@ namespace HrServiceCenterWeb.Manager
             Dictionary<string, int> dic = new Dictionary<string, int>();
             foreach (EmployeeInfo ei in list)
             {
-                if (!dic.ContainsKey(ei.CardId.ToLower()))
-                    dic.Add(ei.CardId.ToLower(), ei.PersonId);
+                string key = string.Format("{0}.{1}", ei.CardId.ToLower(), ei.PersonName.Trim());
+                if (!dic.ContainsKey(key))
+                    dic.Add(key, ei.PersonId);
             }
             return dic;
         }

@@ -57,7 +57,10 @@ opt.save = function () {
     var o = HR.Form.getValues('formEmployee');
     o.PersonId = dataId;
     var url = '../Employee/SaveEmployee';
-    HR.Loader.show("loading...");
+    //HR.Loader.show("loading...");
+    $.messager.progress({
+        msg: '保存中，请稍候...'
+    }); 
     $.ajax({
         url: url,
         type: "POST",
@@ -65,11 +68,13 @@ opt.save = function () {
         dataType: "json",
         data: JSON.stringify(o),
         success: function (result) {
-            HR.Loader.hide();
+            //HR.Loader.hide();
             if (result.success) {
                 dataId = result.data;
+                setTimeout(function () { $.messager.progress('close'); }, 1000);
             }
             else {
+                $.messager.progress('close');
                 $.messager.alert('提示', '保存失败！');
             }
 

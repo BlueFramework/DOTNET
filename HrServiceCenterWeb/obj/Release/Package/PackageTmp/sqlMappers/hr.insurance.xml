@@ -41,7 +41,8 @@
     where t.TITLE = #{value}
   </select>
   <select id="findInsuranceDetailById">
-    select t.IMPORT_ID ImportId,e.PERSON_NAME PersonName,t.PAY_MONTH PayMonth,t.IMPORT_COLUMN_NAME ItemName,t.ITEM_VALUE PersonPayValue,ITEM_CMP_VALUE CompanyPayValue from HR_SALARY_IMPORTOR_DATA t
+    select t.IMPORT_ID ImportId,e.PERSON_NAME PersonName,e.CARD_ID CardId,t.PAY_MONTH PayMonth,t.IMPORT_COLUMN_NAME ItemName,t.ITEM_VALUE PersonPayValue,ITEM_CMP_VALUE CompanyPayValue
+    from HR_SALARY_IMPORTOR_DATA t
     left join HR_EMPLOYEE e on t.PERSON_ID=e.PERSON_ID
     where t.IMPORT_ID=#{value}
   </select>

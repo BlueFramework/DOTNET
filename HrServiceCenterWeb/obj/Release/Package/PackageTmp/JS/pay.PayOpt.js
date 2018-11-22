@@ -37,7 +37,7 @@ opt.formatStatus = function (value, row, index) {
 }
 opt.formatRow = function (index, row) {
     if(row.Status==2)
-        return 'color:#ff0000';
+        return 'color:#0066cc';
 }
 
 

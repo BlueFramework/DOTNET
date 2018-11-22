@@ -34,7 +34,7 @@
         <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:100%"
                data-options="idField:'a',
 			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,loadFilter:pagerFilter,
-			        autoRowHeight:true,
+			        autoRowHeight:true,onDblClickRow:function(rowIndex,rowData){opt.querydetail()},
 			        pagination:true,
 			        pageSize:10,pageList:[10,20,30,40,50,100]">
             <thead>

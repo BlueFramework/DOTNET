@@ -48,7 +48,16 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">法定代表人</label>
                 <div class="col-sm-9">
-                    <input class="easyui-textbox" form-field-name="Representative" form-control-type="textbox" data-options="prompt:'输入法人姓名.',validType:'length[3,50]'" style="height:30px;width:100%" />
+                    <input class="easyui-textbox" form-field-name="Representative" form-control-type="textbox" data-options="prompt:'输入法人姓名.',validType:'length[2,50]'" style="height:30px;width:100%" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-9">
+                    <select class="easyui-combobox" id="cmbState" form-field-name="State" form-control-type="combobox" style="width:100%;height:30px;" data-options="{editable:false}">
+                        <option value="0">正常</option>
+                        <option value="1">停用（不会自动创建发放表）</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group">

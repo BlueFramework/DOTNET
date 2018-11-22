@@ -12,5 +12,6 @@ namespace HrServiceCenterWeb.Models
         public int ObjectId { get; set; }
         public string ObjectName { get; set; }
         public string ObjectCode { get; set; }
+        public int ServiceFee { get; set; } = 100;
     }
 }

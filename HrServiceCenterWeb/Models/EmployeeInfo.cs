@@ -46,5 +46,7 @@ namespace HrServiceCenterWeb.Models
         public int ContractDays { get; set; }
         public int RetireDays { get; set; }
 
+        public int ServiceFee { get; set; }
+
     }
 }

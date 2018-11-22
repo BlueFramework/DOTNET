@@ -42,6 +42,13 @@ namespace HrServiceCenterWeb.Manager
             return list;
         }
 
+        public List<CompanyInfo> GetPayCompanies()
+        {
+            EntityContext context = Session.CreateContext();
+            List<CompanyInfo> list = context.SelectList<CompanyInfo>("hr.company.getPayCompanys", null);
+            return list;
+        }
+
         public CompanyInfo GetCompany(int companyId)
         {
             EntityContext context = Session.CreateContext();

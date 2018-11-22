@@ -3,7 +3,7 @@
     ViewBag.Title = "发放管理";
 }
 <!-- import opt js-->
-<script src="~/JS/pay.PayOpt.js?v=1.0.0.20180920"></script> 
+<script src="~/JS/pay.PayOpt.js?v=1.0.0.20180920"></script>
 <div class="container container-layout">
     <div class="page-header">
         <h3>薪酬管理.<small>&nbsp;发放列表</small></h3>
@@ -19,7 +19,8 @@
             <div class="col-md-5">
                 <a class="btn btn-primary btn-sm" style="width:100px;" href="javascript:void(0)" onclick="opt.add()"><i class="fa fa-file-o" aria-hidden="true"></i> 新建发放</a>
                 <a class="btn btn-primary btn-sm" style="width:100px;" href="javascript:void(0)" onclick="opt.edit()"><i class="fa fa-circle-o" aria-hidden="true"></i> 编辑发放</a>
-                <a class="btn btn-danger btn-sm"  style="width:100px;" href="javascript:void(0)" onclick="opt.delete()"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
+                <a class="btn btn-primary btn-sm" style="width:100px;" href="javascript:void(0)" onclick="opt.openBatchDialog()"><i class="fa fa-circle-o" aria-hidden="true"></i> 批量创建</a>
+                <a class="btn btn-danger btn-sm" style="width:100px;" href="javascript:void(0)" onclick="opt.delete()"><i class="fa fa-trash-o" aria-hidden="true"></i> 删除</a>
             </div>
         </div>
 
@@ -44,6 +45,17 @@
                 </tr>
             </thead>
         </table>
+    </div>
+</div>
+<!-- batch dialog -->
+<div id="dlg" class="easyui-dialog" title="批量创建窗口" data-options="iconCls:'icon-save',closed: true" style="width:400px;height:200px;padding:10px">
+
+    <div style="height:30px;padding:5px;">请输入发放月份：</div>
+    <div  style="height:50px;padding:5px;">
+        <input id="datebox" editable="false" class="easyui-datebox" value="" style="height:30px;width:250px" />
+    </div>
+    <div  style="height:30px;padding:5px;">
+        <button id="btnCreate" class="btn btn-primary" onclick="opt.createPayments();return false;"> <i class="fa fa-paper-plane-o" aria-hidden="true"></i> 创建</button>
     </div>
 </div>
 

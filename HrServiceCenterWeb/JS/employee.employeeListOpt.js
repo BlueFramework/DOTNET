@@ -83,7 +83,7 @@ opt.edit = function (id) {
     }
     var id = row.PersonId;
     var url = '../Employee/EmployeePage?id=' + id;
-    self.location = url;
+    window.open(url);
 }
 
 opt.export = function () {

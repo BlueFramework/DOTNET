@@ -15,7 +15,6 @@
 <div class="container container-layout">
     <div class="page-header">
         <h3>基础信息.<small>&nbsp;人员信息</small></h3>
-
     </div>
     <div id="pnlSearch">
         <div class="row">
@@ -46,21 +45,20 @@
         <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:100%"
                data-options="idField:'PersonId',
 			        singleSelect:true,collapsible:false,rownumbers:true,striped:true,loadFilter:pagerFilter,
-			        autoRowHeight:true,
+			        autoRowHeight:true,onDblClickRow:function(rowIndex,rowData){opt.edit()},rowStyler:opt.formatRow,
 			        pagination:true,filterBtnIconCls:'icon-filter',
-			        pageSize:10,pageList:[10,20,30,40,50,100]">
+			        pageSize:20,pageList:[10,20,30,40,50,100]">
             <thead>
                 <tr>
                     <th data-options="field:'PersonName',width:80">姓名</th>
-                    <th data-options="field:'CompanyName',width:150">单位</th>
-                    <th data-options="field:'CardId',width:80">身份证</th>
+                    <th data-options="field:'CardId',width:120">身份证</th>
                     <th data-options="field:'Sex',width:50">性别</th>
                     <th data-options="field:'Birthday',width:80">出生日期</th>
-                    <th data-options="field:'DegreeName',width:80">学历</th>
-                    <th data-options="field:'Specialty',width:80">专业</th>
-                    <th data-options="field:'Nation',width:50">民族</th>
+                    <th data-options="field:'CompanyName',width:150">单位</th>
+                    <th data-options="field:'PositionName',width:80">岗位</th>
+                    <th data-options="field:'JoinWorkTime',width:80">参工时间</th>
+                    <th data-options="field:'ContractTime',width:80">合同日期</th>
                     <th data-options="field:'Phone',width:150">联系方式</th>
-                    <th data-options="field:'Address',width:80">地址</th>
                     <th data-options="field:'StateCaption',width:80">状态</th>
 
                 </tr>

@@ -15,6 +15,8 @@ namespace HrServiceCenterWeb.Models
 
         public string Code { get; set; }
 
+        public int State { get; set; }
+
         public string Representative { get; set; }
 
         public string Remark { get; set; }

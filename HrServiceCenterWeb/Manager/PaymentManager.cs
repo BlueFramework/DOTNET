@@ -66,6 +66,49 @@ namespace HrServiceCenterWeb.Manager
             }
         }
 
+        public bool CancelPayment(int paymentId, out string message)
+        {
+            Payment payment = LoadPayment(paymentId);
+            payment.Status = 0;
+
+            using (EntityContext context = Session.CreateContext())
+            {
+                try
+                {
+                    CompanyInfo companyInfo = context.Selete<CompanyInfo>("hr.company.findCompanyById", payment.CompanyId);
+
+                    CompanyAccountRecordInfo accountRecordInfo = new CompanyAccountRecordInfo();
+                    accountRecordInfo.CompanyId = payment.CompanyId;
+                    accountRecordInfo.AccountId = companyInfo.AccountId;
+                    accountRecordInfo.AccountBalance = companyInfo.AccountBalance;
+                    accountRecordInfo.Money = payment.Total*-1;
+                    accountRecordInfo.CreateTime = DateTime.Now;
+
+                    context.BeginTransaction();
+                    CompanyAccountInfo accountInfo = new CompanyAccountInfo()
+                    {
+                        CompanyId = accountRecordInfo.CompanyId,
+                        AccountId = accountRecordInfo.AccountId,
+                        AccountBalance = accountRecordInfo.AccountBalance - accountRecordInfo.Money
+                    };
+                    context.Save<CompanyAccountInfo>("hr.company.updateCompanyAccount", accountInfo);
+                    context.Save<CompanyAccountRecordInfo>("hr.company.insertCompanyAccountDetail", accountRecordInfo);
+                    context.Save<Payment>("hr.payment.submitPayment", payment);
+                    context.Commit();
+
+                    message = string.Format("本次从单位账户返还{0}元，账户余额{1}元。", payment.Total, accountInfo.AccountBalance);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    message = e.Message;
+                    context.Rollback();
+                    return false;
+                }
+            }
+        }
+
         public void CreatePayment(Payment payment)
         {
             EntityContext context = Session.CreateContext();
@@ -85,7 +128,7 @@ namespace HrServiceCenterWeb.Manager
                 {
                     ItemId = 6,
                     PersonId = o.ObjectId,
-                    PayValue = MANAGE_PAYVALUE
+                    PayValue = o.ServiceFee
                 };
                 payValues.Add(payValue);
             }
