@@ -40,7 +40,7 @@ opt.save = function () {
     var companyId = $('#cmbCompany').combobox('getValue');
     var companyText = $('#cmbCompany').combobox('getText');
     var companyList = $('#cmbCompany').combobox('getData');
-    companyList.forEach(function (item,i) {
+    companyList.forEach(function (item, i) {
         if (item.CompanyId == companyId) {
             validate = true;
         }
@@ -60,7 +60,7 @@ opt.save = function () {
     //HR.Loader.show("loading...");
     $.messager.progress({
         msg: '保存中，请稍候...'
-    }); 
+    });
     $.ajax({
         url: url,
         type: "POST",
@@ -71,11 +71,14 @@ opt.save = function () {
             //HR.Loader.hide();
             if (result.success) {
                 dataId = result.data;
-                setTimeout(function () { $.messager.progress('close'); }, 1000);
+                setTimeout(function () {
+                    $.messager.progress('close');
+                    if (o.State == 1) self.location.reload(true);
+                }, 1000);
             }
             else {
                 $.messager.progress('close');
-                $.messager.alert('提示', '保存失败！');
+                $.messager.alert('提示', '保存失败：' + result.data);
             }
 
         },
@@ -83,19 +86,27 @@ opt.save = function () {
             $.messager.alert('提示', '查询出错！');
         }
     });
-}
+};
 //删除操作
 opt.exit = function (id) {
-    self.location.href = '../Employee/EmployeeList';
-}
+    self.close();
+    //self.location.href = '../Employee/EmployeeList';
+};
 opt.afterChange = function (idString) {
     if (idString.length < 17) return;
     var year = idString.substr(6, 4);
     var date = year + '-' + idString.substr(10, 2) + '-' + idString.substr(12, 2);
-    var sex = idString.substr(16, 1)%2;
-    var retireYear = sex==1?60:50;
+    var sex = idString.substr(16, 1) % 2;
+    var retireYear = sex == 1 ? 60 : 50;
     var retireDate = (retireYear + parseInt(year)) + '-' + idString.substr(10, 2) + '-' + idString.substr(12, 2);
-    $('#dtBirthday').datebox('setValue', date); 
+    $('#dtBirthday').datebox('setValue', date);
     $('#dtRetireTime').datebox('setValue', retireDate);
-    $('#cmbSex').combobox("setValue", sex==1?'男':'女')
+    $('#cmbSex').combobox("setValue", sex == 1 ? '男' : '女');
+};
+
+function myformatter(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    return y + '-' + (m < 10 ? ('0' + m) : m) + '-' + (d < 10 ? ('0' + d) : d);
 }

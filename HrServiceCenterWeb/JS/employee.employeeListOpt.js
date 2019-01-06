@@ -32,12 +32,12 @@ opt.query = function () {
             $.messager.alert('提示', '查询出错！');
         }
     });
-}
+};
 
 opt.selectCompany = function (company) {
     opt.selectCompanyId = company.CompanyId;
     opt.query();
-}
+};
 
 
 //删除操作
@@ -63,31 +63,38 @@ opt.delete = function (id) {
             return;
         }
     });
-}
+};
 
 
 opt.add = function () {
     var url = '../Employee/EmployeePage?id=0';
     self.location = url;
-}
+};
 opt.formatRow = function (index, row) {
     if (row.State == 1)
         return 'color:#ffcc00';
-}
+};
 //编辑用户
 opt.edit = function (id) {
     var row = $('#dg').datagrid('getSelected');
-    if (row == null) {
+    if (row === null) {
         $.messager.alert('提示', '未选中任何数据!');
         return;
     }
-    var id = row.PersonId;
-    var url = '../Employee/EmployeePage?id=' + id;
+    var pid = row.PersonId;
+    var url = '../Employee/EmployeePage?id=' + pid;
     window.open(url);
-}
-
+};
+//导出详情
 opt.export = function () {
     var url = '../Employee/ExportPayDetail';
     var params = { companyId: opt.selectCompanyId };
     HR.DownFile(url, params);
-}
+};
+//导出花名册
+opt.exportSimple = function () {
+    var url = '../Employee/exportSimple';
+    var params = { companyId: opt.selectCompanyId };
+    HR.DownFile(url, params);
+};
+

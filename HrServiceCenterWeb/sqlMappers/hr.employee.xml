@@ -55,6 +55,16 @@
     INNER JOIN T_S_BASECODE b1 on b1.OBJECT_VALUE=t.DEGREE and b1.CATEGORYID=2
     order by t.COMPANY_ID,t.PERSON_NAME
   </select>
+  <!-- 导出人员清单  -->
+  <select id="exportSimplePersons" >
+    select
+    c.NAME 单位,t.PERSON_NAME 姓名,t.CARD_ID 身份证,t.CONTACTS_PHONE 电话,t.ADDRESS 地址,p.POSITION_NAME 岗位,t.Contract_Time 合同签订日期,Contract_Time 到期日期
+    from HR_EMPLOYEE t
+    INNER join HR_COMPANY c on c.COMPANY_ID=t.COMPANY_ID
+    INNER JOIN HR_POSITION p on p.POSITION_ID=t.POSITION_ID
+    INNER JOIN T_S_BASECODE b1 on b1.OBJECT_VALUE=t.DEGREE and b1.CATEGORYID=2
+    order by t.COMPANY_ID,t.PERSON_NAME
+  </select>
   <select id="findEmployee" >
     select t.PERSON_ID PersonId,t.COMPANY_ID CompanyId,t.POSITION_ID PositionId,t.PERSON_NAME PersonName,t.CARD_ID CardId,t.SEX Sex,t.BIRTHDAY Birthday,t.DEGREE Degree,t.POLITY Polity,t.NATION Nation,
     t.PHONE Phone,t.ADDRESS Address,t.CONTACTS_PERSON ContactsPerson,t.CONTACTS_PHONE ContactsPhone,t.SPECIALTY,t.SCHOOL,t.CREATOR,t.CREATE_TIME CreateTime,t.STATE,

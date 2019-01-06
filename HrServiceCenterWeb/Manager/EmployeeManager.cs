@@ -288,6 +288,15 @@ namespace HrServiceCenterWeb.Manager
             return ds;
         }
 
+        public DataSet GetSimpleEmployees()
+        {
+            EntityConfig config = ConfigManagent.Configs["hr.employee.exportSimplePersons"];
+            BlueFramework.Data.Database database = new BlueFramework.Data.DatabaseProviderFactory().CreateDefault();
+            string sql = config.Sql;
+            DataSet ds = database.ExecuteDataSet(CommandType.Text, sql);
+            return ds;
+        }
+
         public bool SaveEmployee(EmployeeInfo employeeInfo)
         {
             bool pass;

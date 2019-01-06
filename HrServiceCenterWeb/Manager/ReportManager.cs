@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data;
 
 using BlueFramework.Blood;
+using System.Data.Common;
 
 namespace HrServiceCenterWeb.Manager
 {
@@ -149,6 +151,53 @@ namespace HrServiceCenterWeb.Manager
                     data[i] = 0;
             }
             return data;
+        }
+
+        public DataSet GetWxyjByYear(int year)
+        {
+            string filePath = System.AppDomain.CurrentDomain.BaseDirectory + "/Setting/sql/hr.sql.xml";
+            string sql = BlueFramework.Common.XmlUtils.GetInnerText(filePath, "hr.WxyjYear");
+            BlueFramework.Data.DatabaseProviderFactory factory = new BlueFramework.Data.DatabaseProviderFactory();
+            BlueFramework.Data.Database db = factory.CreateDefault();
+            DbCommand command = db.GetSqlStringCommand(sql);
+            db.AddInParameter(command, "payYear", DbType.String, year.ToString());
+            //DataTable dt = db.ExecuteDataSet(command).Tables[0];
+            DataSet ds = db.ExecuteDataSet(command);
+            DataTable dt = ds.Tables[0];
+            FillRowNum(ds);
+            SumDataSet(ds);
+            return ds;
+        }
+
+        private void FillRowNum(DataSet ds)
+        {
+            DataTable dt = ds.Tables[0];
+            dt.Columns.Add("rownum");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                dt.Rows[i]["rownum"] = i + 1;
+            }
+        }
+
+        private void SumDataSet(DataSet ds)
+        {
+            DataTable dt = ds.Tables[0];
+            DataRow row = dt.NewRow();
+            foreach(DataColumn column in dt.Columns)
+            {
+
+                if (column.DataType != Type.GetType("System.Decimal") && column.DataType != Type.GetType("System.Int32"))
+                    continue;
+                double total = 0;
+                for(int i = 0; i < dt.Rows.Count; i++)
+                {
+                    string rowValue = dt.Rows[i][column.ColumnName].ToString();
+                    if(!string.IsNullOrEmpty(rowValue))
+                     total += double.Parse(rowValue);
+                }
+                row[column.ColumnName] = total;
+            }
+            dt.Rows.Add(row);
         }
     }
 }

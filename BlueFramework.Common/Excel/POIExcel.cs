@@ -371,5 +371,29 @@ namespace BlueFramework.Common.Excel
             bool result = WriteFile(outputFilePath, stream);
             return result;
         }
+
+
+        /// <summary>
+        /// WriteFile
+        /// </summary>
+        /// <param name="outputFilePath"></param>
+        /// <param name="ds"></param>
+        /// <param name="templateName"></param>
+        /// <returns></returns>
+        public bool WriteFile(string outputFilePath, DataSet ds, string templateName)
+        {
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            ExcelExtendType extendType = outputFilePath.IndexOf(".xlsx") > 0 ? ExcelExtendType.XLSX : ExcelExtendType.XLS;
+            TemplateConfig templateConfig = new TemplateConfig();
+            templateConfig.Load(templateName);
+            TTemplate template = templateConfig.GetTemplate();
+            if (template == null)
+                Write(stream, ds, extendType);
+            else
+                Write(stream, template, ds, extendType);
+            bool result = WriteFile(outputFilePath, stream);
+            return result;
+        }
     }
 }

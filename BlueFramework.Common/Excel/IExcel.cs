@@ -86,5 +86,14 @@ namespace BlueFramework.Common.Excel
         /// <param name="template"></param>
         /// <returns></returns>
         bool WriteFile(string outputFilePath, DataSet ds, TTemplate template);
+
+        /// <summary>
+        /// WriteFile
+        /// </summary>
+        /// <param name="outputFilePath"></param>
+        /// <param name="ds"></param>
+        /// <param name="templateName"></param>
+        /// <returns></returns>
+        bool WriteFile(string outputFilePath, DataSet ds, string templateName);
     }
 }

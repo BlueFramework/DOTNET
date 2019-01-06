@@ -64,7 +64,7 @@ function init() {
                 data: {
                     persons: source
                 }
-            })
+            });
         },
         error: function () {
             $.messager.alert('提示', '加载人员信息出错！');

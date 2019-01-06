@@ -74,17 +74,97 @@ namespace HrServiceCenterWeb.Controllers
         [HttpPost]
         public ActionResult SaveEmployee(EmployeeInfo employeeInfo)
         {
+            Object result;
+            string message = string.Empty;
+            // 输入校验
+            bool validate = true;
+            #region 验证
+            DateTime dateTime;
+            if (!string.IsNullOrEmpty(employeeInfo.Birthday))
+            {
+                if (DateTime.TryParse(employeeInfo.Birthday,out dateTime))
+                {
+                    employeeInfo.Birthday = dateTime.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    message += " 出生日期格式不正确.";
+                    validate = false;
+                }
+            }
+            if (!string.IsNullOrEmpty(employeeInfo.JoinWorkTime))
+            {
+                if (DateTime.TryParse(employeeInfo.JoinWorkTime, out dateTime))
+                {
+                    employeeInfo.JoinWorkTime = dateTime.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    message += " 参工日期格式不正确.";
+                    validate = false;
+                }
+            }
+            if (!string.IsNullOrEmpty(employeeInfo.LeaveTime))
+            {
+                if (DateTime.TryParse(employeeInfo.LeaveTime, out dateTime))
+                {
+                    employeeInfo.LeaveTime = dateTime.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    message += " 离职日期格式不正确.";
+                    validate = false;
+                }
+            }
+            if (!string.IsNullOrEmpty(employeeInfo.ContractTime))
+            {
+                if (DateTime.TryParse(employeeInfo.ContractTime, out dateTime))
+                {
+                    employeeInfo.ContractTime = dateTime.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    message += " 合同日期格式不正确.";
+                    validate = false;
+                }
+            }
+            if (!string.IsNullOrEmpty(employeeInfo.RetireTime))
+            {
+                if (DateTime.TryParse(employeeInfo.RetireTime, out dateTime))
+                {
+                    employeeInfo.RetireTime = dateTime.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    message += " 退休日期格式不正确.";
+                    validate = false;
+                }
+            }
+            #endregion
+
             // 如果停用，服务费强制改为0
-            if (employeeInfo.State == 0)
+            if (employeeInfo.State == 1)
             {
                 employeeInfo.ServiceFee = 0;
             }
-            bool pass = new Manager.EmployeeManager().SaveEmployee(employeeInfo);
-            Object result = new
+            if (validate)
             {
-                success = pass,
-                data = pass ? employeeInfo.PersonId : 0
-            };
+                bool pass = new Manager.EmployeeManager().SaveEmployee(employeeInfo);
+                result = new
+                {
+                    success = pass,
+                    data = pass ? employeeInfo.PersonId : 0
+                };
+            }
+            else
+            {
+                result = new
+                {
+                    success = false,
+                    data = message
+                };
+            }
+
             JsonResult jsonResult = Json(result, JsonRequestBehavior.AllowGet);
             return jsonResult;
         }
@@ -131,5 +211,35 @@ namespace HrServiceCenterWeb.Controllers
             }
             return null;
         }
+        public ActionResult exportSimple(EmployeeInfo employeeInfo)
+        {
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataSet ds = new Manager.EmployeeManager().GetSimpleEmployees();
+            POIStream stream = new POIStream();
+            stream.AllowClose = false;
+            excel.Write(stream, ds, ExcelExtendType.XLSX);
+            stream.AllowClose = true;
+            byte[] buffer = new byte[stream.Length];
+            stream.Position = 0;
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Close();
+
+            HttpResponse context = System.Web.HttpContext.Current.Response;
+            try
+            {
+                context.ContentType = "application/ms-excel";
+                context.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode("人员清单", System.Text.Encoding.UTF8)));
+                context.BinaryWrite(buffer);
+                context.Flush();
+                context.End();
+            }
+            catch (Exception ex)
+            {
+                context.ContentType = "text/plain";
+                context.Write(ex.Message);
+            }
+            return null;
+        }
+
     }
 }

@@ -114,5 +114,22 @@ namespace BlueFramework.Common.Excel.Tests
             bool result = excel.WriteFile(outputFilePath, ds, template);
             Assert.IsTrue(result);
         }
+
+        [Test()]
+        public void WriteXlsxTestByTemplate()
+        {
+
+            string file = AppDomain.CurrentDomain.BaseDirectory + "/ExcelTests/t4.xlsx";
+            IExcel excel = ExcelFactory.CreateDefault();
+            DataTable dt = excel.Read(file, 0, 1);
+            DataSet ds = new DataSet();
+            ds.Tables.Add(dt);
+
+            string templateName = AppDomain.CurrentDomain.BaseDirectory + "/ExcelTests/template.xml";
+            string outputFilePath = AppDomain.CurrentDomain.BaseDirectory + "/ExcelTests/out4.xlsx";
+            bool result = excel.WriteFile(outputFilePath, ds, templateName);
+            Assert.IsTrue(result);
+        }
+
     }
 }
